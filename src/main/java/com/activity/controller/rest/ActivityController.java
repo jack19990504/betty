@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @Path("/activity")
+@RestController
 public class ActivityController {
 	
 	@GET
