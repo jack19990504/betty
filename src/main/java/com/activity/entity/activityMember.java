@@ -1,6 +1,6 @@
 package com.activity.entity;
 
-public class activityMember {
+public class ActivityMember {
 	
 	private Integer activityMemberId;
 	

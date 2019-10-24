@@ -1,9 +1,10 @@
 package com.activity.config;
 
 import org.glassfish.jersey.server.ResourceConfig;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.RequestContextFilter;
-
+import com.activity.controller.*;
+import com.activity.controller.rest.ActivityMemberController;
+import com.activity.controller.rest.MemberController;
 
 
 /**
@@ -17,10 +18,10 @@ public class JerseyResourceConfig extends ResourceConfig {
 
 
     public JerseyResourceConfig() {
-        //register(CustomerController.class);
+        register(MemberController.class);
         register(RequestContextFilter.class);
-        //register(CustomerDAO.class);
-        //register(CustomerDAOImpl.class);
+        register(MemberController.class);
+        register(ActivityMemberController.class);
         //packages("com.example.test.*");
     }
     

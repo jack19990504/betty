@@ -2,7 +2,7 @@ package com.activity.entity;
 
 import java.sql.Date;
 
-public class member {
+public class Member {
 
 	private String account;
 	

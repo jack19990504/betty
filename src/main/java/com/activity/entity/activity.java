@@ -2,7 +2,7 @@ package com.activity.entity;
 
 import java.sql.Date;
 
-public class activity {
+public class Activity {
 	
 	private Integer activityId;
 	
