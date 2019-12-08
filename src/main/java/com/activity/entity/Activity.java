@@ -12,7 +12,7 @@ public class Activity {
 	
 	private String activityInfo;
 	
-	private Integer attendpeople;
+	private Integer attendPeople;
 	
 	private String activitySpace;
 	
@@ -20,9 +20,9 @@ public class Activity {
 	
 	private Date endSignUpDate;
 	
-	private Date activityStart;
+	private Date activityStartDate;
 	
-	private Date activityEnd;
+	private Date activityEndDate;
 	
 	private String organizerTel;
 	
@@ -62,12 +62,13 @@ public class Activity {
 		this.activityInfo = activityInfo;
 	}
 
-	public Integer getAttendpeople() {
-		return attendpeople;
+	
+	public Integer getAttendPeople() {
+		return attendPeople;
 	}
 
-	public void setAttendpeople(Integer attendpeople) {
-		this.attendpeople = attendpeople;
+	public void setAttendPeople(Integer attendPeople) {
+		this.attendPeople = attendPeople;
 	}
 
 	public String getActivitySpace() {
@@ -94,20 +95,21 @@ public class Activity {
 		this.endSignUpDate = endSignUpDate;
 	}
 
-	public Date getActivityStart() {
-		return activityStart;
+	
+	public Date getActivityStartDate() {
+		return activityStartDate;
 	}
 
-	public void setActivityStart(Date activityStart) {
-		this.activityStart = activityStart;
+	public void setActivityStartDate(Date activityStartDate) {
+		this.activityStartDate = activityStartDate;
 	}
 
-	public Date getActivityEnd() {
-		return activityEnd;
+	public Date getActivityEndDate() {
+		return activityEndDate;
 	}
 
-	public void setActivityEnd(Date activityEnd) {
-		this.activityEnd = activityEnd;
+	public void setActivityEndDate(Date activityEndDate) {
+		this.activityEndDate = activityEndDate;
 	}
 
 	public String getOrganizerTel() {

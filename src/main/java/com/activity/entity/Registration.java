@@ -1,6 +1,6 @@
 package com.activity.entity;
 
-public class ActivityMember {
+public class Registration {
 	
 	private Integer AInum;
 	
