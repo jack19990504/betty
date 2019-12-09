@@ -19,6 +19,18 @@ public class Member {
 	private String memberPhone;
 	
 	private String memberAddress;
+	
+	private String memberLineId;
+
+	
+	
+	public String getLineId() {
+		return memberLineId;
+	}
+
+	public void setLineId(String lineId) {
+		memberLineId = lineId;
+	}
 
 	public String getMemberEmail() {
 		return memberEmail;
