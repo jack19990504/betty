@@ -7,6 +7,14 @@ public interface ActivityDAO {
 	public List<Activity> getList();
 	
 	public String getActivityNames();
+	
+	public Activity get(Activity activity);
+	
+	public void update(Activity oldActivity,Activity activity);
+	
+	public void delete(Activity activity);
+	
+	public void insert(Activity activity);
 
 	
 }

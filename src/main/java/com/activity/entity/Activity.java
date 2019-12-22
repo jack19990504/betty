@@ -5,7 +5,8 @@ import java.sql.Date;
 public class Activity {
 	
 	private Integer activityId;
-	
+	//activityName , activityOrganizer , activityInfo , attendPeople , activitySpace,startSignUpDate ,
+	//endSignUpDate, activityStartDate, activityEndDate , organizerTel , organizerContactInfo , activityMeal
 	private String activityName;
 	
 	private String activityOrganizer;

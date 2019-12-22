@@ -1,4 +1,5 @@
 package com.activity.dao.Impl;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,6 +40,17 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity = new Activity();
 				activity.setActivityId(rs.getInt("activityId"));
 				activity.setActivityName(rs.getString("activityName"));
+				activity.setActivityOrganizer(rs.getString("activityOrganizer"));
+				activity.setActivityInfo(rs.getString("activityInfo"));
+				activity.setAttendPeople(rs.getInt("attendPeople"));
+				activity.setActivitySpace(rs.getString("activitySpace"));
+//				activity.setActivityStartDate(rs.getString("activityStartDate"));
+//				activity.setActivityEndDate(rs.getString("activityEndDate"));
+//				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
+//				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
+				activity.setOrganizerTel(rs.getString("organizerTel"));
+				activity.setOrganizerContactInfo(rs.getString("organizerContactInfo"));
+				activity.setActivityMeal(rs.getInt("activityMeal"));
 
 				activityList.add(activity);
 			}
@@ -94,5 +106,154 @@ public class ActivityDAOImpl implements ActivityDAO {
 			}
 		}
 		return activityNames;
+	}
+
+	@Override
+	public Activity get(Activity activity) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		ResultSet rs = null;
+		final String sql = "SELECT * FROM activity WHERE activityId = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setInt(1, activity.getActivityId());
+			rs = smt.executeQuery();
+
+			activity = new Activity();
+			if (rs.next()) {
+				activity.setActivityId(rs.getInt("activityId"));
+				activity.setActivityName(rs.getString("activityName"));
+				activity.setActivityOrganizer(rs.getString("activityOrganizer"));
+				activity.setActivityInfo(rs.getString("activityInfo"));
+				activity.setAttendPeople(rs.getInt("attendPeople"));
+				activity.setActivitySpace(rs.getString("activitySpace"));
+//				activity.setActivityStartDate(rs.getString("activityStartDate"));
+//				activity.setActivityEndDate(rs.getString("activityEndDate"));
+//				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
+//				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
+				activity.setOrganizerTel(rs.getString("organizerTel"));
+				activity.setOrganizerContactInfo(rs.getString("organizerContactInfo"));
+				activity.setActivityMeal(rs.getInt("activityMeal"));
+			}
+			smt.close();
+			rs.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return activity;
+	}
+
+	@Override
+	public void update(Activity oldActivity, Activity activity) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "UPDATE activity SET " + "activityName = ? ," + " activityOrganizer = ?, "
+				+ "activityInfo = ?," + "attendPeople = ? ," + "activitySpace = ? ," + "organizerTel = ? ,"
+				+ "organizerContactInfo = ? ," + "activityMeal = ? " + " where activityId = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+
+			smt.setString(1,activity.getActivityName() != null ? activity.getActivityName() : oldActivity.getActivityName());
+			smt.setString(2, activity.getActivityOrganizer() != null ? activity.getActivityOrganizer(): oldActivity.getActivityOrganizer());
+			smt.setString(3,activity.getActivityInfo() != null ? activity.getActivityInfo() : oldActivity.getActivityInfo());
+			smt.setInt(4,activity.getAttendPeople() != null ? activity.getAttendPeople() : oldActivity.getAttendPeople());
+			smt.setString(5,activity.getActivitySpace() != null ? activity.getActivitySpace() : oldActivity.getActivitySpace());
+			smt.setString(6,activity.getOrganizerTel() != null ? activity.getOrganizerTel() : oldActivity.getOrganizerTel());
+			smt.setString(7, activity.getOrganizerContactInfo() != null ? activity.getOrganizerContactInfo(): oldActivity.getOrganizerContactInfo());
+			smt.setInt(8,activity.getActivityMeal() != null ? activity.getActivityMeal() : oldActivity.getActivityMeal());
+			smt.setInt(9, activity.getActivityId() != null ? activity.getActivityId() : oldActivity.getActivityId());
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+	}
+
+	@Override
+	public void delete(Activity activity) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "DELETE FROM activity WHERE activityId = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setInt(1, activity.getActivityId());
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+	}
+
+	@Override
+	public void insert(Activity activity) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "INSERT INTO activity(activityName , activityOrganizer , activityInfo , "
+				+ "attendPeople , activitySpace, startSignUpDate , endSignUpDate, activityStartDate, "
+				+ "activityEndDate , organizerTel , organizerContactInfo , activityMeal)"
+				+ " VALUES(? ,? ,? ,? ,? ,NOW() ,NOW() ,NOW() ,NOW() ,? ,? ,? )";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+
+			smt.setString(1, activity.getActivityName());
+			smt.setString(2, activity.getActivityOrganizer());
+			smt.setString(3, activity.getActivityInfo());
+			smt.setInt(4, activity.getAttendPeople());
+			smt.setString(5, activity.getActivitySpace());
+			smt.setString(6, activity.getOrganizerTel());
+			smt.setString(7, activity.getOrganizerContactInfo());
+			smt.setInt(8, activity.getActivityMeal());
+
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
 	}
 }
