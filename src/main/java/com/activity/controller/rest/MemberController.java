@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.controller.rest.MemberController;
 import com.activity.dao.MemberDAO;
-import com.activity.impl.MemberDAOImpl;
+import com.activity.dao.Impl.MemberDAOImpl;
 import com.activity.entity.Member;
 import com.google.gson.Gson;
 

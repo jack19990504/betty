@@ -1,5 +1,5 @@
 package com.activity.controller.rest;
 
-public class ActivityMemberController {
+public class RegistrationController {
 
 }

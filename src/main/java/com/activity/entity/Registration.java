@@ -1,6 +1,6 @@
 package com.activity.entity;
 
-public class ActivityMember {
+public class Registration {
 	
 	private Integer AInum;
 	
@@ -11,6 +11,16 @@ public class ActivityMember {
 	private String remark;
 	
 	private Integer meal;
+	
+	private String activityName;
+
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}
 
 	public Integer getAInum() {
 		return AInum;
