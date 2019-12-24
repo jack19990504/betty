@@ -16,6 +16,6 @@ public interface MemberDAO {
 
 	public Member get(Member member);
 
-	 public Member findOne(int id);
+	public Member findOne(int id);
 
 }
