@@ -21,9 +21,27 @@ public class Member {
 	private String memberAddress;
 	
 	private String memberLineId;
+	
+	private Integer type;
 
 	
 	
+	public String getMemberLineId() {
+		return memberLineId;
+	}
+
+	public void setMemberLineId(String memberLineId) {
+		this.memberLineId = memberLineId;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
 	public String getLineId() {
 		return memberLineId;
 	}

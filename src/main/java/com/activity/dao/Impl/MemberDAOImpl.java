@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -14,16 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-
 @Repository
 public class MemberDAOImpl implements MemberDAO {
 	@Autowired
 	private DataSource dataSource;
-	
-	
+
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
+
 	@Override
 	public void insert(Member member) {
 		Connection conn = null;
@@ -70,9 +71,9 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(3, password);
 			smt.executeUpdate();
 			smt.close();
-			
+
 		} catch (SQLException e) {
-		
+
 			throw new RuntimeException(e);
 
 		} finally {
@@ -84,6 +85,7 @@ public class MemberDAOImpl implements MemberDAO {
 			}
 		}
 	}
+
 	@Override
 	public Member get(Member member) {
 		Connection conn = null;
@@ -120,6 +122,7 @@ public class MemberDAOImpl implements MemberDAO {
 		}
 		return member;
 	}
+
 	@Override
 	public Member check(Member member) {
 		// TODO Auto-generated method stub
@@ -157,6 +160,7 @@ public class MemberDAOImpl implements MemberDAO {
 		}
 		return member;
 	}
+
 	@Override
 	public void resetLineUserId(String account) {
 		Connection conn = null;
@@ -169,9 +173,9 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(2, account);
 			smt.executeUpdate();
 			smt.close();
-			
+
 		} catch (SQLException e) {
-		
+
 			throw new RuntimeException(e);
 
 		} finally {
@@ -184,5 +188,114 @@ public class MemberDAOImpl implements MemberDAO {
 		}
 	}
 
-}
+	@Override
+	public void update(Member oldMember, Member member) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "UPDATE member SET " + "password = ? ," + "name = ? ," + " gender = ?, " + "birthday = ? ,"
+				+ "tel = ? ," + "phone = ? ," + "address = ? ," + "lineId = ? ," + "type = ? ," + " where email = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
 
+			smt.setString(1, member.getMemberPassword() != null ? member.getMemberPassword() : oldMember.getMemberPassword());
+			smt.setString(2, member.getMemberName() != null ? member.getMemberName() : oldMember.getMemberName());
+			smt.setString(3, member.getMemberGender() != null ? member.getMemberGender() : oldMember.getMemberGender());
+			smt.setDate(4, member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); // 有需要嗎
+			smt.setString(5, member.getMemberTel() != null ? member.getMemberTel() : oldMember.getMemberTel());
+			smt.setString(6, member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
+			smt.setString(7, member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());
+			smt.setString(8, member.getLineId() != null ? member.getLineId() : oldMember.getLineId());
+			smt.setInt(9, member.getType() != null ? member.getType() : oldMember.getType());
+			smt.setString(10, member.getMemberEmail());
+
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+	}
+
+	@Override
+	public void delete(Member member) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "DELETE FROM member WHERE memberEmail = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, member.getMemberEmail());
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+	}
+
+	@Override
+	public List<Member> getList() {
+		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement smt = null;
+		List<Member> memberList = new ArrayList<Member>();
+		final String sql = "SELECT * FROM member";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			rs = smt.executeQuery();
+			Member member;
+			while (rs.next()) {
+				member = new Member();
+				member.setMemberEmail(rs.getString("email"));
+				member.setMemberPassword(rs.getString("password"));
+				member.setMemberName(rs.getString("name"));
+				member.setMemberGender(rs.getString("gender"));
+				member.setMemberBirthday(rs.getDate("birthday")); // 不確定
+				member.setMemberTel(rs.getString("tel"));
+				member.setMemberPhone(rs.getString("phone"));
+				member.setMemberAddress(rs.getString("address"));
+				member.setLineId(rs.getString("lineId"));
+
+				memberList.add(member);
+			}
+			rs.close();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return memberList;
+	}
+
+}
