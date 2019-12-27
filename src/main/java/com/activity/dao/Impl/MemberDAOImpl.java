@@ -1,6 +1,7 @@
 package com.activity.dao.Impl;
 
 import com.activity.dao.MemberDAO;
+import com.activity.entity.Activity;
 import com.activity.entity.Member;
 
 import java.sql.Connection;
@@ -103,6 +104,9 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberAddress(rs.getString("memberAddress"));
 				member.setMemberEmail(rs.getString("memberEmail"));
 				member.setMemberPassword(rs.getString("memberPassword"));
+				member.setMemberBirthday(rs.getDate("memberBirthday"));
+				member.setMemberTel(rs.getString("memberTel"));
+				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setLineId(rs.getString("memberLineId"));
 				member.setMemberGender(rs.getString("memberGender"));
 			}
@@ -192,23 +196,21 @@ public class MemberDAOImpl implements MemberDAO {
 	public void update(Member oldMember, Member member) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "UPDATE member SET " + "password = ? ," + "name = ? ," + " gender = ?, " + "birthday = ? ,"
-				+ "tel = ? ," + "phone = ? ," + "address = ? ," + "lineId = ? ," + "type = ? ," + " where email = ?";
+		final String sql = "UPDATE member SET " + "memberPassword = ? ," +"memberName = ? ," + " memberGender = ?, "
+				+ "memberTel = ? ," + "memberPhone = ? ," + "memberAddress = ? ,"
+				+ " where memberEmail = ?";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 
-			smt.setString(1, member.getMemberPassword() != null ? member.getMemberPassword() : oldMember.getMemberPassword());
-			smt.setString(2, member.getMemberName() != null ? member.getMemberName() : oldMember.getMemberName());
-			smt.setString(3, member.getMemberGender() != null ? member.getMemberGender() : oldMember.getMemberGender());
-			smt.setDate(4, member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); // 有需要嗎
-			smt.setString(5, member.getMemberTel() != null ? member.getMemberTel() : oldMember.getMemberTel());
-			smt.setString(6, member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
-			smt.setString(7, member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());
-			smt.setString(8, member.getLineId() != null ? member.getLineId() : oldMember.getLineId());
-			smt.setInt(9, member.getType() != null ? member.getType() : oldMember.getType());
-			smt.setString(10, member.getMemberEmail());
-
+			smt.setString(1,member.getMemberPassword() != null ? member.getMemberPassword() : oldMember.getMemberPassword());
+			smt.setString(2,member.getMemberName() != null ? member.getMemberName() : oldMember.getMemberName());
+			smt.setString(3, member.getMemberGender() != null ? member.getMemberGender(): oldMember.getMemberGender());
+			smt.setDate(4,member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); //有需要嗎
+			smt.setString(5,member.getMemberTel() != null ? member.getMemberTel() : oldMember.getMemberTel());
+			smt.setString(6,member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
+			smt.setString(7,member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());
+			
 			smt.executeUpdate();
 			smt.close();
 
@@ -224,7 +226,7 @@ public class MemberDAOImpl implements MemberDAO {
 				}
 			}
 		}
-
+		
 	}
 
 	@Override
@@ -251,7 +253,7 @@ public class MemberDAOImpl implements MemberDAO {
 				}
 			}
 		}
-
+		
 	}
 
 	@Override
@@ -260,7 +262,7 @@ public class MemberDAOImpl implements MemberDAO {
 		ResultSet rs = null;
 		PreparedStatement smt = null;
 		List<Member> memberList = new ArrayList<Member>();
-		final String sql = "SELECT * FROM member";
+		final String sql = "SELECT * FROM member;";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -268,15 +270,15 @@ public class MemberDAOImpl implements MemberDAO {
 			Member member;
 			while (rs.next()) {
 				member = new Member();
-				member.setMemberEmail(rs.getString("email"));
-				member.setMemberPassword(rs.getString("password"));
-				member.setMemberName(rs.getString("name"));
-				member.setMemberGender(rs.getString("gender"));
-				member.setMemberBirthday(rs.getDate("birthday")); // 不確定
-				member.setMemberTel(rs.getString("tel"));
-				member.setMemberPhone(rs.getString("phone"));
-				member.setMemberAddress(rs.getString("address"));
-				member.setLineId(rs.getString("lineId"));
+				member.setMemberEmail(rs.getString("memberEmail"));
+//				member.setMemberPassword(rs.getString("memberPassword"));
+				member.setMemberName(rs.getString("memberName"));
+				member.setMemberGender(rs.getString("memberGender"));
+				member.setMemberBirthday(rs.getDate("memberBirthday")); //不確定
+				member.setMemberTel(rs.getString("memberTel"));
+				member.setMemberPhone(rs.getString("memberPhone"));
+				member.setMemberAddress(rs.getString("memberAddress"));
+				member.setLineId(rs.getString("memberLineId"));
 
 				memberList.add(member);
 			}

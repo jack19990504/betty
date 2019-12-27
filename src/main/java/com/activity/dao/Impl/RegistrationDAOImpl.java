@@ -64,7 +64,7 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		Connection conn = null;
 		PreparedStatement smt = null;
 		ResultSet rs = null;
-		final String sql = "SELECT * FROM `registration` where member_Email = ? && where activity_Id = ?";
+		final String sql = "SELECT * FROM `registration` where memberEmail = ? && where activity_Id = ?";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -168,16 +168,17 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 	public void update(Registration oldRegistration, Registration registration) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "UPDATE member SET " + " remark = ?, " + "meal = ? ," + "activityName = ? ," + "where member_Email = ? && activity_Id = ? ";
+		final String sql = "UPDATE member SET " + "member_Email = ? ," + "activity_Id = ? ," + " remark = ?, "
+				+ "meal = ? ," + "activityName = ? ,";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 
-			smt.setString(1, registration.getRemark() != null ? registration.getRemark(): oldRegistration.getRemark());
-			smt.setInt(2,registration.getMeal() != null ? registration.getMeal() : oldRegistration.getMeal());
-			smt.setString(3,registration.getActivityName() != null ? registration.getActivityName() : oldRegistration.getActivityName());
-			smt.setString(4,registration.getMember_Email() != null ? registration.getMember_Email() : oldRegistration.getMember_Email());
-			smt.setInt(5,registration.getActivity_Id() != null ? registration.getActivity_Id() : oldRegistration.getActivity_Id());
+			smt.setString(1,registration.getMember_Email() != null ? registration.getMember_Email() : oldRegistration.getMember_Email());
+			smt.setInt(2,registration.getActivity_Id() != null ? registration.getActivity_Id() : oldRegistration.getActivity_Id());
+			smt.setString(3, registration.getRemark() != null ? registration.getRemark(): oldRegistration.getRemark());
+			smt.setInt(4,registration.getMeal() != null ? registration.getMeal() : oldRegistration.getMeal());
+			smt.setString(5,registration.getActivityName() != null ? registration.getActivityName() : oldRegistration.getActivityName());
 			
 			smt.executeUpdate();
 			smt.close();
