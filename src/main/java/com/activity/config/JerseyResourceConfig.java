@@ -5,6 +5,7 @@ import org.springframework.web.filter.RequestContextFilter;
 import com.activity.controller.*;
 import com.activity.controller.rest.ActivityController;
 import com.activity.controller.rest.ActivityMemberController;
+import com.activity.controller.rest.EngineController;
 import com.activity.controller.rest.LineController;
 import com.activity.controller.rest.MemberController;
 
@@ -25,6 +26,7 @@ public class JerseyResourceConfig extends ResourceConfig {
         register(ActivityController.class);
         register(LineController.class);
         register(ActivityMemberController.class);
+        register(EngineController.class);
         //packages("com.example.test.*");
     }
     
