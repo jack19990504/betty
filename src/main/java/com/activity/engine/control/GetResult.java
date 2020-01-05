@@ -22,7 +22,7 @@ import com.google.gson.reflect.TypeToken;
 * @description:
 */
 public class GetResult {
-	static protected String ENGINEPATH = "C:/Users/eGroup/Desktop/Engine";
+	static protected String ENGINEPATH = "C:\\Users\\jack1\\Desktop\\face\\Engine";
 	
 	public static void main(String args[]){
 //		List<Face> faceList = new ArrayList<>();
