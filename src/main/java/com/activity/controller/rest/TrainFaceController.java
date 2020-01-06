@@ -8,13 +8,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -24,18 +20,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.util.StringUtils;
 
 import com.activity.engine.control.EngineFunc;
 import com.activity.engine.util.FileUtil;
@@ -60,7 +48,7 @@ public class TrainFaceController {
 	  // Get the file
 	  Map<String, List<InputPart>> uploadForm = multipartFormDataInput.getFormDataMap();
 	  List<InputPart> inputParts = uploadForm.get("photos");
-	  FileOutputStream fileOutputStream;
+	  FileOutputStream fileOutputStream = null;
 	  ArrayList<String> photosNameList = new ArrayList<>();
 	  for (InputPart inputPart : inputParts) {
 	   MultivaluedMap<String, String> header = inputPart.getHeaders();
@@ -74,7 +62,7 @@ public class TrainFaceController {
 	   InputStream inputStream;
 	   try {
 	    inputStream = inputPart.getBody(InputStream.class, null);
-	    byte[] bytes = toByteArray(inputStream);
+	    byte[] bytes = IOUtils.toByteArray(inputStream);
 	    File file = new File(UPLOADED_Photo_Train_PATH + photoName);
 	    if (!file.getParentFile().exists()) {
 	     file.getParentFile().mkdirs();
@@ -82,9 +70,22 @@ public class TrainFaceController {
 	    file.createNewFile();
 	    fileOutputStream = new FileOutputStream(file);
 	    fileOutputStream.write(bytes);
+	    
 	   } catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	   }
+	   finally {
+		   if(fileOutputStream!=null)
+		   {
+			   try {
+				   fileOutputStream.close();
+			   }
+			   catch(Exception e)
+			   {
+				   e.printStackTrace();
+			   }
+		   }
 	   }
 
 	  }
@@ -107,10 +108,4 @@ public class TrainFaceController {
 	  // webResponse.setData(trainface);
 	  return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	 }
-	 public static byte[] toByteArray(final InputStream input) throws IOException {
-	        try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-	            IOUtils.copy(input, output);
-	            return output.toByteArray();
-	        }
-	    }
 }

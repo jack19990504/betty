@@ -22,6 +22,7 @@ public class JerseyServletBeanConfig {
         ServletRegistrationBean registrationBean = new ServletRegistrationBean(new ServletContainer(), "/api/*");
         registrationBean.addInitParameter(ServletProperties.JAXRS_APPLICATION_CLASS, JerseyResourceConfig.class.getName());
         registrationBean.setMultipartConfig(multipartConfigElement);
+        registrationBean.setName("rest");
         return registrationBean;
     }
    
