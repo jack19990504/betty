@@ -8,6 +8,7 @@ import com.activity.controller.rest.ActivityMemberController;
 import com.activity.controller.rest.EngineController;
 import com.activity.controller.rest.LineController;
 import com.activity.controller.rest.MemberController;
+import com.activity.controller.rest.TrainFaceController;
 
 
 /**
@@ -27,6 +28,7 @@ public class JerseyResourceConfig extends ResourceConfig {
         register(LineController.class);
         register(ActivityMemberController.class);
         register(EngineController.class);
+        register(TrainFaceController.class);
         //packages("com.example.test.*");
     }
     

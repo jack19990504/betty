@@ -1,5 +1,7 @@
 package com.activity.engine.util;
 
+import javax.ws.rs.core.MultivaluedMap;
+
 public class FileUtil {
 	private StringBuilder originalName;
 	private StringBuilder fileType;
@@ -49,6 +51,19 @@ public class FileUtil {
 
 	public void setLowerCaseName(StringBuilder lowerCaseName) {
 		this.lowerCaseName = lowerCaseName;
+	}
+	public String getFileName(MultivaluedMap<String, String> header) {
+		String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
+		String[] name = null;
+		String finalFileName = "";
+		for (String filename : contentDisposition) {
+			if ((filename.trim().startsWith("filename"))) {
+				name = filename.split("=");
+				finalFileName = name[1].trim().replaceAll("\"", "");
+				return finalFileName;
+			}
+		}
+		return "unknown";
 	}
 
 	
