@@ -1,5 +1,7 @@
 package com.activity.config;
 
+import java.io.File;
+
 import javax.servlet.MultipartConfigElement;
 
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -14,8 +16,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class JerseyServletBeanConfig {
-	@Autowired
-	private MultipartConfigElement multipartConfigElement;
+	File uploadDirectory = new File(System.getProperty("java.io.tmpdir"));                  
+    MultipartConfigElement multipartConfigElement = new  MultipartConfigElement(uploadDirectory.getAbsolutePath(), 100000, 100000 * 5, 100000 / 2); 
+	
     @Bean
     public ServletRegistrationBean jerseyServlet() {
 
