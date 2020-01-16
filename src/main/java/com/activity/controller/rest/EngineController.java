@@ -50,7 +50,7 @@ public class EngineController {
 	static String trainedBinaryPath = "eGroup\\jack_kobe.Model.binary";
 	static String trainedFaceInfoPath = "eGroup\\jack_kobe.Model.faceInfo";
 	static String jsonPath = "output\\output";
-	static String cam = "0";
+	static String cam = "1";
 
 	static String resultJsonPath = "C:\\Users\\jack1\\Desktop\\face\\Engine\\output";
 	static String jsonName = "output.cache.egroup";

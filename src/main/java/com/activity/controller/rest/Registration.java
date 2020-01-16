@@ -25,7 +25,7 @@ import com.activity.util.WebResponse;
 
 @Path("/activity")
 @RestController
-public class ActivityController {
+public class Registration {
 
 	@Autowired
 	ActivityDAO activityDAO;
