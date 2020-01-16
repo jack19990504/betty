@@ -4,96 +4,106 @@ import java.sql.Date;
 
 public class Member {
 
-	private String memberEmail;
+	private String email;
 	
-	private String memberPassword;
+	private String password;
 	
-	private String memberName;
+	private String name;
 	
-	private String memberGender;
+	private String gender;
 	
-	private Date memberBirthday;
+	private Date birthday;
 	
-	private String memberTel;
+	private String tel;
 	
-	private String memberPhone;
+	private String phone;
 	
-	private String memberAddress;
+	private String address;
 	
-	private String memberLineId;
-
+	private String lineId;
+	
+	private String type;
+	
 	
 	
 	public String getLineId() {
-		return memberLineId;
+		return lineId;
 	}
 
 	public void setLineId(String lineId) {
-		memberLineId = lineId;
+		lineId = lineId;
 	}
 
-	public String getMemberEmail() {
-		return memberEmail;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setMemberEmail(String memberEmail) {
-		this.memberEmail = memberEmail;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public String getMemberPassword() {
-		return memberPassword;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setMemberPassword(String memberPassword) {
-		this.memberPassword = memberPassword;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
-	public String getMemberName() {
-		return memberName;
+	public String getName() {
+		return name;
 	}
 
-	public void setMemberName(String memberName) {
-		this.memberName = memberName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getMemberGender() {
-		return memberGender;
+	public String getGender() {
+		return gender;
 	}
 
-	public void setMemberGender(String memberGender) {
-		this.memberGender = memberGender;
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
-	public Date getMemberBirthday() {
-		return memberBirthday;
+	public Date getBirthday() {
+		return birthday;
 	}
 
-	public void setMemberBirthday(Date memberBirthday) {
-		this.memberBirthday = memberBirthday;
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
 	}
 
-	public String getMemberTel() {
-		return memberTel;
+	public String getTel() {
+		return tel;
 	}
 
-	public void setMemberTel(String memberTel) {
-		this.memberTel = memberTel;
+	public void setTel(String tel) {
+		this.tel = tel;
 	}
 
-	public String getMemberPhone() {
-		return memberPhone;
+	public String getPhone() {
+		return phone;
 	}
 
-	public void setMemberPhone(String memberPhone) {
-		this.memberPhone = memberPhone;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
-	public String getMemberAddress() {
-		return memberAddress;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setMemberAddress(String memberAddress) {
-		this.memberAddress = memberAddress;
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	

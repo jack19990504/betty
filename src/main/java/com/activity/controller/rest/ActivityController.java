@@ -37,10 +37,10 @@ public class ActivityController {
 		final WebResponse webResponse = new WebResponse();
 		if (id != null) {
 			Activity activity = new Activity();
-			activity.setActivityId(id);
+			activity.setId(id);
 
 			activity = activityDAO.get(activity);
-			if (activity.getActivityName() != null) {
+			if (activity.getName() != null) {
 				webResponse.OK();
 				webResponse.setData(activity);
 			} else {
@@ -61,11 +61,11 @@ public class ActivityController {
 		final WebResponse webResponse = new WebResponse();
 		if (id != null) {
 			Activity activity = new Activity();
-			activity.setActivityId(id);
+			activity.setId(id);
 
 			activity = activityDAO.get(activity);
-			if (activity.getActivityId() != null) {
-				activity.setActivityId(id);
+			if (activity.getId() != null) {
+				activity.setId(id);
 				activityDAO.delete(activity);
 				webResponse.OK();
 				webResponse.setData(activity);
@@ -86,12 +86,12 @@ public class ActivityController {
 	public Response update(@PathParam("id") Integer id, Activity activity) {
 		final WebResponse webResponse = new WebResponse();
 		if (id != null) {
-			activity.setActivityId(id);
+			activity.setId(id);
 			final Activity oldactivity = activityDAO.get(activity);
-			if(oldactivity.getActivityId() != null)
+			if(oldactivity.getId() != null)
 			{
 				activityDAO.update(oldactivity, activity);
-				activity.setActivityId(id);
+				activity.setId(id);
 				activity = activityDAO.get(activity);
 				webResponse.OK();
 				webResponse.setData(activity);

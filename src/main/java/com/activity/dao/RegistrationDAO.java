@@ -10,6 +10,8 @@ public interface RegistrationDAO {
 	
 	public Registration get(Registration registration);
 	
+	public List<Registration> getList();
+	
 	public void insert(Registration registration);
 
 	public void update(Registration oldRegistration, Registration registration);

@@ -75,10 +75,10 @@ public class LineController {
 						String[] list = new String[activityList.size()];
 						int i = 0;
 						for (Activity activity : activityList) {
-							n  = n + activity.getActivityName()+"、";
-							list[i] = activity.getActivityName();
+							n  = n + activity.getName()+"、";
+							list[i] = activity.getName();
 							i++;
-							System.out.println(activity.getActivityName()+"\n"+event.getReplyToken());
+							System.out.println(activity.getName()+"\n"+event.getReplyToken());
 							System.out.println(event.getSource().getUserId());
 							//sendPostMessages(activity.getActivityName(),event.getSource().getUserId());
 						}

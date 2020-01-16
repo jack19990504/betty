@@ -4,63 +4,69 @@ import java.sql.Date;
 
 public class Activity {
 	
-	private Integer activityId;
+	private Integer id;
 	//activityName , activityOrganizer , activityInfo , attendPeople , activitySpace,startSignUpDate ,
 	//endSignUpDate, activityStartDate, activityEndDate , organizerTel , organizerContactInfo , activityMeal
-	private String activityName;
+	private String name;
 	
-	private String activityOrganizer;
+	private String organizer_Id;
 	
-	private String activityInfo;
+	private String type;
+	
+	private String info;
 	
 	private Integer attendPeople;
 	
-	private String activitySpace;
+	private String space;
 	
 	private Date startSignUpDate;
 	
 	private Date endSignUpDate;
 	
-	private Date activityStartDate;
+	private Date startDate;
 	
-	private Date activityEndDate;
+	private Date endDate;
 	
-	private String organizerTel;
+	private Integer meal;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getOrganizerId() {
+		return organizer_Id;
+	}
+
+	public void setOrganizerId(String organizer) {
+		this.organizer_Id = organizer;
+	}
 	
-	private String organizerContactInfo;
-	
-	private Integer activityMeal;
-
-	public Integer getActivityId() {
-		return activityId;
+	public String getType() {
+		return type;
 	}
 
-	public void setActivityId(Integer activityId) {
-		this.activityId = activityId;
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public String getActivityName() {
-		return activityName;
+	public String getInfo() {
+		return info;
 	}
 
-	public void setActivityName(String activityName) {
-		this.activityName = activityName;
-	}
-
-	public String getActivityOrganizer() {
-		return activityOrganizer;
-	}
-
-	public void setActivityOrganizer(String activityOrganizer) {
-		this.activityOrganizer = activityOrganizer;
-	}
-
-	public String getActivityInfo() {
-		return activityInfo;
-	}
-
-	public void setActivityInfo(String activityInfo) {
-		this.activityInfo = activityInfo;
+	public void setInfo(String info) {
+		this.info = info;
 	}
 
 	
@@ -72,12 +78,12 @@ public class Activity {
 		this.attendPeople = attendPeople;
 	}
 
-	public String getActivitySpace() {
-		return activitySpace;
+	public String getSpace() {
+		return space;
 	}
 
-	public void setActivitySpace(String activitySpace) {
-		this.activitySpace = activitySpace;
+	public void setSpace(String space) {
+		this.space = space;
 	}
 
 	public Date getStartSignUpDate() {
@@ -97,44 +103,29 @@ public class Activity {
 	}
 
 	
-	public Date getActivityStartDate() {
-		return activityStartDate;
+	public Date getStartDate() {
+		return startDate;
 	}
 
-	public void setActivityStartDate(Date activityStartDate) {
-		this.activityStartDate = activityStartDate;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 
-	public Date getActivityEndDate() {
-		return activityEndDate;
+	public Date getEndDate() {
+		return endDate;
 	}
 
-	public void setActivityEndDate(Date activityEndDate) {
-		this.activityEndDate = activityEndDate;
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
-	public String getOrganizerTel() {
-		return organizerTel;
+
+	public Integer getMeal() {
+		return meal;
 	}
 
-	public void setOrganizerTel(String organizerTel) {
-		this.organizerTel = organizerTel;
-	}
-
-	public String getOrganizerContactInfo() {
-		return organizerContactInfo;
-	}
-
-	public void setOrganizerContactInfo(String organizerContactInfo) {
-		this.organizerContactInfo = organizerContactInfo;
-	}
-
-	public Integer getActivityMeal() {
-		return activityMeal;
-	}
-
-	public void setActivityMeal(Integer activityMeal) {
-		this.activityMeal = activityMeal;
+	public void setMeal(Integer meal) {
+		this.meal = meal;
 	}
 	
 	
