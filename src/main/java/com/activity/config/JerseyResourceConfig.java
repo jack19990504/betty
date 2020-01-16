@@ -5,7 +5,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.web.filter.RequestContextFilter;
 import com.activity.controller.*;
 import com.activity.controller.rest.Registration;
-import com.activity.controller.rest.ActivityMemberController;
+import com.activity.controller.rest.RegistrationController;
 import com.activity.controller.rest.EngineController;
 import com.activity.controller.rest.FileUploadController;
 import com.activity.controller.rest.LineController;
@@ -28,7 +28,7 @@ public class JerseyResourceConfig extends ResourceConfig {
         register(RequestContextFilter.class);
         register(Registration.class);
         register(LineController.class);
-        register(ActivityMemberController.class);
+        register(RegistrationController.class);
         register(EngineController.class);
         register(FileUploadController.class);
         register(MultiPartFeature.class);

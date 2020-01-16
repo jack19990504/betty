@@ -20,60 +20,60 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activity.controller.rest.MemberController;
-import com.activity.dao.MemberDAO;
-import com.activity.dao.Impl.MemberDAOImpl;
-import com.activity.entity.Member;
+import com.activity.controller.rest.RegistrationController;
+import com.activity.dao.RegistrationDAO;
+import com.activity.dao.Impl.RegistrationDAOImpl;
+import com.activity.entity.Registration;
 import com.google.gson.Gson;
 
-@Path("/member")
+@Path("/registration")
 
 @Controller
 
-public class MemberController {
+public class RegistrationController {
 	
 	@Autowired
-	MemberDAO memberDAO;
+	RegistrationDAO registrationDAO;
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response insert(Member member) {
+	public Response insert(Registration registration) {
 		
 
-		memberDAO.insert(member);
+		registrationDAO.insert(registration);
 
 		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(member)).build();
+		return Response.status(200).entity(gson.toJson(registration)).build();
 	}
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll() {
-		List<Member> memberList = memberDAO.getList();
+		List<Registration> registrationList = registrationDAO.getList();
 		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(memberList)).build();
+		return Response.status(200).entity(gson.toJson(registrationList)).build();
 	}
 
 	@PATCH
 	@Path("/{Patchid}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@PathParam("Patchid") String id, Member member) {
+	public Response update(@PathParam("Patchid") String id, Registration registration) {
 		
-		member.setEmail(id);
-		final Member oldMember = memberDAO.get(member);
-		memberDAO.update(oldMember, member);
+		registration.setMember_Email(id);
+		final Registration oldRegistration = registrationDAO.get(registration);
+		registrationDAO.update(oldRegistration, registration);
 		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(member)).build();
+		return Response.status(200).entity(gson.toJson(registration)).build();
 	}
 	
 	@DELETE
 	@Path("/{Deleteid}")
 	public Response delete(@PathParam("Deleteid") String id) {
 		
-		Member member = new Member();
-		member.setEmail(id);
-		member = memberDAO.get(member);
-		memberDAO.delete(member);
+		Registration registration = new Registration();
+		registration.setMember_Email(id);
+		registration = registrationDAO.get(registration);
+		registrationDAO.delete(registration);
 		return Response.status(200).build();
 	}
 	
@@ -81,12 +81,13 @@ public class MemberController {
 	@Path("/{id}")
 	@Produces("application/json")
 	public Response get(@PathParam("id") String id) {
-		Member member = new Member();
-		member.setEmail(id);
-		member = memberDAO.get(member);
+		Registration registration = new Registration();
+		registration.setMember_Email(id);
+		registration = registrationDAO.get(registration);
 		System.out.println("id="+id);
 		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(member)).build();
+		return Response.status(200).entity(gson.toJson(registration)).build();
 		
 	}
+	
 }
