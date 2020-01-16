@@ -59,7 +59,7 @@ public class MemberController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("Patchid") String id, Member member) {
 		
-		member.setEmail(id);
+		member.setMemberEmail(id);
 		final Member oldMember = memberDAO.get(member);
 		memberDAO.update(oldMember, member);
 		Gson gson = new Gson();
@@ -71,7 +71,7 @@ public class MemberController {
 	public Response delete(@PathParam("Deleteid") String id) {
 		
 		Member member = new Member();
-		member.setEmail(id);
+		member.setMemberEmail(id);
 		member = memberDAO.get(member);
 		memberDAO.delete(member);
 		return Response.status(200).build();
@@ -82,7 +82,7 @@ public class MemberController {
 	@Produces("application/json")
 	public Response get(@PathParam("id") String id) {
 		Member member = new Member();
-		member.setEmail(id);
+		member.setMemberEmail(id);
 		member = memberDAO.get(member);
 		System.out.println("id="+id);
 		Gson gson = new Gson();
