@@ -147,19 +147,19 @@ public class LineController {
 						}
 						else 
 						{
-							if(member.getLineId() == null)
+							if(member.getMemberLineId() == null)
 							{
 								sendResponseMessages(event.getReplyToken(), "重置失敗，此帳號尚無綁定過!");
 								resetLineUserId = false;
 							}
 							
-							else if(member.getLineId().equals(""))
+							else if(member.getMemberLineId().equals(""))
 							{
 								sendResponseMessages(event.getReplyToken(), "重置失敗，此帳號已重置過!\\n請重新輸入!");
 								resetLineUserId = false ;
 							}
 							
-							else if(!member.getLineId().equals(event.getSource().getUserId()))
+							else if(!member.getMemberLineId().equals(event.getSource().getUserId()))
 							{
 								sendResponseMessages(event.getReplyToken(), "重置失敗，您綁定的不是此帳號!\\n請重新輸入!");
 							}
@@ -200,11 +200,11 @@ public class LineController {
 						{
 							//如未登錄過LineId
 							
-							if(member.getLineId() == null)
+							if(member.getMemberLineId() == null)
 							{
 								//測試此LINE用戶是否已綁定過其他帳號
 								Member test = new Member();
-								test.setLineId(event.getSource().getUserId());
+								test.setMemberLineId(event.getSource().getUserId());
 								test = memberDAO.check(test);
 								//如已綁定過
 								if(test.getMemberEmail()!= null)
@@ -221,14 +221,14 @@ public class LineController {
 								}
 								
 							}
-							else if(member.getLineId().equals(""))
+							else if(member.getMemberLineId().equals(""))
 							{
 								//測試此LINE用戶是否已綁定過其他帳號
 								Member test = new Member();
-								test.setLineId(event.getSource().getUserId());
+								test.setMemberLineId(event.getSource().getUserId());
 								test = memberDAO.check(test);
 								System.out.println(test.getMemberEmail());
-								System.out.println(test.getLineId());
+								System.out.println(test.getMemberLineId());
 								//如已綁定過
 								if(test.getMemberEmail()!= null)
 								{
@@ -245,8 +245,8 @@ public class LineController {
 							}
 							else 
 							{
-								System.out.println(!member.getLineId().equals(""));
-								System.out.println(!member.getLineId().equals(null));
+								System.out.println(!member.getMemberLineId().equals(""));
+								System.out.println(!member.getMemberLineId().equals(null));
 								saveLineUserId =false;
 								sendResponseMessages(event.getReplyToken(), "此用戶帳號已綁定過!");
 							}

@@ -107,7 +107,7 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberBirthday(rs.getDate("memberBirthday"));
 				member.setMemberTel(rs.getString("memberTel"));
 				member.setMemberPhone(rs.getString("memberPhone"));
-				member.setLineId(rs.getString("memberLineId"));
+				member.setMemberLineId(rs.getString("memberLineId"));
 				member.setMemberGender(rs.getString("memberGender"));
 			}
 			smt.close();
@@ -137,7 +137,7 @@ public class MemberDAOImpl implements MemberDAO {
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
-			smt.setString(1, member.getLineId());
+			smt.setString(1, member.getMemberLineId());
 			rs = smt.executeQuery();
 			member = new Member();
 			if (rs.next()) {
@@ -145,7 +145,7 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberAddress(rs.getString("memberAddress"));
 				member.setMemberEmail(rs.getString("memberEmail"));
 				member.setMemberPassword(rs.getString("memberPassword"));
-				member.setLineId(rs.getString("memberLineId"));
+				member.setMemberLineId(rs.getString("memberLineId"));
 				member.setMemberGender(rs.getString("memberGender"));
 			}
 			smt.close();
@@ -278,7 +278,7 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberTel(rs.getString("memberTel"));
 				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberAddress(rs.getString("memberAddress"));
-				member.setLineId(rs.getString("memberLineId"));
+				member.setMemberLineId(rs.getString("memberLineId"));
 
 				memberList.add(member);
 			}
