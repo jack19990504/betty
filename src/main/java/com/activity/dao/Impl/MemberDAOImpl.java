@@ -3,7 +3,7 @@ package com.activity.dao.Impl;
 import com.activity.dao.MemberDAO;
 import com.activity.entity.Activity;
 import com.activity.entity.Member;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,8 +30,9 @@ public class MemberDAOImpl implements MemberDAO {
 	public void insert(Member member) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "INSERT INTO member(memberEmail, memberPassword, memberName, memberGender, memberTel , memberPhone, memberAddress) "
-				+ "VALUES(? , ? ,? , ? , ? ,? , ?)";
+		final String sql = "INSERT INTO member(memberEmail, memberPassword, memberName, memberGender, memberTel , memberPhone, memberAddress"
+				+ " memberType, memberEncodePassword, memberEnabled) "
+				+ "VALUES(? , ? ,? , ? , ? ,? , ? , ? , ? , ?)";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -42,6 +43,9 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(5, member.getMemberTel());
 			smt.setString(6, member.getMemberPhone());
 			smt.setString(7, member.getMemberAddress());
+			smt.setInt(8, member.getMemberType());
+			smt.setString(9, new BCryptPasswordEncoder().encode(member.getMemberPassword()));
+			smt.setInt(10,member.getMemberEnabled());
 			smt.executeUpdate();
 			smt.close();
 
@@ -271,7 +275,7 @@ public class MemberDAOImpl implements MemberDAO {
 			while (rs.next()) {
 				member = new Member();
 				member.setMemberEmail(rs.getString("memberEmail"));
-//				member.setMemberPassword(rs.getString("memberPassword"));
+				member.setMemberPassword(rs.getString("memberPassword"));
 				member.setMemberName(rs.getString("memberName"));
 				member.setMemberGender(rs.getString("memberGender"));
 				member.setMemberBirthday(rs.getDate("memberBirthday")); //不確定
@@ -279,6 +283,8 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberAddress(rs.getString("memberAddress"));
 				member.setMemberLineId(rs.getString("memberLineId"));
+				member.setMemberType(rs.getInt("memberType"));
+				member.setMemberEnabled(rs.getInt("memberEnabled"));
 
 				memberList.add(member);
 			}

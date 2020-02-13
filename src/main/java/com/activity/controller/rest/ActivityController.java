@@ -14,18 +14,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.ActivityDAO;
 import com.activity.entity.Activity;
+import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
 
 @Path("/activity")
 @RestController
-public class Registration {
+public class ActivityController {
 
 	@Autowired
 	ActivityDAO activityDAO;

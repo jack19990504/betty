@@ -20,10 +20,13 @@ public class Member {
 	
 	private String memberAddress;
 	
+	private String memberEncodedPassword;
+	
+	private Integer memberEnabled;
 	
 	private String memberLineId;
 	
-	private Integer type;
+	private Integer memberType;
 
 	public String getMemberEmail() {
 		return memberEmail;
@@ -97,13 +100,31 @@ public class Member {
 		this.memberLineId = memberLineId;
 	}
 
-	public Integer getType() {
-		return type;
+	public String getMemberEncodedPassword() {
+		return memberEncodedPassword;
 	}
 
-	public void setType(Integer type) {
-		this.type = type;
+	public void setMemberEncodedPassword(String memberEncodedPassword) {
+		this.memberEncodedPassword = memberEncodedPassword;
 	}
+
+	public Integer getMemberEnabled() {
+		return memberEnabled;
+	}
+
+	public void setMemberEnabled(Integer memberEnabled) {
+		this.memberEnabled = memberEnabled;
+	}
+
+	public Integer getMemberType() {
+		return memberType;
+	}
+
+	public void setMemberType(Integer memberType) {
+		this.memberType = memberType;
+	}
+
+	
 	
 	
 	
