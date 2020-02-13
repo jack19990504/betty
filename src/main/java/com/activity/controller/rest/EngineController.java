@@ -44,15 +44,15 @@ public class EngineController {
 	@Autowired
 	MemberDAO memberDAO;
 
-	static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
+	static String enginePath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine";
 	static String outputFacePath = "face";
 	static String outputFramePath = "frame";
 	static String trainedBinaryPath = "eGroup\\jack_kobe.Model.binary";
 	static String trainedFaceInfoPath = "eGroup\\jack_kobe.Model.faceInfo";
 	static String jsonPath = "output\\output";
-	static String cam = "1";
+	static String cam = "0";
 
-	static String resultJsonPath = "C:\\Users\\jack1\\Desktop\\face\\Engine\\output";
+	static String resultJsonPath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\output";
 	static String jsonName = "output.cache.egroup";
 
 	@GET
@@ -96,6 +96,7 @@ public class EngineController {
 			if (face.getHasFound().equals("1")) {
 				final String personId = face.getPersonId();
 				if (attributeCheck.stringsNotNull(personId)) {
+					System.out.println(personId);
 					Member member = new Member();
 					member.setMemberEmail(personId);
 					member = memberDAO.get(member);
