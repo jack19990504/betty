@@ -33,22 +33,29 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response get(@PathParam("id") Integer id) {
 		final WebResponse webResponse = new WebResponse();
-		if (id != null) {
-			Activity activity = new Activity();
-			activity.setActivityId(id);
+		final AuthenticationUtil authUtil = new AuthenticationUtil();
+		if (authUtil.checkAuthority()) {
+			if (id != null) {
+				Activity activity = new Activity();
+				activity.setActivityId(id);
 
-			activity = activityDAO.get(activity);
-			if (activity.getActivityName() != null) {
-				webResponse.OK();
-				webResponse.setData(activity);
+				activity = activityDAO.get(activity);
+				if (activity.getActivityName() != null) {
+					webResponse.OK();
+					webResponse.setData(activity);
+				} else {
+					webResponse.NOT_FOUND();
+					webResponse.getError().setMessage("找不到資料!");
+				}
 			} else {
-				webResponse.NOT_FOUND();
-				webResponse.getError().setMessage("找不到資料!");
+				webResponse.UNPROCESSABLE_ENTITY();
+				webResponse.getError().setMessage("請輸入活動ID!");
 			}
 		} else {
-			webResponse.UNPROCESSABLE_ENTITY();
-			webResponse.getError().setMessage("請輸入活動ID!");
+			webResponse.UNAUTHORIZED();
+			webResponse.setData("authentication failed!");
 		}
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
@@ -57,72 +64,95 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response delete(@PathParam("id") Integer id) {
 		final WebResponse webResponse = new WebResponse();
-		if (id != null) {
-			Activity activity = new Activity();
-			activity.setActivityId(id);
-
-			activity = activityDAO.get(activity);
-			if (activity.getActivityId() != null) {
+		final AuthenticationUtil authUtil = new AuthenticationUtil();
+		if (authUtil.checkAuthority()) {
+			if (id != null) {
+				Activity activity = new Activity();
 				activity.setActivityId(id);
-				activityDAO.delete(activity);
-				webResponse.OK();
-				webResponse.setData(activity);
+
+				activity = activityDAO.get(activity);
+				if (activity.getActivityId() != null) {
+					activity.setActivityId(id);
+					activityDAO.delete(activity);
+					webResponse.OK();
+					webResponse.setData(activity);
+				} else {
+					webResponse.NOT_FOUND();
+					webResponse.getError().setMessage("找不到資料!");
+				}
 			} else {
-				webResponse.NOT_FOUND();
-				webResponse.getError().setMessage("找不到資料!");
+				webResponse.UNPROCESSABLE_ENTITY();
+				webResponse.getError().setMessage("請輸入活動ID!");
 			}
 		} else {
-			webResponse.UNPROCESSABLE_ENTITY();
-			webResponse.getError().setMessage("請輸入活動ID!");
+			webResponse.UNAUTHORIZED();
+			webResponse.setData("authentication failed!");
 		}
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
+
 	@PATCH
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("id") Integer id, Activity activity) {
 		final WebResponse webResponse = new WebResponse();
-		if (id != null) {
-			activity.setActivityId(id);
-			final Activity oldactivity = activityDAO.get(activity);
-			if(oldactivity.getActivityId() != null)
-			{
-				activityDAO.update(oldactivity, activity);
+		final AuthenticationUtil authUtil = new AuthenticationUtil();
+		if (authUtil.checkAuthority()) {
+			if (id != null) {
 				activity.setActivityId(id);
-				activity = activityDAO.get(activity);
-				webResponse.OK();
-				webResponse.setData(activity);
+				final Activity oldactivity = activityDAO.get(activity);
+				if (oldactivity.getActivityId() != null) {
+					activityDAO.update(oldactivity, activity);
+					activity.setActivityId(id);
+					activity = activityDAO.get(activity);
+					webResponse.OK();
+					webResponse.setData(activity);
+				} else {
+					webResponse.NOT_FOUND();
+					webResponse.getError().setMessage("找不到資料!");
+				}
+			} else {
+				webResponse.UNPROCESSABLE_ENTITY();
+				webResponse.getError().setMessage("請輸入活動ID!");
 			}
-			else
-			{
-				webResponse.NOT_FOUND();
-				webResponse.getError().setMessage("找不到資料!");
-			}
-		}
-		else {
-			webResponse.UNPROCESSABLE_ENTITY();
-			webResponse.getError().setMessage("請輸入活動ID!");
+		} else {
+			webResponse.UNAUTHORIZED();
+			webResponse.setData("authentication failed!");
 		}
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
-	}	
+	}
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Activity activity) {
 		final WebResponse webResponse = new WebResponse();
-		activityDAO.insert(activity);
-		webResponse.OK();
-		webResponse.setData(activity);
+		final AuthenticationUtil authUtil = new AuthenticationUtil();
+		if (authUtil.checkAuthority()) {
+			activityDAO.insert(activity);
+			webResponse.OK();
+			webResponse.setData(activity);
+		} else {
+			webResponse.UNAUTHORIZED();
+			webResponse.setData("authentication failed!");
+		}
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getList() {
 		final WebResponse webResponse = new WebResponse();
-		final List<Activity> activityList = activityDAO.getList();
-		webResponse.OK();
-		webResponse.setData(activityList);
+		final AuthenticationUtil authUtil = new AuthenticationUtil();
+		if (authUtil.checkAuthority()) {
+			final List<Activity> activityList = activityDAO.getList();
+			webResponse.OK();
+			webResponse.setData(activityList);
+		} else {
+			webResponse.UNAUTHORIZED();
+			webResponse.setData("authentication failed!");
+		}
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
