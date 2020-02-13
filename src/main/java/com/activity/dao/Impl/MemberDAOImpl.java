@@ -30,9 +30,9 @@ public class MemberDAOImpl implements MemberDAO {
 	public void insert(Member member) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "INSERT INTO member(memberEmail, memberPassword, memberName, memberGender, memberTel , memberPhone, memberAddress"
-				+ " memberType, memberEncodePassword, memberEnabled) "
-				+ "VALUES(? , ? ,? , ? , ? ,? , ? , ? , ? , ?)";
+		final String sql = "INSERT INTO member(memberEmail, memberPassword, memberName, memberGender, memberTel , memberPhone, memberAddress,"
+				+ " memberType, memberEncodedPassword, memberEnabled) "
+				+ " VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ? , ?)";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -44,8 +44,13 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(6, member.getMemberPhone());
 			smt.setString(7, member.getMemberAddress());
 			smt.setInt(8, member.getMemberType());
-			smt.setString(9, new BCryptPasswordEncoder().encode(member.getMemberPassword()));
+			String encodedPassword = new BCryptPasswordEncoder().encode(member.getMemberPassword());
+			smt.setString(9, encodedPassword);
 			smt.setInt(10,member.getMemberEnabled());
+			System.out.println(member.getMemberEmail() + member.getMemberPassword() +
+					member.getMemberName() + member.getMemberGender()+
+					member.getMemberTel() + member.getMemberPhone() + member .getMemberAddress()+
+					member.getMemberType() + member.getMemberEnabled() +encodedPassword);
 			smt.executeUpdate();
 			smt.close();
 

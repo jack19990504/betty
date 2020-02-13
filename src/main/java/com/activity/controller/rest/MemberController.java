@@ -28,7 +28,7 @@ import com.google.gson.Gson;
 
 @Path("/member")
 
-@Controller
+@RestController
 
 public class MemberController {
 	
@@ -37,6 +37,7 @@ public class MemberController {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Member member) {
 		
 
