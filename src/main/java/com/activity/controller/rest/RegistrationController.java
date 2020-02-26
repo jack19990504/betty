@@ -28,7 +28,7 @@ import com.google.gson.Gson;
 
 @Path("/registration")
 
-@Controller
+@RestController
 
 public class RegistrationController {
 	
@@ -50,6 +50,15 @@ public class RegistrationController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll() {
 		List<Registration> registrationList = registrationDAO.getList();
+		Gson gson = new Gson();
+		return Response.status(200).entity(gson.toJson(registrationList)).build();
+	}
+	
+	@GET
+	@Path("/activity/{Getid}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getActivityList(@PathParam("Getid") int id) {
+		List<Registration> registrationList = registrationDAO.getActivityList(id);
 		Gson gson = new Gson();
 		return Response.status(200).entity(gson.toJson(registrationList)).build();
 	}

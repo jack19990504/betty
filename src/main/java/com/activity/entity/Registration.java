@@ -8,11 +8,27 @@ public class Registration {
 	
 	private Integer activity_Id;
 	
-	private String remark;
+	private String registrationRemark;
 	
-	private Integer meal;
+	private Integer registrationMeal;
 	
 	private String activityName;
+
+	public String getRegistrationRemark() {
+		return registrationRemark;
+	}
+
+	public void setRegistrationRemark(String registrationRemark) {
+		this.registrationRemark = registrationRemark;
+	}
+
+	public Integer getRegistrationMeal() {
+		return registrationMeal;
+	}
+
+	public void setRegistrationMeal(Integer registrationMeal) {
+		this.registrationMeal = registrationMeal;
+	}
 
 	public String getActivityName() {
 		return activityName;
@@ -46,21 +62,7 @@ public class Registration {
 		this.activity_Id = activity_Id;
 	}
 
-	public String getRemark() {
-		return remark;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
-	public Integer getMeal() {
-		return meal;
-	}
-
-	public void setMeal(Integer meal) {
-		this.meal = meal;
-	}
+	
 	
 
 }

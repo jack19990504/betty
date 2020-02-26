@@ -48,8 +48,6 @@ public class ActivityDAOImpl implements ActivityDAO {
 //				activity.setActivityEndDate(rs.getString("activityEndDate"));
 //				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
 //				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
-				activity.setOrganizerTel(rs.getString("organizerTel"));
-				activity.setOrganizerContactInfo(rs.getString("organizerContactInfo"));
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 
 				activityList.add(activity);
@@ -132,8 +130,6 @@ public class ActivityDAOImpl implements ActivityDAO {
 //				activity.setActivityEndDate(rs.getString("activityEndDate"));
 //				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
 //				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
-				activity.setOrganizerTel(rs.getString("organizerTel"));
-				activity.setOrganizerContactInfo(rs.getString("organizerContactInfo"));
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 			}
 			smt.close();
@@ -158,8 +154,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 		Connection conn = null;
 		PreparedStatement smt = null;
 		final String sql = "UPDATE activity SET " + "activityName = ? ," + " activityOrganizer = ?, "
-				+ "activityInfo = ?," + "attendPeople = ? ," + "activitySpace = ? ," + "organizerTel = ? ,"
-				+ "organizerContactInfo = ? ," + "activityMeal = ? " + " where activityId = ?";
+				+ "activityInfo = ?," + "attendPeople = ? ," + "activitySpace = ? ," + "activityMeal = ? " + " where activityId = ?";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -169,10 +164,8 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setString(3,activity.getActivityInfo() != null ? activity.getActivityInfo() : oldActivity.getActivityInfo());
 			smt.setInt(4,activity.getAttendPeople() != null ? activity.getAttendPeople() : oldActivity.getAttendPeople());
 			smt.setString(5,activity.getActivitySpace() != null ? activity.getActivitySpace() : oldActivity.getActivitySpace());
-			smt.setString(6,activity.getOrganizerTel() != null ? activity.getOrganizerTel() : oldActivity.getOrganizerTel());
-			smt.setString(7, activity.getOrganizerContactInfo() != null ? activity.getOrganizerContactInfo(): oldActivity.getOrganizerContactInfo());
-			smt.setInt(8,activity.getActivityMeal() != null ? activity.getActivityMeal() : oldActivity.getActivityMeal());
-			smt.setInt(9, activity.getActivityId() != null ? activity.getActivityId() : oldActivity.getActivityId());
+			smt.setInt(6,activity.getActivityMeal() != null ? activity.getActivityMeal() : oldActivity.getActivityMeal());
+			smt.setInt(7, activity.getActivityId() != null ? activity.getActivityId() : oldActivity.getActivityId());
 			smt.executeUpdate();
 			smt.close();
 
@@ -224,8 +217,8 @@ public class ActivityDAOImpl implements ActivityDAO {
 		PreparedStatement smt = null;
 		final String sql = "INSERT INTO activity(activityName , activityOrganizer , activityInfo , "
 				+ "attendPeople , activitySpace, startSignUpDate , endSignUpDate, activityStartDate, "
-				+ "activityEndDate , organizerTel , organizerContactInfo , activityMeal)"
-				+ " VALUES(? ,? ,? ,? ,? ,NOW() ,NOW() ,NOW() ,NOW() ,? ,? ,? )";
+				+ "activityEndDate , activityMeal)"
+				+ " VALUES(? ,? ,? ,? ,? ,NOW() ,NOW() ,NOW() ,NOW() ,? )";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -235,9 +228,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setString(3, activity.getActivityInfo());
 			smt.setInt(4, activity.getAttendPeople());
 			smt.setString(5, activity.getActivitySpace());
-			smt.setString(6, activity.getOrganizerTel());
-			smt.setString(7, activity.getOrganizerContactInfo());
-			smt.setInt(8, activity.getActivityMeal());
+			smt.setInt(6, activity.getActivityMeal());
 
 			smt.executeUpdate();
 			smt.close();
