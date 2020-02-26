@@ -12,6 +12,8 @@ public interface RegistrationDAO {
 	
 	public List<Registration> getList();
 	
+	public List<Registration> getActivityList(int id);
+	
 	public void insert(Registration registration);
 
 	public void update(Registration oldRegistration, Registration registration);

@@ -25,11 +25,9 @@ public class Activity {
 	
 	private Date activityEndDate;
 	
-	private String organizerTel;
-	
-	private String organizerContactInfo;
-	
 	private Integer activityMeal;
+	
+	private String activityType;
 
 	public Integer getActivityId() {
 		return activityId;
@@ -113,22 +111,6 @@ public class Activity {
 		this.activityEndDate = activityEndDate;
 	}
 
-	public String getOrganizerTel() {
-		return organizerTel;
-	}
-
-	public void setOrganizerTel(String organizerTel) {
-		this.organizerTel = organizerTel;
-	}
-
-	public String getOrganizerContactInfo() {
-		return organizerContactInfo;
-	}
-
-	public void setOrganizerContactInfo(String organizerContactInfo) {
-		this.organizerContactInfo = organizerContactInfo;
-	}
-
 	public Integer getActivityMeal() {
 		return activityMeal;
 	}
@@ -136,6 +118,15 @@ public class Activity {
 	public void setActivityMeal(Integer activityMeal) {
 		this.activityMeal = activityMeal;
 	}
+
+	public String getActivityType() {
+		return activityType;
+	}
+
+	public void setActivityType(String activityType) {
+		this.activityType = activityType;
+	}
+	
 	
 	
 }
