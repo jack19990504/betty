@@ -2,6 +2,7 @@ package com.activity.util.line;
 
 public class Event {
     private String replyToken;
+    private String mode;
     private String type;
     private Source source;
     private String timestamp;
@@ -12,7 +13,14 @@ public class Event {
     public void setReplyToken(String replyToken) {
         this.replyToken = replyToken;
     }
-    public String getType() {
+    
+    public String getMode() {
+		return mode;
+	}
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+	public String getType() {
         return type;
     }
     public void setType(String type) {

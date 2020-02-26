@@ -97,7 +97,7 @@ public class EngineFunc extends BaseController{
 			final CmdUtil cmdUtil = new CmdUtil();
 			if(cmdUtil.cmdProcessBuilder(trainFace.getCommandList())){	
 				// init variabl
-				final String logTrainResultLog_path = LOG_TRAINRESULT_PATH;	
+				final String logTrainResultLog_path = "C:\\Users\\jack1\\Desktop\\face\\Engine\\Status.TrainHDCheck.eGroup";	
 				trainResult = trainFace_check(logTrainResultLog_path);
 			}else{
 				trainResult.setTrainCmdSuccess(false);

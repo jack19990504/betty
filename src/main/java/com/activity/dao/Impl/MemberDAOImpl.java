@@ -47,10 +47,10 @@ public class MemberDAOImpl implements MemberDAO {
 			String encodedPassword = new BCryptPasswordEncoder().encode(member.getMemberPassword());
 			smt.setString(9, encodedPassword);
 			smt.setInt(10,member.getMemberEnabled());
-			System.out.println(member.getMemberEmail() + member.getMemberPassword() +
-					member.getMemberName() + member.getMemberGender()+
-					member.getMemberTel() + member.getMemberPhone() + member .getMemberAddress()+
-					member.getMemberType() + member.getMemberEnabled() +encodedPassword);
+//			System.out.println(member.getMemberEmail() + member.getMemberPassword() +
+//					member.getMemberName() + member.getMemberGender()+
+//					member.getMemberTel() + member.getMemberPhone() + member .getMemberAddress()+
+//					member.getMemberType() + member.getMemberEnabled() +encodedPassword);
 			smt.executeUpdate();
 			smt.close();
 
