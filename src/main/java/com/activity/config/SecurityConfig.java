@@ -18,7 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http
 		.httpBasic()//設定為httpBasic Authentication
-		.and().authorizeRequests().antMatchers("/css/**", "/index","main.css").permitAll()
+		.and().authorizeRequests().antMatchers("/css/**", "/index","main.css","/api/line").permitAll()
 		.antMatchers("/user/**").hasAnyAuthority("0","1")
 		.antMatchers("/admin/**","api/**").hasAuthority("1")
 		.and().csrf().disable().formLogin().loginPage("/login").failureUrl("/login-error")

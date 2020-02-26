@@ -34,12 +34,15 @@ import javax.ws.rs.core.Response;
 public class LineController {
 	private String accessToken = "lYGAFdtFadLWbdWs/UBYpwljVega08Zk5FHDwQ3pBB6FQdvx4ROdDJn8MaITMWC808NcdI2G6vTdgL2SKGBuiZdajo3jJj6JuOJCNQ0sViX6fhLWriWH8UMxyMRf2sYBejlf9uy3utOG1zXAD+S13wdB04t89/1O/w1cDnyilFU=";
 	private String[] UserIDs = {
-			"U1b77037d358bc652c9b0c0fdf2868cdb",
-			"U1c64ec423c085bed19adc5d176e0bdaf",
 			"U848d0fb8269d111a96875ae3cb365ba6",
-			"Ubcdf942fb35591a3c29c5f1c763cc0a8",
-			"Uedb45f1ab77ed45363238641d987b33b",
-			"Ufdfd00bdb0fcd6694ff944f19ae876a7"};
+			};
+//	private String[] UserIDs = {
+//			"U1b77037d358bc652c9b0c0fdf2868cdb",
+//			"U1c64ec423c085bed19adc5d176e0bdaf",
+//			"U848d0fb8269d111a96875ae3cb365ba6",
+//			"Ubcdf942fb35591a3c29c5f1c763cc0a8",
+//			"Uedb45f1ab77ed45363238641d987b33b",
+//			"Ufdfd00bdb0fcd6694ff944f19ae876a7"};
 	@Autowired
 	ActivityDAO activityDAO;
 	
