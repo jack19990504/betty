@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -114,6 +115,10 @@ public class LineController {
 //					{
 //						sendPostMessagesToMutiPerson("記得做專題ㄛ",UserIDs);
 //					}
+					else if(event.getMessage().getText().equals("類型選單")) 
+					{
+						typeTemplate(event.getReplyToken());
+					}
 					else if (event.getMessage().getText().equals("圖片選單"))
 					{
 						imageTemplate(event.getReplyToken());
@@ -259,6 +264,27 @@ public class LineController {
 						}
 						
 					}
+					else if(event.getMessage().getText().endsWith("活動"))
+					{
+						final String type = event.getMessage().getText().substring(0,event.getMessage().getText().length()-2);
+						List<Activity> aList = new ArrayList<Activity>();
+						aList = activityDAO.getListByType(type);
+						if(aList.size() > 0)
+						{
+							String message = type + "類型的活動如下 : \\n";
+							for(Activity a : aList)
+							{
+								message = message + a.getActivityName() + ", ";
+							}
+							message = message.substring(0, message.length()-2);
+							sendResponseMessages(event.getReplyToken(), message);
+						}
+						else
+						{
+							String error = "查詢不到任何有關" + type + "的活動";
+							sendResponseMessages(event.getReplyToken(), error);
+						}
+					}
 					else
 						sendResponseMessages(event.getReplyToken(), event.getMessage().getText());
 					System.out.println("This is a text message. It's replytoken is " + event.getMessage().getText().toString());
@@ -313,6 +339,129 @@ public class LineController {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	private void typeTemplate(String replyToken)
+	{
+		try {
+			String message = "{\"replyToken\":\"" + replyToken + "\","+"\"messages\" : [" +
+					"{\"type\":\"imagemap\","+
+					"\"baseUrl\":\"https://i.imgur.com/U3Vg6OJ.png/1040\","+
+					"\"altText\":\"請至Line查看圖片選單\","+
+					"\"baseSize\":{"+
+					"\"height\":1040,"+
+					"\"width\":1040"+
+					"},"+
+					"\"actions\":["
+					+"{"+
+					"\"type\":\"message\","+
+					"\"text\":\"學習活動\","+
+					"\"area\":{"+
+					"\"x\":0,"+
+					"\"y\":0,"+
+					"\"width\":346,"+
+					"\"height\":346"+
+					"}},"
+					+"{"+
+					"\"type\":\"message\","+
+					"\"text\":\"藝文活動\","+
+					"\"area\":{"+
+					"\"x\":346,"+
+					"\"y\":0,"+
+					"\"width\":346,"+
+					"\"height\":346"+
+					"}},"
+					+"{"+
+					"\"type\":\"message\","+
+					"\"text\":\"親子活動\","+
+					"\"area\":{"+
+					"\"x\":693,"+
+					"\"y\":0,"+
+					"\"width\":346,"+
+					"\"height\":346"+
+					"}},"
+					+"{"+
+					"\"type\":\"message\","+
+					"\"text\":\"體驗活動\","+
+					"\"area\":{"+
+					"\"x\":0,"+
+					"\"y\":346,"+
+					"\"width\":346,"+
+					"\"height\":346"+
+					"}},"
+					+"{"+
+					"\"type\":\"message\","+
+					"\"text\":\"休閒活動\","+
+					"\"area\":{"+
+					"\"x\":346,"+
+					"\"y\":346,"+
+					"\"width\":346,"+
+					"\"height\":346"+
+					"}},"
+					+"{"+
+					"\"type\":\"message\","+
+					"\"text\":\"運動活動\","+
+					"\"area\":{"+
+					"\"x\":693,"+
+					"\"y\":346,"+
+					"\"width\":346,"+
+					"\"height\":346"+
+					"}},"
+					
+					+"{"+
+					"\"type\":\"message\","+
+					"\"text\":\"戶外活動\","+
+					"\"area\":{"+
+					"\"x\":0,"+
+					"\"y\":693,"+
+					"\"width\":346,"+
+					"\"height\":346"+
+					"}},"
+					
+					+"{"+
+					"\"type\":\"message\","+
+					"\"text\":\"講座活動\","+
+					"\"area\":{"+
+					"\"x\":346,"+
+					"\"y\":693,"+
+					"\"width\":346,"+
+					"\"height\":346"+
+					"}},"
+					
+					+"{"+
+					"\"type\":\"message\","+
+					"\"text\":\"資訊活動\","+
+					"\"area\":{"+
+					"\"x\":693,"+
+					"\"y\":693,"+
+					"\"width\":346,"+
+					"\"height\":346"+
+					"}}"
+					
+					+"]}]}";
+
+			URL myurl = new URL("https://api.line.me/v2/bot/message/reply"); // 回傳的網址
+			HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
+			con.setRequestMethod("POST");// 設定post方法
+			con.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // 設定Content-Type為json
+			con.setRequestProperty("Authorization", "Bearer " + accessToken); // 設定Authorization
+			con.setDoOutput(true);
+			con.setDoInput(true);
+			System.out.println(message);
+			DataOutputStream output = new DataOutputStream(con.getOutputStream()); // 開啟HttpsURLConnection的連線
+			output.write(message.getBytes(Charset.forName("utf-8"))); // 回傳訊息編碼為utf-8
+			output.close();
+			System.out.println("Resp Code:" + con.getResponseCode() + "; Resp Message:" + con.getResponseMessage()); // 顯示回傳的結果，若code為200代表回傳成功
+		} catch (MalformedURLException e) {
+			System.out.println("1Message: " + e.getMessage());
+			e.printStackTrace();
+	} catch (IOException e) {
+		System.out.println("Message: " + e.getMessage());
+		e.printStackTrace();
+}
+		
+	}
+	
 	
 	private void imageTemplate(String replyToken)
 	{

@@ -281,4 +281,61 @@ public class ActivityDAOImpl implements ActivityDAO {
 		}
 		
 	}
+
+	@Override
+	public List<Activity> getListByType(String... strings) {
+		// TODO Auto-generated method stub
+		List<Activity> activityList = new ArrayList<Activity>();
+		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement smt = null;
+		String stats ="";
+		for(String a : strings)
+		{
+			stats = stats + a + " or act.activityType = ";
+		}
+		stats = stats.substring(0, stats.length()-23);
+		final String sql = "SELECT * FROM `activitytypes` act " + 
+				"join activity a on " + 
+				"act.activityId = a.activityId " + 
+				"where act.activityType = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, stats);
+			rs = smt.executeQuery();
+			Activity activity;
+			while (rs.next()) {
+				activity = new Activity();
+				activity.setActivityId(rs.getInt("activityId"));
+				activity.setActivityName(rs.getString("activityName"));
+				activity.setActivityOrganizer(rs.getString("activityOrganizer"));
+				activity.setActivityInfo(rs.getString("activityInfo"));
+				activity.setAttendPeople(rs.getInt("attendPeople"));
+				activity.setActivitySpace(rs.getString("activitySpace"));
+//				activity.setActivityStartDate(rs.getString("activityStartDate"));
+//				activity.setActivityEndDate(rs.getString("activityEndDate"));
+//				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
+//				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
+				activity.setActivityMeal(rs.getInt("activityMeal"));
+
+				activityList.add(activity);
+			}
+			rs.close();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return activityList;
+	}
 }
