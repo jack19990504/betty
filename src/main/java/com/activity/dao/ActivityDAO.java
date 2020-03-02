@@ -18,6 +18,8 @@ public interface ActivityDAO {
 	public void delete(Activity activity);
 	
 	public void insert(Activity activity);
+	
+	public void getActivityTypes(Activity activity);
 
 
 	

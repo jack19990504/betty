@@ -81,6 +81,7 @@ public class FileUploadController {
 			trainFace.setEnginePath(enginePath);
 			trainFace.setTrainListPath("resources\\list_" + authUtil.getCurrentUsername() +".txt");
 			trainFace.setModelPath(modelPath);
+			trainFace.setModelExist(true);
 			
 			EngineFunc engineFunc = new EngineFunc();
 			engineFunc.trainFace(trainFace);

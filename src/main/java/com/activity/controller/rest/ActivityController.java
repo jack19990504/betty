@@ -38,9 +38,10 @@ public class ActivityController {
 			if (id != null) {
 				Activity activity = new Activity();
 				activity.setActivityId(id);
-
+				
 				activity = activityDAO.get(activity);
 				if (activity.getActivityName() != null) {
+					activityDAO.getActivityTypes(activity);
 					webResponse.OK();
 					webResponse.setData(activity);
 				} else {

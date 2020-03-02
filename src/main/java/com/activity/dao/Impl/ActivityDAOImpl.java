@@ -247,4 +247,38 @@ public class ActivityDAOImpl implements ActivityDAO {
 		}
 
 	}
+
+	@Override
+	public void getActivityTypes(Activity activity) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		ResultSet rs = null;
+		final String sql = "SELECT * FROM  activitytypes WHERE activityId = ? ";
+		
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setInt(1, activity.getActivityId());
+			rs = smt.executeQuery();
+			
+			System.out.println(activity.getActivityId());
+			while (rs.next()) {
+				activity.getActivityTypes().add(rs.getString("activityType"));
+			}
+			smt.close();
+			rs.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+	}
 }
