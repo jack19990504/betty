@@ -1,6 +1,8 @@
 package com.activity.entity;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Activity {
 	
@@ -27,7 +29,9 @@ public class Activity {
 	
 	private Integer activityMeal;
 	
-	private String activityType;
+	//private String activityType;
+	
+	private List<String> activityTypes = new ArrayList<String>();
 
 	public Integer getActivityId() {
 		return activityId;
@@ -119,13 +123,18 @@ public class Activity {
 		this.activityMeal = activityMeal;
 	}
 
-	public String getActivityType() {
-		return activityType;
+
+
+	public List<String> getActivityTypes() {
+		return activityTypes;
 	}
 
-	public void setActivityType(String activityType) {
-		this.activityType = activityType;
+	public void setActivityTypes(List<String> activityTypes) {
+		this.activityTypes = activityTypes;
 	}
+
+
+	
 	
 	
 	

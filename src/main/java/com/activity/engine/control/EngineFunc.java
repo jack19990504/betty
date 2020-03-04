@@ -97,7 +97,11 @@ public class EngineFunc extends BaseController{
 			final CmdUtil cmdUtil = new CmdUtil();
 			if(cmdUtil.cmdProcessBuilder(trainFace.getCommandList())){	
 				// init variabl
+<<<<<<< HEAD
 				final String logTrainResultLog_path = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\Status.TrainResultCPU.eGroup";	
+=======
+				final String logTrainResultLog_path = "C:\\Users\\jack1\\Desktop\\face\\Engine\\Status.TrainResultCPU.eGroup";	
+>>>>>>> branch 'master' of https://github.com/jack19990504/betty.git
 				trainResult = trainFace_check(logTrainResultLog_path);
 			}else{
 				trainResult.setTrainCmdSuccess(false);

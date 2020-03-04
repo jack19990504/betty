@@ -44,7 +44,7 @@ public class EngineController {
 	@Autowired
 	MemberDAO memberDAO;
 
-	static String enginePath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine";
+	static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
 	static String outputFacePath = "face";
 	static String outputFramePath = "frame";
 	static String trainedBinaryPath = "eGroup\\jack_kobe.Model.binary";
@@ -52,7 +52,7 @@ public class EngineController {
 	static String jsonPath = "output\\output";
 	static String cam = "0";
 
-	static String resultJsonPath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\output";
+	static String resultJsonPath = "C:\\Users\\jack1\\Desktop\\face\\Engine\\output";
 	static String jsonName = "output.cache.egroup";
 
 	@GET
