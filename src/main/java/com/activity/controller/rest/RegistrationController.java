@@ -64,11 +64,13 @@ public class RegistrationController {
 	}
 
 	@PATCH
-	@Path("/{Patchid}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@PathParam("Patchid") String id, Registration registration) {
+	public Response update(Registration registration) {
 		
-		registration.setMember_Email(id);
+//		System.out.println(id + "   " + activityID);
+//		registration.setMember_Email(id);
+//		registration.setActivity_Id(activityID);
+		
 		final Registration oldRegistration = registrationDAO.get(registration);
 		registrationDAO.update(oldRegistration, registration);
 		Gson gson = new Gson();
@@ -76,12 +78,10 @@ public class RegistrationController {
 	}
 	
 	@DELETE
-	@Path("/{Deleteid}")
-	public Response delete(@PathParam("Deleteid") String id) {
-		
-		Registration registration = new Registration();
-		registration.setMember_Email(id);
-		registration = registrationDAO.get(registration);
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response delete(Registration registration) {
+//		Registration registration = new Registration();
+//		registration = registrationDAO.get(registration);
 		registrationDAO.delete(registration);
 		return Response.status(200).build();
 	}

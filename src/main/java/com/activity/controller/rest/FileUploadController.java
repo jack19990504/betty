@@ -26,9 +26,12 @@ import javax.ws.rs.core.Response;
 @Controller
 public class FileUploadController {
   
-	private final String dictLocation = "C:\\Users\\jack1\\Desktop\\face\\Engine\\resources";
-	static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
+	private final String dictLocation = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\resources";
+	static String enginePath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine";
 	static String modelPath = "eGroup\\jack_kobe.Model";
+//	private final String dictLocation = "C:\\Users\\jack1\\Desktop\\face\\Engine\\resources";
+//	static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
+//	static String modelPath = "eGroup\\jack_kobe.Model";
 	
     @POST
     @Path("/files")
@@ -81,6 +84,7 @@ public class FileUploadController {
 			trainFace.setEnginePath(enginePath);
 			trainFace.setTrainListPath("resources\\list_" + authUtil.getCurrentUsername() +".txt");
 			trainFace.setModelPath(modelPath);
+			trainFace.setModelExist(true);
 			
 			EngineFunc engineFunc = new EngineFunc();
 			engineFunc.trainFace(trainFace);

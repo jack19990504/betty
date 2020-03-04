@@ -28,7 +28,7 @@ import com.google.gson.Gson;
 
 @Path("/organizer")
 
-@Controller
+@RestController
 
 public class OrganizerController {
 
@@ -37,6 +37,7 @@ public class OrganizerController {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Organizer organizer) {
 		
 
@@ -55,11 +56,9 @@ public class OrganizerController {
 	}
 	
 	@PATCH
-	@Path("/{Patchid}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@PathParam("Patchid") String id, Organizer organizer) {
+	public Response update(Organizer organizer) {
 		
-		organizer.setMemberEmail(id);
 		final Organizer oldOrganizer = organizerDAO.get(organizer);
 		organizerDAO.update(oldOrganizer, organizer);
 		Gson gson = new Gson();
@@ -67,12 +66,12 @@ public class OrganizerController {
 	}
 	
 	@DELETE
-	@Path("/{Deleteid}")
-	public Response delete(@PathParam("Deleteid") String id) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response delete(Organizer organizer) {
 		
-		Organizer organizer = new Organizer();
-		organizer.setMemberEmail(id);
-		organizer = organizerDAO.get(organizer);
+//		Organizer organizer = new Organizer();
+//		organizer.setMemberEmail(id);
+//		organizer = organizerDAO.get(organizer);
 		organizerDAO.delete(organizer);
 		return Response.status(200).build();
 	}

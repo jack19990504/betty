@@ -12,7 +12,7 @@ public class Organizer {
 	
 	private String organizerEmail;
 	
-	private String organzierAddress;
+	private String organizerAddress;
 
 	public String getMemberEmail() {
 		return memberEmail;
@@ -55,11 +55,11 @@ public class Organizer {
 	}
 
 	public String getOrganizerAddress() {
-		return organzierAddress;
+		return organizerAddress;
 	}
 
 	public void setOrganizerAddress(String organizerAddress) {
-		this.organzierAddress = organzierAddress;
+		this.organizerAddress = organizerAddress;
 	}
 	
 	

@@ -25,6 +25,7 @@ public class OrganizerDAOImpl implements OrganizerDAO{
 		this.dataSource = dataSource;
 	}
 	
+	@Override
 	public void insert(Organizer organizer) {
 		Connection conn = null;
 		PreparedStatement smt = null;
@@ -56,11 +57,12 @@ public class OrganizerDAOImpl implements OrganizerDAO{
 		}
 	}
 
+	@Override
 	public void update(Organizer oldOrganizer, Organizer organizer) {
 		Connection conn = null;
 		PreparedStatement smt = null;
 		final String sql = "UPDATE organizer SET "+"organizerName = ? ," + " organizerPhone = ?, " + "organizerInfo = ? ,"
-				+ "organizerEmail = ? ," + "organizerAddress = ? ," 
+				+ "organizerEmail = ? ," + "organizerAddress = ? " 
 				+ " where memberEmail = ?";
 		try {
 			conn = dataSource.getConnection();
@@ -68,7 +70,7 @@ public class OrganizerDAOImpl implements OrganizerDAO{
 
 			smt.setString(1,organizer.getOrganizerName() != null ? organizer.getOrganizerName() : oldOrganizer.getOrganizerName());
 			smt.setString(2,organizer.getOrganizerPhone() != null ? organizer.getOrganizerPhone() : oldOrganizer.getOrganizerPhone());
-			smt.setString(3, organizer.getOrganizerInfo() != null ? organizer.getOrganizerInfo(): oldOrganizer.getOrganizerInfo());
+			smt.setString(3,organizer.getOrganizerInfo() != null ? organizer.getOrganizerInfo(): oldOrganizer.getOrganizerInfo());
 			smt.setString(4,organizer.getOrganizerEmail() != null ? organizer.getOrganizerEmail() : oldOrganizer.getOrganizerEmail()); //有需要嗎
 			smt.setString(5,organizer.getOrganizerAddress() != null ? organizer.getOrganizerAddress() : oldOrganizer.getOrganizerAddress());
 			smt.setString(6,organizer.getMemberEmail());
@@ -90,6 +92,7 @@ public class OrganizerDAOImpl implements OrganizerDAO{
 		}
 	}
 
+	@Override
 	public void delete(Organizer organizer) {
 		Connection conn = null;
 		PreparedStatement smt = null;
@@ -115,6 +118,7 @@ public class OrganizerDAOImpl implements OrganizerDAO{
 		}
 	}
 
+	@Override
 	public List<Organizer> getList(){
 		Connection conn = null;
 		ResultSet rs = null;
@@ -155,6 +159,7 @@ public class OrganizerDAOImpl implements OrganizerDAO{
 		return organizerList;
 	}
 
+	@Override
 	public Organizer get(Organizer organizer) {
 		Connection conn = null;
 		PreparedStatement smt = null;

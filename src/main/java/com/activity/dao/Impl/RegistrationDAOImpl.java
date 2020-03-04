@@ -167,7 +167,8 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 	public void update(Registration oldRegistration, Registration registration) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "UPDATE member SET " + " registrationRemark = ?, " + "registrationMeal = ? ," + "activityName = ? ," + "where member_Email = ? && activity_Id = ? ";
+		final String sql = "UPDATE registration SET " + " registrationRemark = ?, " + "registrationMeal = ? ," 
+		+ "activityName = ? " + "where member_Email = ? and activity_Id = ? ";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -175,8 +176,8 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 			smt.setString(1, registration.getRegistrationRemark() != null ? registration.getRegistrationRemark(): oldRegistration.getRegistrationRemark());
 			smt.setInt(2,registration.getRegistrationMeal() != null ? registration.getRegistrationMeal() : oldRegistration.getRegistrationMeal());
 			smt.setString(3,registration.getActivityName() != null ? registration.getActivityName() : oldRegistration.getActivityName());
-			smt.setString(4,registration.getMember_Email() != null ? registration.getMember_Email() : oldRegistration.getMember_Email());
-			smt.setInt(5,registration.getActivity_Id() != null ? registration.getActivity_Id() : oldRegistration.getActivity_Id());
+			smt.setString(4, registration.getMember_Email());
+			smt.setInt(5, registration.getActivity_Id());
 			
 			smt.executeUpdate();
 			smt.close();
@@ -198,7 +199,7 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 	public void delete(Registration registration) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "DELETE FROM member WHERE memberEmail = ? && activity_Id = ?";
+		final String sql = "DELETE FROM registration WHERE member_Email = ? && activity_Id = ?";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
