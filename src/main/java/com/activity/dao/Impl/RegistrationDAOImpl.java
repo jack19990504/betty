@@ -30,7 +30,9 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		PreparedStatement smt = null;
 		List<Registration> registerList = new ArrayList<>();
 		final String sql = "SELECT r.* FROM Registration r JOIN member m "
-				+ "ON r.member_Email = m.memberEmail where m.memberLineId = ? ;";
+				+ "ON r.member_Email = m.memberEmail"+
+				" JOIN activity a ON r.activity_Id = a.activityId "
+				+ " where m.memberLineId = ? ;";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -64,20 +66,23 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		Connection conn = null;
 		PreparedStatement smt = null;
 		ResultSet rs = null;
-		final String sql = "SELECT * FROM `registration`where member_Email = ?";
+		final String sql = "SELECT * FROM `registration` r JOIN activity a "
+				+ "ON r.activity_Id = a.activityId where member_Email = ?";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 			smt.setString(1, registration.getMember_Email());
 			rs = smt.executeQuery();
 			registration = new Registration();
-			if (rs.next()) {
+			while (rs.next()) {
 				registration.setAInum(rs.getInt("AInum"));
 				registration.setMember_Email(rs.getString("member_Email"));
 				registration.setActivity_Id(rs.getInt("activity_Id"));
 				registration.setRegistrationRemark(rs.getString("registrationRemark"));
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
 				registration.setActivityName(rs.getString("activityName"));
+				registration.setIsSignIn(rs.getInt("isSignIn"));
+				registration.setIsSignOut(rs.getInt("isSignOut"));
 			}
 			smt.close();
 			rs.close();
@@ -113,7 +118,9 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 				registration.setActivity_Id(rs.getInt("activity_Id"));
 				registration.setRegistrationRemark(rs.getString("registrationRemark"));
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
-
+				registration.setIsSignIn(rs.getInt("isSignIn"));
+				registration.setIsSignOut(rs.getInt("isSignOut"));
+				
 				registrationList.add(registration);
 			}
 			rs.close();
@@ -137,8 +144,8 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 	public void insert(Registration registration) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "INSERT INTO registration(member_Email, activity_Id, registrationRemark, registrationMeal, activityName) "
-				+ "VALUES(? , ? ,? , ? , ? )";
+		final String sql = "INSERT INTO registration(member_Email, activity_Id, registrationRemark, registrationMeal, isSignIn , isSignOut) "
+				+ "VALUES(? , ? ,? , ? , 0 , 0)";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -146,7 +153,6 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 			smt.setInt(2, registration.getActivity_Id());
 			smt.setString(3, registration.getRegistrationRemark());
 			smt.setInt(4, registration.getRegistrationMeal());
-			smt.setString(5, registration.getActivityName());
 			smt.executeUpdate();
 			smt.close();
 
@@ -168,16 +174,18 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		Connection conn = null;
 		PreparedStatement smt = null;
 		final String sql = "UPDATE registration SET " + " registrationRemark = ?, " + "registrationMeal = ? ," 
-		+ "activityName = ? " + "where member_Email = ? and activity_Id = ? ";
+		+ " isSignIn = ? , isSingOut = ?" + "where member_Email = ? and activity_Id = ? ";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 
 			smt.setString(1, registration.getRegistrationRemark() != null ? registration.getRegistrationRemark(): oldRegistration.getRegistrationRemark());
 			smt.setInt(2,registration.getRegistrationMeal() != null ? registration.getRegistrationMeal() : oldRegistration.getRegistrationMeal());
-			smt.setString(3,registration.getActivityName() != null ? registration.getActivityName() : oldRegistration.getActivityName());
-			smt.setString(4, registration.getMember_Email());
-			smt.setInt(5, registration.getActivity_Id());
+			smt.setString(3, registration.getMember_Email());
+			smt.setInt(4, registration.getActivity_Id() != null ? registration.getActivity_Id() : oldRegistration.getActivity_Id() );
+			smt.setInt(5, registration.getIsSignIn() != null ? registration.getIsSignIn() : oldRegistration.getIsSignIn());
+			smt.setInt(6, registration.getIsSignOut() != null ? registration.getIsSignOut() : oldRegistration.getIsSignOut());
+
 			
 			smt.executeUpdate();
 			smt.close();
@@ -228,7 +236,8 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		ResultSet rs = null;
 		PreparedStatement smt = null;
 		List<Registration> registrationList = new ArrayList<Registration>();
-		final String sql = "SELECT * FROM registration where activity_Id = ?;";
+		final String sql = "SELECT * FROM registration r JOIN activity a on "
+				+ "r.activity_Id = a.activityId where a.activityId = ?;";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -241,7 +250,9 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 				registration.setActivity_Id(rs.getInt("activity_Id"));
 				registration.setRegistrationRemark(rs.getString("registrationRemark"));
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
-
+				registration.setIsSignIn(rs.getInt("isSignIn"));
+				registration.setIsSignOut(rs.getInt("isSignOut"));
+				
 				registrationList.add(registration);
 			}
 			rs.close();

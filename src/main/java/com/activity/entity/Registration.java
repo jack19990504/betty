@@ -13,6 +13,10 @@ public class Registration {
 	private Integer registrationMeal;
 	
 	private String activityName;
+	
+	private Integer isSignIn;
+	
+	private Integer isSignOut;
 
 	public String getRegistrationRemark() {
 		return registrationRemark;
@@ -60,6 +64,24 @@ public class Registration {
 
 	public void setActivity_Id(Integer activity_Id) {
 		this.activity_Id = activity_Id;
+	}
+
+	
+
+	public Integer getIsSignIn() {
+		return isSignIn;
+	}
+
+	public void setIsSignIn(Integer isSignIn) {
+		this.isSignIn = isSignIn;
+	}
+
+	public Integer getIsSignOut() {
+		return isSignOut;
+	}
+
+	public void setIsSignOut(Integer isSignOut) {
+		this.isSignOut = isSignOut;
 	}
 
 	
