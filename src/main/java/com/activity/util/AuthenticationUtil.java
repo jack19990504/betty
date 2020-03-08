@@ -23,7 +23,7 @@ public class AuthenticationUtil {
 		}
 		else {	
 			String auth = authentication.getAuthorities().toString().replace("[", "").replace("]", "");
-			System.out.println(auth + authentication.getName());
+			System.out.println(auth + authentication.getName() + authentication.isAuthenticated());
 			if(auth.equalsIgnoreCase("ROLE_ANONYMOUS"))
 				return isAuthenticated;
 			else if(auth.equalsIgnoreCase("0"))

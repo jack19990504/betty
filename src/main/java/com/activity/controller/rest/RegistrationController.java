@@ -15,14 +15,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.controller.rest.RegistrationController;
 import com.activity.dao.RegistrationDAO;
-import com.activity.dao.Impl.RegistrationDAOImpl;
 import com.activity.entity.Registration;
 import com.google.gson.Gson;
 

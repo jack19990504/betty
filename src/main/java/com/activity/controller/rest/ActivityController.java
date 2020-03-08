@@ -34,7 +34,7 @@ public class ActivityController {
 	public Response get(@PathParam("id") Integer id) {
 		final WebResponse webResponse = new WebResponse();
 		final AuthenticationUtil authUtil = new AuthenticationUtil();
-		if (authUtil.checkAuthority()) {
+		
 			if (id != null) {
 				Activity activity = new Activity();
 				activity.setActivityId(id);
@@ -52,10 +52,7 @@ public class ActivityController {
 				webResponse.UNPROCESSABLE_ENTITY();
 				webResponse.getError().setMessage("請輸入活動ID!");
 			}
-		} else {
-			webResponse.UNAUTHORIZED();
-			webResponse.setData("authentication failed!");
-		}
+		 
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
@@ -145,15 +142,11 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getList() {
 		final WebResponse webResponse = new WebResponse();
-		final AuthenticationUtil authUtil = new AuthenticationUtil();
-		if (authUtil.checkAuthority()) {
+		
 			final List<Activity> activityList = activityDAO.getList();
 			webResponse.OK();
 			webResponse.setData(activityList);
-		} else {
-			webResponse.UNAUTHORIZED();
-			webResponse.setData("authentication failed!");
-		}
+		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 

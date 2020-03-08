@@ -51,7 +51,7 @@ public class FileUploadController {
     }
     
     @POST
-    @Path("/UploadFace")
+    @Path("/uploadFace")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response TrainFace(@FormDataParam("file") InputStream uploadedInputStream,
             @FormDataParam("file") FormDataContentDisposition fileDetail) throws IOException
