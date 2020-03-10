@@ -4,6 +4,8 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @EnableWebSecurity
+
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
@@ -18,14 +21,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http
 		.httpBasic()//設定為httpBasic Authentication
-		.and().authorizeRequests().antMatchers("/css/**", "/index","main.css","/api/line").permitAll()
-		.antMatchers("/user/**").hasAnyAuthority("0","1")
-		.antMatchers("/admin/**","api/**").hasAuthority("1")
-		.and().csrf().disable().formLogin().loginPage("/login").failureUrl("/login-error")
-	.failureUrl("/login-error").and().exceptionHandling().accessDeniedPage("/");
-//				.usernameParameter("memberEmail").passwordParameter("memberPassword")
-				
+		.and().authorizeRequests()
+		.antMatchers("/api/line/**").permitAll()
+		//允許line bot不登入也可存取API
+		.antMatchers(HttpMethod.GET ,"/api/activity/**").permitAll()
+		//任何人皆可抓取所有活動清單or任一活動
+		.antMatchers(HttpMethod.GET ,"/api/registration/","/api/login/name/").hasAnyAuthority("0","1")
+		.antMatchers(HttpMethod.POST ,"/api/files/uploadFace/").hasAnyAuthority("0","1")
+		//會員或管理員可使用這隻POST API上傳人臉
+		.antMatchers("/api/member/**").hasAnyAuthority("0","1")
+		//會員與管理者皆可存取member API
+		.antMatchers("/api/**").hasAuthority("1")
+		.and().csrf().disable()
+		.formLogin().loginPage("/login").failureUrl("/login-error")
+		.failureUrl("/login-error").and().exceptionHandling().accessDeniedPage("/");
+
+
 		
+		
+//				.usernameParameter("memberEmail").passwordParameter("memberPassword")		
 //		http.authorizeRequests().antMatchers("/css/**", "/index").permitAll()
 //		.antMatchers("/user/**").hasAnyAuthority("0","1")
 //		.antMatchers("/admin/**","api/**").hasAuthority("1")
@@ -39,10 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 
 	 @Autowired
 	 public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		 System.out.println("TEst");
+		 
 		 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		 String password = passwordEncoder.encode("a4129889");
-		 System.out.println(password.length()+"\n"+password);
+		 
 		 auth
 		   .jdbcAuthentication()
 		    .dataSource(dataSource).usersByUsernameQuery(

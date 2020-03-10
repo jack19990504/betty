@@ -96,8 +96,7 @@ public class EngineFunc extends BaseController{
 		if(trainFace.getCommandList()!=null){
 			final CmdUtil cmdUtil = new CmdUtil();
 			if(cmdUtil.cmdProcessBuilder(trainFace.getCommandList())){	
-				// init variabl
-
+				// init variable
 				final String logTrainResultLog_path = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\Status.TrainResultCPU.eGroup";	
 
 				trainResult = trainFace_check(logTrainResultLog_path);
