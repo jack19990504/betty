@@ -18,6 +18,6 @@ public interface RegistrationDAO {
 
 	public void update(Registration oldRegistration, Registration registration);
 
-	public void delete(Registration registration);
+	public void delete(int id);
 	
 }

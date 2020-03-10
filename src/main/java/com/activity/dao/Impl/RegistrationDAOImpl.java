@@ -204,15 +204,14 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		}
 	}
 
-	public void delete(Registration registration) {
+	public void delete(int id) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "DELETE FROM registration WHERE member_Email = ? && activity_Id = ?";
+		final String sql = "DELETE FROM registration WHERE AInum = ?;";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
-			smt.setString(1, registration.getMember_Email());
-			smt.setInt(2, registration.getActivity_Id());
+			smt.setInt(1, id);
 			smt.executeUpdate();
 			smt.close();
 

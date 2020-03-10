@@ -78,11 +78,12 @@ public class RegistrationController {
 	}
 	
 	@DELETE
+	@Path("/{AInum}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response delete(Registration registration) {
+	public Response delete(@PathParam("AInum") int id) {
 //		Registration registration = new Registration();
 //		registration = registrationDAO.get(registration);
-		registrationDAO.delete(registration);
+		registrationDAO.delete(id);
 		return Response.status(200).build();
 	}
 	
