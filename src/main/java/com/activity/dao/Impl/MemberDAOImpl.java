@@ -30,9 +30,10 @@ public class MemberDAOImpl implements MemberDAO {
 	public void insert(Member member) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "INSERT INTO member(memberEmail, memberPassword, memberName, memberGender, memberTel , memberPhone, memberAddress,"
-				+ " memberType, memberEncodedPassword, memberEnabled) "
-				+ " VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ? , ?)";
+		final String sql = "INSERT INTO member(memberEmail, memberPassword, memberName, memberGender, memberPhone, memberAddress,"
+				+ " memberType, memberEncodedPassword, memberEnabled, memberID, memberBloodType, emergencyContact, "
+				+ "emergencyContactRelation, emergencyContactPhone) "
+				+ " VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?)";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -40,13 +41,17 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(2, member.getMemberPassword());
 			smt.setString(3, member.getMemberName());
 			smt.setString(4, member.getMemberGender());
-			smt.setString(5, member.getMemberTel());
-			smt.setString(6, member.getMemberPhone());
-			smt.setString(7, member.getMemberAddress());
-			smt.setInt(8, member.getMemberType());
+			smt.setString(5, member.getMemberPhone());
+			smt.setString(6, member.getMemberAddress());
+			smt.setInt(7, member.getMemberType());
 			String encodedPassword = new BCryptPasswordEncoder().encode(member.getMemberPassword());
-			smt.setString(9, encodedPassword);
-			smt.setInt(10,member.getMemberEnabled());
+			smt.setString(8, encodedPassword);
+			smt.setInt(9,member.getMemberEnabled());
+			smt.setString(10, member.getMemberID());
+			smt.setString(11, member.getMemberBloodType());
+			smt.setString(12, member.getEmergencyContact());
+			smt.setString(13, member.getEmergencyContactRelation());
+			smt.setString(14, member.getEmergencyContactPhone());
 //			System.out.println(member.getMemberEmail() + member.getMemberPassword() +
 //					member.getMemberName() + member.getMemberGender()+
 //					member.getMemberTel() + member.getMemberPhone() + member .getMemberAddress()+
@@ -114,10 +119,14 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberEmail(rs.getString("memberEmail"));
 				member.setMemberPassword(rs.getString("memberPassword"));
 				member.setMemberBirthday(rs.getDate("memberBirthday"));
-				member.setMemberTel(rs.getString("memberTel"));
 				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberLineId(rs.getString("memberLineId"));
 				member.setMemberGender(rs.getString("memberGender"));
+				member.setMemberID(rs.getString("memberID"));
+				member.setMemberBloodType(rs.getString("memberBloodType"));
+				member.setEmergencyContact(rs.getString("emergencyContact"));
+				member.setEmergencyContactRelation(rs.getString("emergencyContactRelation"));
+				member.setEmergencyContactPhone(rs.getString("emergencyContactPhone"));
 			}
 			smt.close();
 			rs.close();
@@ -206,7 +215,8 @@ public class MemberDAOImpl implements MemberDAO {
 		Connection conn = null;
 		PreparedStatement smt = null;
 		final String sql = "UPDATE member SET " + "memberPassword = ? ," +"memberName = ? ," + " memberGender = ?, "
-				+ "memberTel = ? ," + "memberPhone = ? ," + "memberAddress = ? ,"
+				+ "memberPhone = ? ," + "memberAddress = ? ," + "memberBloodType = ? ,"+ "emergencyContact = ? ,"
+				+ "emergencyContactRelation = ? ,"+ "emergencyContactPhone = ? "
 				+ " where memberEmail = ?";
 		try {
 			conn = dataSource.getConnection();
@@ -215,10 +225,14 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(1,member.getMemberPassword() != null ? member.getMemberPassword() : oldMember.getMemberPassword());
 			smt.setString(2,member.getMemberName() != null ? member.getMemberName() : oldMember.getMemberName());
 			smt.setString(3, member.getMemberGender() != null ? member.getMemberGender(): oldMember.getMemberGender());
-			smt.setDate(4,member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); //有需要嗎
-			smt.setString(5,member.getMemberTel() != null ? member.getMemberTel() : oldMember.getMemberTel());
-			smt.setString(6,member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
-			smt.setString(7,member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());
+//			smt.setDate(4,member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); //有需要嗎
+			smt.setString(4,member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
+			smt.setString(5,member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());
+			smt.setString(6,member.getMemberBloodType() != null ? member.getMemberBloodType() : oldMember.getMemberBloodType());
+			smt.setString(7,member.getEmergencyContact() != null ? member.getEmergencyContact() : oldMember.getEmergencyContact());
+			smt.setString(8,member.getEmergencyContactRelation() != null ? member.getEmergencyContactRelation() : oldMember.getEmergencyContactRelation());
+			smt.setString(9,member.getEmergencyContactPhone() != null ? member.getEmergencyContactPhone() : oldMember.getEmergencyContactPhone());
+			smt.setString(10,member.getMemberEmail());
 			
 			smt.executeUpdate();
 			smt.close();
@@ -284,12 +298,16 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberName(rs.getString("memberName"));
 				member.setMemberGender(rs.getString("memberGender"));
 				member.setMemberBirthday(rs.getDate("memberBirthday")); //不確定
-				member.setMemberTel(rs.getString("memberTel"));
 				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberAddress(rs.getString("memberAddress"));
 				member.setMemberLineId(rs.getString("memberLineId"));
 				member.setMemberType(rs.getInt("memberType"));
 				member.setMemberEnabled(rs.getInt("memberEnabled"));
+				member.setMemberID(rs.getString("memberID"));
+				member.setMemberBloodType(rs.getString("memberBloodType"));
+				member.setEmergencyContact(rs.getString("emergencyContact"));
+				member.setEmergencyContactRelation(rs.getString("emergencyContactRelation"));
+				member.setEmergencyContactPhone(rs.getString("emergencyContactPhone"));
 
 				memberList.add(member);
 			}

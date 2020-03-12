@@ -338,4 +338,38 @@ public class ActivityDAOImpl implements ActivityDAO {
 		}
 		return activityList;
 	}
+
+	@Override
+	public void updateCover(Activity activity) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "UPDATE activity SET activityCover = ? where activityId = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+
+			smt.setString(1, activity.getActivityCover());
+			smt.setInt(2, activity.getActivityId());
+			
+
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		
+	}
+	
+	
 }

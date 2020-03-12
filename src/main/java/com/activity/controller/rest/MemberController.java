@@ -78,9 +78,16 @@ public class MemberController {
 	@Path("/{id}")
 	@Produces("application/json")
 	public Response get(@PathParam("id") String id) {
-		Member member = new Member();
-		member.setMemberEmail(id);
-		member = memberDAO.get(member);
+//		if(id!=null) {
+			Member member = new Member();
+			member.setMemberEmail(id);
+			member = memberDAO.get(member);
+//			if(member.getMemberName() != null) {
+				
+//			}
+//		}
+		
+		
 		System.out.println("id="+id);
 		Gson gson = new Gson();
 		return Response.status(200).entity(gson.toJson(member)).build();

@@ -22,6 +22,8 @@ public interface ActivityDAO {
 	public void getActivityTypes(Activity activity);
 	
 	public List<Activity> getListByType(String...strings );
+	
+	public void updateCover(Activity activity);
 
 
 	
