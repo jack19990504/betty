@@ -11,7 +11,6 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.activity.dao.RegistrationDAO;
-import com.activity.entity.Member;
 import com.activity.entity.Registration;;
 @Repository
 public class RegistrationDAOImpl implements RegistrationDAO{
@@ -174,18 +173,16 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		Connection conn = null;
 		PreparedStatement smt = null;
 		final String sql = "UPDATE registration SET " + " registrationRemark = ?, " + "registrationMeal = ? ," 
-		+ " isSignIn = ? , isSingOut = ?" + "where member_Email = ? and activity_Id = ? ";
+		+ " isSignIn = ? , isSingOut = ?" + "where AInum = ? ";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 
 			smt.setString(1, registration.getRegistrationRemark() != null ? registration.getRegistrationRemark(): oldRegistration.getRegistrationRemark());
 			smt.setInt(2,registration.getRegistrationMeal() != null ? registration.getRegistrationMeal() : oldRegistration.getRegistrationMeal());
-			smt.setString(3, registration.getMember_Email());
-			smt.setInt(4, registration.getActivity_Id() != null ? registration.getActivity_Id() : oldRegistration.getActivity_Id() );
-			smt.setInt(5, registration.getIsSignIn() != null ? registration.getIsSignIn() : oldRegistration.getIsSignIn());
-			smt.setInt(6, registration.getIsSignOut() != null ? registration.getIsSignOut() : oldRegistration.getIsSignOut());
-
+			smt.setInt(3, registration.getIsSignIn() != null ? registration.getIsSignIn() : oldRegistration.getIsSignIn());
+			smt.setInt(4, registration.getIsSignOut() != null ? registration.getIsSignOut() : oldRegistration.getIsSignOut());
+			smt.setInt(5, registration.getAInum());
 			
 			smt.executeUpdate();
 			smt.close();
@@ -270,6 +267,36 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 			}
 		}
 		return registrationList;
+	}
+
+	@Override
+	public void updateCancelTime(Registration registration) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "UPDATE registration SET cancelRegistration = NOW() where AInum = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+
+			smt.setInt(1, registration.getAInum());
+			
+
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
 	}
 
 }

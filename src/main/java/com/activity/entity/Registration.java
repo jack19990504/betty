@@ -1,5 +1,7 @@
 package com.activity.entity;
 
+import java.sql.Date;
+
 public class Registration {
 	
 	private Integer AInum;
@@ -17,6 +19,8 @@ public class Registration {
 	private Integer isSignIn;
 	
 	private Integer isSignOut;
+	
+	private Date cancelRegistration;
 
 	public String getRegistrationRemark() {
 		return registrationRemark;
@@ -82,6 +86,14 @@ public class Registration {
 
 	public void setIsSignOut(Integer isSignOut) {
 		this.isSignOut = isSignOut;
+	}
+
+	public Date getCancelRegistration() {
+		return cancelRegistration;
+	}
+
+	public void setCancelRegistration(Date cancelRegistration) {
+		this.cancelRegistration = cancelRegistration;
 	}
 
 	

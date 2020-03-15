@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.controller.rest.RegistrationController;
@@ -31,6 +32,7 @@ public class RegistrationController {
 	@Autowired
 	RegistrationDAO registrationDAO;
 	
+	@CrossOrigin
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response insert(Registration registration) {
@@ -60,9 +62,10 @@ public class RegistrationController {
 	}
 
 	@PATCH
+	@Path("/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(Registration registration) {
-		
+	public Response update(@PathParam("id") int id, Registration registration) {
+		registration.setAInum(id);
 //		System.out.println(id + "   " + activityID);
 //		registration.setMember_Email(id);
 //		registration.setActivity_Id(activityID);
@@ -95,5 +98,17 @@ public class RegistrationController {
 		return Response.status(200).entity(gson.toJson(registration)).build();
 		
 	}
+	
+	@PATCH
+	@Path("/cancel/{id}")
+	public Response updateCancel(@PathParam("id") int id) {
+		Registration registration = new Registration();
+		registration.setAInum(id);
+		
+		registrationDAO.updateCancelTime(registration);
+		Gson gson = new Gson();
+		return Response.status(200).entity(gson.toJson(registration)).build();
+	}
+	
 	
 }
