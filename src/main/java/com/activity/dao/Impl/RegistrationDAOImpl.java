@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.activity.dao.RegistrationDAO;
+import com.activity.entity.Member;
 import com.activity.entity.Registration;;
 @Repository
 public class RegistrationDAOImpl implements RegistrationDAO{
@@ -297,6 +298,84 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 			}
 		}
 		
+	}
+
+	@Override
+	public Integer getUserCancelTimeInMonth(Member member) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement smt = null;
+		ResultSet rs = null;
+		final String sql = "SELECT  COUNT(cancelRegistration) as 'canceltime' " + 
+				"FROM registration WHERE cancelRegistration BETWEEN date_sub(NOW(),INTERVAL 30 DAY) and  NOW()"
+				+ " and member_Email = ?;";
+		Integer cancelTime = 0;
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, member.getMemberEmail());
+			rs = smt.executeQuery();
+			
+			if (rs.next()) {
+				cancelTime = rs.getInt("canceltime");
+			}
+			smt.close();
+			rs.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return cancelTime;
+	}
+
+	@Override
+	public Registration getOneRegistration(Registration registration) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement smt = null;
+		ResultSet rs = null;
+		final String sql = "SELECT * FROM `registration`  "
+				+ " where member_Email = ? and activity_Id = ? "
+				+ " and cancelRegistration IS NULL";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, registration.getMember_Email());
+			smt.setInt(2, registration.getActivity_Id());
+			rs = smt.executeQuery();
+			registration = new Registration();
+			while (rs.next()) {
+				registration.setAInum(rs.getInt("AInum"));
+				registration.setMember_Email(rs.getString("member_Email"));
+				registration.setActivity_Id(rs.getInt("activity_Id"));
+				registration.setRegistrationRemark(rs.getString("registrationRemark"));
+				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
+				registration.setIsSignIn(rs.getInt("isSignIn"));
+				registration.setIsSignOut(rs.getInt("isSignOut"));
+			}
+			smt.close();
+			rs.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return registration;
 	}
 
 }
