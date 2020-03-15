@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/api/member/**").hasAnyAuthority("0","1")
 		//會員與管理者皆可存取member API
 		.antMatchers("/api/**").hasAuthority("1")
-		.and().csrf().disable()
+		.and().csrf().disable()//.cors().disable()
 		.formLogin().loginPage("/login").failureUrl("/login-error")
 		.failureUrl("/login-error").and().exceptionHandling().accessDeniedPage("/");
 

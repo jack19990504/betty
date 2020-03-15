@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.controller.rest.MemberController;
@@ -25,12 +26,12 @@ import com.google.gson.Gson;
 @Path("/member")
 
 @RestController
-
+//@CrossOrigin
 public class MemberController {
-	
+
 	@Autowired
 	MemberDAO memberDAO;
-	
+		
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -43,6 +44,7 @@ public class MemberController {
 		return Response.status(200).entity(gson.toJson(member)).build();
 	}
 	
+	@CrossOrigin
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll() {

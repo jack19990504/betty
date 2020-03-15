@@ -20,4 +20,6 @@ public interface RegistrationDAO {
 
 	public void delete(int id);
 	
+	public void updateCancelTime(Registration registration);
+	
 }
