@@ -1,5 +1,6 @@
 package com.activity.controller.rest;
 
+import java.util.ArrayList;
 //import java.io.File;
 //import java.io.IOException;
 //import java.nio.file.Files;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.activity.dao.MemberDAO;
+import com.activity.dao.PhotoDAO;
 import com.activity.engine.control.EngineFunc;
 import com.activity.engine.control.GetResult;
 import com.activity.engine.entity.Face;
@@ -43,6 +45,9 @@ public class EngineController {
 
 	@Autowired
 	MemberDAO memberDAO;
+	
+	@Autowired
+	PhotoDAO photoDAO;
 
 	static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
 	static String outputFacePath = "face";
@@ -76,8 +81,7 @@ public class EngineController {
 
 	@POST
 	public void closed() {
-		CmdUtil cmdUtil = new CmdUtil();
-		cmdUtil.cmdProcessTerminate("RecognizeFace.exe");
+		CmdUtil.cmdProcessTerminate("RecognizeFace.exe");
 	}
 
 	@GET
@@ -89,27 +93,37 @@ public class EngineController {
 		WebResponse webResponse = new WebResponse();
 		GetResult getResult = new GetResult();
 		List<Face> faceList = getResult.photoResult(resultJsonPath, jsonName, true);
-		int length = faceList.size() - 2;
-		System.out.println(length);
-		for (int i = length; i > 0; i--) {
-			Face face = faceList.get(i);
-			if (face.getHasFound().equals("1")) {
-				final String personId = face.getPersonId();
-				if (attributeCheck.stringsNotNull(personId)) {
-					System.out.println(personId);
-					Member member = new Member();
-					member.setMemberEmail(personId);
-					member = memberDAO.get(member);
-					if (attributeCheck.objectNotNull(member)) {
-						webResponse.OK();
-						webResponse.setData(member);
-						return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
-					}
-				}
-
-			}
-		}
+		
+		
 		return Response.status(200).entity(faceList).build();
 	}
+	
+	@GET
+	@Path("/writePhoto")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getPhotoRecord() {
+		AttributeCheck attributeCheck = new AttributeCheck();
+		WebResponse webResponse = new WebResponse();
+		List<Face> faceList = GetResult.photoResult(resultJsonPath, jsonName, true);
+		if(faceList.size() == 0 )
+		{
+			webResponse.setData("no faces in the result!");
+			webResponse.UNPROCESSABLE_ENTITY();
+		}
+		else
+		{
+			for(Face face : faceList)
+		{
+			if(face.getHasFound().equals("1"))
+			{
+				photoDAO.writePhoto(face);
+			}
+		}
+			webResponse.OK();
+			webResponse.setData(faceList);
+		}
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
 
+	
 }

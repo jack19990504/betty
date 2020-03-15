@@ -289,7 +289,7 @@ public class GetResult {
 				}
 				
 				if(deleteJson){
-					sourceJson.delete();
+					//sourceJson.delete();
 					destJson.delete();					
 				}
 			}		

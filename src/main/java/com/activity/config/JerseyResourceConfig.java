@@ -13,6 +13,7 @@ import com.activity.controller.rest.MemberController;
 import com.activity.controller.rest.OrganizerController;
 import com.activity.controller.rest.RegistrationController;
 import com.activity.controller.rest.TrainFaceController;
+import com.activity.controller.rest.PhotoController;
 
 
 /**
@@ -38,6 +39,7 @@ public class JerseyResourceConfig extends ResourceConfig {
         register(LoginController.class);
         register(ActivityController.class);
         register(ActivityAnnounceController.class);
+        register(PhotoController.class);
         //packages("com.example.test.*");
     }
     
