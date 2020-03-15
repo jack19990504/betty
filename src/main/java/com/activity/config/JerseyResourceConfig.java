@@ -40,11 +40,8 @@ public class JerseyResourceConfig extends ResourceConfig {
         register(LoginController.class);
         register(ActivityController.class);
         register(ActivityAnnounceController.class);
-<<<<<<< HEAD
         register(PhotoController.class);
-=======
         register(FeedbackController.class);
->>>>>>> 1efb7ec79da312660e36ce016a3acfe4c8ca9148
         //packages("com.example.test.*");
     }
     
