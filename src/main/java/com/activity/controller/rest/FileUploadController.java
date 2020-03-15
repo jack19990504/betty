@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 @Path("/files")
 @Controller
 public class FileUploadController {
+	
   
 	private final String dictLocation = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\resources";
 	static String enginePath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine";
@@ -39,7 +40,7 @@ public class FileUploadController {
     public Response hello(@FormDataParam("file") InputStream uploadedInputStream,
             @FormDataParam("file") FormDataContentDisposition fileDetail)
     {
-    	String uploadedFileLocation = "d://upload/" + fileDetail.getFileName();
+    	String uploadedFileLocation = "C://upload/" + fileDetail.getFileName();
     	String fileName = fileDetail.getFileName();
     	String test = fileName.substring(fileName.length()-4, fileName.length());
         // save it

@@ -14,8 +14,6 @@ public class Member {
 	
 	private Date memberBirthday;
 	
-	private String memberTel;
-	
 	private String memberPhone;
 	
 	private String memberAddress;
@@ -27,6 +25,16 @@ public class Member {
 	private String memberLineId;
 	
 	private Integer memberType;
+	
+	private String memberID;
+	
+	private String memberBloodType;
+	
+	private String emergencyContact;
+	
+	private String emergencyContactRelation;
+	
+	private String emergencyContactPhone;
 
 	public String getMemberEmail() {
 		return memberEmail;
@@ -68,13 +76,6 @@ public class Member {
 		this.memberBirthday = memberBirthday;
 	}
 
-	public String getMemberTel() {
-		return memberTel;
-	}
-
-	public void setMemberTel(String memberTel) {
-		this.memberTel = memberTel;
-	}
 
 	public String getMemberPhone() {
 		return memberPhone;
@@ -122,6 +123,46 @@ public class Member {
 
 	public void setMemberType(Integer memberType) {
 		this.memberType = memberType;
+	}
+
+	public String getMemberID() {
+		return memberID;
+	}
+
+	public void setMemberID(String memberID) {
+		this.memberID = memberID;
+	}
+
+	public String getMemberBloodType() {
+		return memberBloodType;
+	}
+
+	public void setMemberBloodType(String memberBloodType) {
+		this.memberBloodType = memberBloodType;
+	}
+
+	public String getEmergencyContact() {
+		return emergencyContact;
+	}
+
+	public void setEmergencyContact(String emergencyContact) {
+		this.emergencyContact = emergencyContact;
+	}
+
+	public String getEmergencyContactRelation() {
+		return emergencyContactRelation;
+	}
+
+	public void setEmergencyContactRelation(String emergencyContactRelation) {
+		this.emergencyContactRelation = emergencyContactRelation;
+	}
+
+	public String getEmergencyContactPhone() {
+		return emergencyContactPhone;
+	}
+
+	public void setEmergencyContactPhone(String emergencyContactPhone) {
+		this.emergencyContactPhone = emergencyContactPhone;
 	}
 
 	

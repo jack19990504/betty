@@ -29,6 +29,8 @@ public class Activity {
 	
 	private Integer activityMeal;
 	
+	private String activityCover;
+	
 	//private String activityType;
 	
 	private List<String> activityTypes = new ArrayList<String>();
@@ -123,8 +125,6 @@ public class Activity {
 		this.activityMeal = activityMeal;
 	}
 
-
-
 	public List<String> getActivityTypes() {
 		return activityTypes;
 	}
@@ -133,6 +133,15 @@ public class Activity {
 		this.activityTypes = activityTypes;
 	}
 
+	public String getActivityCover() {
+		return activityCover;
+	}
+
+	public void setActivityCover(String activityCover) {
+		this.activityCover = activityCover;
+	}
+
+	
 
 	
 	
