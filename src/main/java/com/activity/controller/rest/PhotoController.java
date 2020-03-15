@@ -61,18 +61,31 @@ public class PhotoController {
 	}
 
 	@GET
-	@Path("/writeActivtiyPhoto/{path}")
+	@Path("/getPhoto/{path}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getPhotoRecord(@PathParam("path") String path) throws FileNotFoundException, IOException{
 		AttributeCheck attributeCheck = new AttributeCheck();
 		WebResponse webResponse = new WebResponse();
-		boolean issuccess = readfile(path);
+		path = "C:\\Users\\jack1\\Desktop\\face\\Engine\\resources\\" + path;
+		System.out.println(path);
+		String result = readfile(path);
+		if(result.equals(""))
+		{
+			webResponse.NOT_FOUND();
+			webResponse.setData("dict not found or not exist!");
+		}
+		else
+		{
+			webResponse.OK();
+			webResponse.setData(result);
+		}
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
-	public static boolean readfile(String filepath) throws FileNotFoundException, IOException {
+	public static String readfile(String filepath) throws FileNotFoundException, IOException {
+		String result = "";
 		try {
-
+			
 			File file = new File(filepath);
 			if (!file.isDirectory()) {
 				System.out.println("檔案");
@@ -86,6 +99,9 @@ public class PhotoController {
 				for (int i = 0; i < filelist.length; i++) {
 					File readfile = new File(filepath + "//" + filelist[i]);
 					if (!readfile.isDirectory()) {
+						result += "path=" + readfile.getPath() +"\t" 
+					+ "absolutepath=" + readfile.getAbsolutePath()
+					+ "\t" + "name=" + readfile.getName() + "\n";
 						System.out.println("path=" + readfile.getPath());
 						System.out.println("absolutepath=" + readfile.getAbsolutePath());
 						System.out.println("name=" + readfile.getName());
@@ -100,7 +116,7 @@ public class PhotoController {
 		} catch (FileNotFoundException e) {
 			System.out.println("readfile()   Exception:" + e.getMessage());
 		}
-		return true;
+		return result;
 	}
 
 }
