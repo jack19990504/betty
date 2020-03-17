@@ -4,8 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.sql.DataSource;
 
@@ -44,10 +47,25 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivityInfo(rs.getString("activityInfo"));
 				activity.setAttendPeople(rs.getInt("attendPeople"));
 				activity.setActivitySpace(rs.getString("activitySpace"));
-//				activity.setActivityStartDate(rs.getString("activityStartDate"));
-//				activity.setActivityEndDate(rs.getString("activityEndDate"));
-//				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
-//				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
+				
+				activity.setActivityStartDate(rs.getTimestamp("activityStartDate"));
+				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
+				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
+				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
+				
+				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
+				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
+				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
+				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
+				
+				activity.setActivityStartDateString(ft.format(d1));
+				activity.setActivityEndDateString(ft.format(d2));
+				activity.setStartSignUpDateString(ft.format(d3));
+				activity.setEndSignUpDateString(ft.format(d4));
+				
+				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 
 				activityList.add(activity);
