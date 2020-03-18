@@ -26,4 +26,7 @@ public interface RegistrationDAO {
 	public Integer getUserCancelTimeInMonth(Member member);
 	
 	public Registration getOneRegistration(Registration registration);
+	
+	public List<Registration> getListWithMemberInformation(int id);
+	
 }

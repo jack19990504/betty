@@ -26,7 +26,18 @@ public class Registration {
 	
 	private String cancelRegistrationString;
 	
+	private Member member;
 	
+
+	public Member getMember() {
+		if(member == null)
+			member = new Member();
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
 
 	public String getRegistrationRemark() {
 		return registrationRemark;

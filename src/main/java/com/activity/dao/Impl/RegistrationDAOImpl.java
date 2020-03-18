@@ -379,4 +379,60 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		return registration;
 	}
 
+	@Override
+	public List<Registration> getListWithMemberInformation(int id) {
+		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement smt = null;
+		List<Registration> registrationList = new ArrayList<Registration>();
+		final String sql = "SELECT r.* , m.* FROM registration r " + 
+							" JOIN member m on r.member_Email = m.memberEmail " + 
+							" where r.activity_Id = ?;";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setInt(1, id);
+			rs = smt.executeQuery();
+			Registration registration;
+			while (rs.next()) {
+				registration = new Registration();
+				registration.setMember_Email(rs.getString("member_email"));
+				registration.setActivity_Id(rs.getInt("activity_Id"));
+				registration.setRegistrationRemark(rs.getString("registrationRemark"));
+				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
+				registration.setIsSignIn(rs.getInt("isSignIn"));
+				registration.setIsSignOut(rs.getInt("isSignOut"));
+
+				registration.getMember().setEmergencyContact(rs.getString("emergencyContact"));
+				registration.getMember().setEmergencyContactPhone(rs.getString("emergencyContactPhone"));
+				registration.getMember().setEmergencyContactRelation(rs.getString("emergencyContactRelation"));
+				registration.getMember().setMemberGender(rs.getString("memberGender"));
+				registration.getMember().setMemberName(rs.getString("memberName"));
+				registration.getMember().setMemberAddress(rs.getString("memberAddress"));
+				registration.getMember().setMemberPassword(rs.getString("memberPassword"));
+				registration.getMember().setMemberBirthday(rs.getTimestamp("memberBirthday"));
+				registration.getMember().setMemberLineId(rs.getString("memberLineId"));
+				registration.getMember().setMemberID(rs.getString("memberID"));
+				registration.getMember().setMemberBloodType(rs.getString("memberBloodType"));
+				
+				registrationList.add(registration);
+			}
+			rs.close();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return registrationList;
+	}
+
 }
