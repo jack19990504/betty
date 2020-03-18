@@ -95,9 +95,8 @@ public class Registration {
 	}
 
 	public String getCancelRegistrationString() {
-		System.out.println(cancelRegistration);
+		
 		this.cancelRegistrationString = DateUtil.getDateFromTimestamp(cancelRegistration);
-		System.out.println(cancelRegistrationString);
 		return cancelRegistrationString;
 	}
 

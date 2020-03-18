@@ -11,7 +11,6 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.activity.dao.RegistrationDAO;
-import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Registration;;
 @Repository
