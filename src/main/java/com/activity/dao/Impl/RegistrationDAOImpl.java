@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.activity.dao.RegistrationDAO;
+import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Registration;;
 @Repository
@@ -24,11 +25,11 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 	}
 	
 	@Override
-	public List<Registration> getUserRegistration(String UserLineId) {
+	public List<String> getUserRegistration(String UserLineId) {
 		Connection conn = null;
 		ResultSet rs = null;
 		PreparedStatement smt = null;
-		List<Registration> registerList = new ArrayList<>();
+		List<String> registerList = new ArrayList<>();
 		final String sql = "SELECT r.* FROM Registration r JOIN member m "
 				+ "ON r.member_Email = m.memberEmail"+
 				" JOIN activity a ON r.activity_Id = a.activityId "
@@ -38,11 +39,10 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 			smt = conn.prepareStatement(sql);
 			smt.setString(1, UserLineId);
 			rs = smt.executeQuery();
-			Registration register;
 			while (rs.next()) {
-				register = new Registration();
-				register.setActivityName(rs.getString("activityName"));
-				registerList.add(register);
+				
+				String activityName = rs.getString("activityName");
+				registerList.add(activityName);
 			}
 			rs.close();
 			smt.close();
@@ -80,9 +80,9 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 				registration.setActivity_Id(rs.getInt("activity_Id"));
 				registration.setRegistrationRemark(rs.getString("registrationRemark"));
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
-				registration.setActivityName(rs.getString("activityName"));
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
+				registration.setCancelRegistration(rs.getTimestamp("cancelRegistration"));
 			}
 			smt.close();
 			rs.close();
@@ -106,7 +106,7 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		ResultSet rs = null;
 		PreparedStatement smt = null;
 		List<Registration> registrationList = new ArrayList<Registration>();
-		final String sql = "SELECT * FROM registration;";
+		final String sql = "SELECT * FROM registration ;";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -114,12 +114,14 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 			Registration registration;
 			while (rs.next()) {
 				registration = new Registration();
+				registration.setAInum(rs.getInt("AInum"));
 				registration.setMember_Email(rs.getString("member_email"));
 				registration.setActivity_Id(rs.getInt("activity_Id"));
 				registration.setRegistrationRemark(rs.getString("registrationRemark"));
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
+				registration.setCancelRegistration(rs.getTimestamp("cancelRegistration"));
 				
 				registrationList.add(registration);
 			}

@@ -97,11 +97,11 @@ public class LineController {
 					}
 					else if(event.getMessage().getText().equals("查詢已報名活動"))
 					{
-						List<Registration> Registration = registerDAO.getUserRegistration(event.getSource().getUserId());
+						List<String> Registration = registerDAO.getUserRegistration(event.getSource().getUserId());
 						String message = "您所參加的活動有:\\n";
-						for(Registration r : Registration)
+						for(String r : Registration)
 						{
-							message = message + r.getActivityName() +  "、";
+							message = message + r +  "、";
 						}
 						message = message.substring(0,message.length()-1);
 						sendResponseMessages(event.getReplyToken(),message);
