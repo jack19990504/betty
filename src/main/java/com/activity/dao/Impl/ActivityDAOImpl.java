@@ -149,17 +149,17 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
 				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
 				
-				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
-				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
-				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
-				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
+//				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+//				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+//				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
+//				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
+//				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
+//				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
 				
-				activity.setActivityStartDateString(ft.format(d1));
-				activity.setActivityEndDateString(ft.format(d2));
-				activity.setStartSignUpDateString(ft.format(d3));
-				activity.setEndSignUpDateString(ft.format(d4));
+//				activity.setActivityStartDateString(ft.format(d1));
+//				activity.setActivityEndDateString(ft.format(d2));
+//				activity.setStartSignUpDateString(ft.format(d3));
+//				activity.setEndSignUpDateString(ft.format(d4));
 				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 			}
@@ -350,17 +350,17 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
 				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
 				
-				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
-				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
-				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
-				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
-				
-				activity.setActivityStartDateString(ft.format(d1));
-				activity.setActivityEndDateString(ft.format(d2));
-				activity.setStartSignUpDateString(ft.format(d3));
-				activity.setEndSignUpDateString(ft.format(d4));
+//				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+//				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+//				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
+//				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
+//				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
+//				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
+//				
+//				activity.setActivityStartDateString(ft.format(d1));
+//				activity.setActivityEndDateString(ft.format(d2));
+//				activity.setStartSignUpDateString(ft.format(d3));
+//				activity.setEndSignUpDateString(ft.format(d4));
 				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 
@@ -443,17 +443,17 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
 				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
 				
-				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
-				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
-				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
-				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
-				
-				activity.setActivityStartDateString(ft.format(d1));
-				activity.setActivityEndDateString(ft.format(d2));
-				activity.setStartSignUpDateString(ft.format(d3));
-				activity.setEndSignUpDateString(ft.format(d4));
+//				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+//				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+//				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
+//				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
+//				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
+//				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
+//				
+//				activity.setActivityStartDateString(ft.format(d1));
+//				activity.setActivityEndDateString(ft.format(d2));
+//				activity.setStartSignUpDateString(ft.format(d3));
+//				activity.setEndSignUpDateString(ft.format(d4));
 				
 				
 				activity.setActivityMeal(rs.getInt("activityMeal"));

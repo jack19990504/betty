@@ -7,7 +7,7 @@ import com.activity.entity.Registration;
 
 public interface RegistrationDAO {
 	//利用lineid尋找已報名活動
-	public List<Registration> getUserRegistration(String UserLineId);
+	public List<String> getUserRegistration(String UserLineId);
 	//獲取單一使用者所報名的所有活動
 	public Registration get(Registration registration);
 	//獲取所有報名清單
@@ -28,4 +28,6 @@ public interface RegistrationDAO {
 	public Integer getNoCancelAndNoAttend(Member member);
 	
 	public Registration getOneRegistration(Registration registration);
+	
+	public List<Registration> getListWithMemberInformation(int id);
 }

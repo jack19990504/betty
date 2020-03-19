@@ -1,4 +1,5 @@
 package com.activity.dao.Impl;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +14,9 @@ import org.springframework.stereotype.Repository;
 import com.activity.dao.RegistrationDAO;
 import com.activity.entity.Member;
 import com.activity.entity.Registration;;
+
 @Repository
-public class RegistrationDAOImpl implements RegistrationDAO{
+public class RegistrationDAOImpl implements RegistrationDAO {
 
 	@Autowired
 	private DataSource dataSource;
@@ -22,27 +24,25 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
-	
+
 	@Override
-	public List<Registration> getUserRegistration(String UserLineId) {
+	public List<String> getUserRegistration(String UserLineId) {
 		Connection conn = null;
 		ResultSet rs = null;
 		PreparedStatement smt = null;
-		List<Registration> registerList = new ArrayList<>();
-		final String sql = "SELECT r.* FROM Registration r JOIN member m "
-				+ "ON r.member_Email = m.memberEmail"+
-				" JOIN activity a ON r.activity_Id = a.activityId "
-				+ " where m.memberLineId = ? ;";
+		List<String> registerList = new ArrayList<>();
+		final String sql = "SELECT r.* FROM Registration r JOIN member m " + "ON r.member_Email = m.memberEmail"
+				+ " JOIN activity a ON r.activity_Id = a.activityId " + " where m.memberLineId = ? ;";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 			smt.setString(1, UserLineId);
 			rs = smt.executeQuery();
-			Registration register;
+			String activityName = "";
 			while (rs.next()) {
-				register = new Registration();
-				register.setActivityName(rs.getString("activityName"));
-				registerList.add(register);
+
+				activityName = rs.getString("activityName");
+				registerList.add(activityName);
 			}
 			rs.close();
 			smt.close();
@@ -61,7 +61,7 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		}
 		return registerList;
 	}
-	
+
 	public Registration get(Registration registration) {
 		Connection conn = null;
 		PreparedStatement smt = null;
@@ -80,7 +80,6 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 				registration.setActivity_Id(rs.getInt("activity_Id"));
 				registration.setRegistrationRemark(rs.getString("registrationRemark"));
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
-				registration.setActivityName(rs.getString("activityName"));
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
 			}
@@ -100,8 +99,8 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		}
 		return registration;
 	}
-	
-	public List<Registration> getList(){
+
+	public List<Registration> getList() {
 		Connection conn = null;
 		ResultSet rs = null;
 		PreparedStatement smt = null;
@@ -120,7 +119,7 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
-				
+
 				registrationList.add(registration);
 			}
 			rs.close();
@@ -140,7 +139,7 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		}
 		return registrationList;
 	}
-	
+
 	public void insert(Registration registration) {
 		Connection conn = null;
 		PreparedStatement smt = null;
@@ -173,18 +172,22 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 	public void update(Registration oldRegistration, Registration registration) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "UPDATE registration SET " + " registrationRemark = ?, " + "registrationMeal = ? ," 
-		+ " isSignIn = ? , isSingOut = ?" + "where AInum = ? ";
+		final String sql = "UPDATE registration SET " + " registrationRemark = ?, " + "registrationMeal = ? ,"
+				+ " isSignIn = ? , isSingOut = ?" + "where AInum = ? ";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 
-			smt.setString(1, registration.getRegistrationRemark() != null ? registration.getRegistrationRemark(): oldRegistration.getRegistrationRemark());
-			smt.setInt(2,registration.getRegistrationMeal() != null ? registration.getRegistrationMeal() : oldRegistration.getRegistrationMeal());
-			smt.setInt(3, registration.getIsSignIn() != null ? registration.getIsSignIn() : oldRegistration.getIsSignIn());
-			smt.setInt(4, registration.getIsSignOut() != null ? registration.getIsSignOut() : oldRegistration.getIsSignOut());
+			smt.setString(1, registration.getRegistrationRemark() != null ? registration.getRegistrationRemark()
+					: oldRegistration.getRegistrationRemark());
+			smt.setInt(2, registration.getRegistrationMeal() != null ? registration.getRegistrationMeal()
+					: oldRegistration.getRegistrationMeal());
+			smt.setInt(3,
+					registration.getIsSignIn() != null ? registration.getIsSignIn() : oldRegistration.getIsSignIn());
+			smt.setInt(4,
+					registration.getIsSignOut() != null ? registration.getIsSignOut() : oldRegistration.getIsSignOut());
 			smt.setInt(5, registration.getAInum());
-			
+
 			smt.executeUpdate();
 			smt.close();
 
@@ -249,7 +252,7 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
-				
+
 				registrationList.add(registration);
 			}
 			rs.close();
@@ -280,7 +283,6 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 			smt = conn.prepareStatement(sql);
 
 			smt.setInt(1, registration.getAInum());
-			
 
 			smt.executeUpdate();
 			smt.close();
@@ -297,7 +299,7 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 				}
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -306,8 +308,8 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		Connection conn = null;
 		PreparedStatement smt = null;
 		ResultSet rs = null;
-		final String sql = "SELECT  COUNT(cancelRegistration) as 'canceltime' " + 
-				"FROM registration WHERE cancelRegistration BETWEEN date_sub(NOW(),INTERVAL 30 DAY) and  NOW()"
+		final String sql = "SELECT  COUNT(cancelRegistration) as 'canceltime' "
+				+ "FROM registration WHERE cancelRegistration BETWEEN date_sub(NOW(),INTERVAL 30 DAY) and  NOW()"
 				+ " and member_Email = ?;";
 		Integer cancelTime = 0;
 		try {
@@ -315,7 +317,7 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 			smt = conn.prepareStatement(sql);
 			smt.setString(1, member.getMemberEmail());
 			rs = smt.executeQuery();
-			
+
 			if (rs.next()) {
 				cancelTime = rs.getInt("canceltime");
 			}
@@ -342,8 +344,7 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		Connection conn = null;
 		PreparedStatement smt = null;
 		ResultSet rs = null;
-		final String sql = "SELECT * FROM `registration`  "
-				+ " where member_Email = ? and activity_Id = ? "
+		final String sql = "SELECT * FROM `registration`  " + " where member_Email = ? and activity_Id = ? "
 				+ " and cancelRegistration IS NULL";
 		try {
 			conn = dataSource.getConnection();
@@ -384,20 +385,20 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		Connection conn = null;
 		PreparedStatement smt = null;
 		ResultSet rs = null;
-		final String sql = "SELECT COUNT(isSignIn)\r\n" + 
-				"FROM registration r join activity a \r\n" + 
-				"WHERE a.activityStartDate BETWEEN date_sub(NOW(),INTERVAL 30 DAY) and NOW()\r\n" + 
-				"and r.activity_Id = a.activityId and isSignIn = 0\r\n" + 
-				"and member_Email = ?";
-		Integer cancelTime = 0;
+		final String sql = "SELECT COUNT(isSignIn) as 'notAttend' " + 
+				"FROM registration r join activity a " + 
+				"WHERE a.activityStartDate BETWEEN date_sub(NOW(),INTERVAL 30 DAY) and NOW() " + 
+				"and r.activity_Id = a.activityId and isSignIn = 0 " + 
+				"and member_Email = ? ;";
+		Integer notAttendTime = 0;
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 			smt.setString(1, member.getMemberEmail());
 			rs = smt.executeQuery();
-			
+
 			if (rs.next()) {
-				cancelTime = rs.getInt("canceltime");
+				notAttendTime = rs.getInt("notAttend");
 			}
 			smt.close();
 			rs.close();
@@ -413,7 +414,62 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 				}
 			}
 		}
-		return cancelTime;
+		return notAttendTime;
+	}
+
+	@Override
+	public List<Registration> getListWithMemberInformation(int id) {
+		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement smt = null;
+		List<Registration> registrationList = new ArrayList<Registration>();
+		final String sql = "SELECT r.* , m.* FROM registration r " + " JOIN member m on r.member_Email = m.memberEmail "
+				+ " where r.activity_Id = ?;";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setInt(1, id);
+			rs = smt.executeQuery();
+			Registration registration;
+			while (rs.next()) {
+				registration = new Registration();
+				registration.setMember_Email(rs.getString("member_email"));
+				registration.setActivity_Id(rs.getInt("activity_Id"));
+				registration.setRegistrationRemark(rs.getString("registrationRemark"));
+				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
+				registration.setIsSignIn(rs.getInt("isSignIn"));
+				registration.setIsSignOut(rs.getInt("isSignOut"));
+
+				registration.getMember().setEmergencyContact(rs.getString("emergencyContact"));
+				registration.getMember().setEmergencyContactPhone(rs.getString("emergencyContactPhone"));
+				registration.getMember().setEmergencyContactRelation(rs.getString("emergencyContactRelation"));
+				registration.getMember().setMemberGender(rs.getString("memberGender"));
+				registration.getMember().setMemberName(rs.getString("memberName"));
+				registration.getMember().setMemberAddress(rs.getString("memberAddress"));
+				registration.getMember().setMemberPassword(rs.getString("memberPassword"));
+				registration.getMember().setMemberBirthday(rs.getTimestamp("memberBirthday"));
+				registration.getMember().setMemberLineId(rs.getString("memberLineId"));
+				registration.getMember().setMemberID(rs.getString("memberID"));
+				registration.getMember().setMemberBloodType(rs.getString("memberBloodType"));
+
+				registrationList.add(registration);
+			}
+			rs.close();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return registrationList;
 	}
 
 }
