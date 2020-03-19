@@ -25,5 +25,7 @@ public interface RegistrationDAO {
 	//取得此使用者近一個月取消報名次數
 	public Integer getUserCancelTimeInMonth(Member member);
 	
+	public Integer getNoCancelAndNoAttend(Member member);
+	
 	public Registration getOneRegistration(Registration registration);
 }

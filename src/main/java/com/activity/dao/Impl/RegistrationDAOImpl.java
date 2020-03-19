@@ -378,4 +378,42 @@ public class RegistrationDAOImpl implements RegistrationDAO{
 		return registration;
 	}
 
+	@Override
+	public Integer getNoCancelAndNoAttend(Member member) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement smt = null;
+		ResultSet rs = null;
+		final String sql = "SELECT COUNT(isSignIn)\r\n" + 
+				"FROM registration r join activity a \r\n" + 
+				"WHERE a.activityStartDate BETWEEN date_sub(NOW(),INTERVAL 30 DAY) and NOW()\r\n" + 
+				"and r.activity_Id = a.activityId and isSignIn = 0\r\n" + 
+				"and member_Email = ?";
+		Integer cancelTime = 0;
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, member.getMemberEmail());
+			rs = smt.executeQuery();
+			
+			if (rs.next()) {
+				cancelTime = rs.getInt("canceltime");
+			}
+			smt.close();
+			rs.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return cancelTime;
+	}
+
 }
