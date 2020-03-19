@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.activity.util.DateUtil;
+
 public class Activity {
 
 	private Integer activityId;
@@ -54,6 +56,7 @@ public class Activity {
 	private List<String> activityTypes = new ArrayList<String>();
 
 	public String getStartSignUpDateString() {
+		this.startSignUpDateString = DateUtil.getDateFromTimestamp(startSignUpDate);
 		return startSignUpDateString;
 	}
 
@@ -62,6 +65,7 @@ public class Activity {
 	}
 
 	public String getEndSignUpDateString() {
+		this.endSignUpDateString = DateUtil.getDateFromTimestamp(endSignUpDate);
 		return endSignUpDateString;
 	}
 
@@ -70,6 +74,8 @@ public class Activity {
 	}
 
 	public String getActivityStartDateString() {
+		this.activityStartDateString = DateUtil.getDateFromTimestamp(activityStartDate);
+		
 		return activityStartDateString;
 	}
 
@@ -78,10 +84,12 @@ public class Activity {
 	}
 
 	public String getActivityEndDateString() {
+		this.activityEndDateString = DateUtil.getDateFromTimestamp(activityEndDate);
 		return activityEndDateString;
 	}
 
 	public void setActivityEndDateString(String activityEndDateString) {
+		
 		this.activityEndDateString = activityEndDateString;
 	}
 

@@ -1,6 +1,8 @@
 package com.activity.entity;
 
-import java.sql.Date;
+import java.sql.Timestamp;
+
+import com.activity.util.DateUtil;
 
 public class Member {
 
@@ -12,7 +14,13 @@ public class Member {
 	
 	private String memberGender;
 	
-	private Date memberBirthday;
+	private Timestamp memberBirthday;
+	
+	//program control
+	
+	private String memberBirthdayString;
+	
+	
 	
 	private String memberPhone;
 	
@@ -68,14 +76,22 @@ public class Member {
 		this.memberGender = memberGender;
 	}
 
-	public Date getMemberBirthday() {
+	public Timestamp getMemberBirthday() {
 		return memberBirthday;
 	}
 
-	public void setMemberBirthday(Date memberBirthday) {
+	public void setMemberBirthday(Timestamp memberBirthday) {
 		this.memberBirthday = memberBirthday;
 	}
 
+	public String getMemberBirthdayString() {
+		this.memberBirthdayString = DateUtil.getDateFromTimestamp(memberBirthday);
+		return memberBirthdayString;
+	}
+
+	public void setMemberBirthdayString(String memberBirthdayString) {
+		this.memberBirthdayString = memberBirthdayString;
+	}
 
 	public String getMemberPhone() {
 		return memberPhone;

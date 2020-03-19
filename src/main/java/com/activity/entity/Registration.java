@@ -1,6 +1,8 @@
 package com.activity.entity;
 
-import java.sql.Date;
+import java.sql.Timestamp;
+
+import com.activity.util.DateUtil;
 
 public class Registration {
 	
@@ -14,13 +16,28 @@ public class Registration {
 	
 	private Integer registrationMeal;
 	
-	private String activityName;
-	
 	private Integer isSignIn;
 	
 	private Integer isSignOut;
 	
-	private Date cancelRegistration;
+	private Timestamp cancelRegistration;
+	
+	//program control
+	
+	private String cancelRegistrationString;
+	
+	private Member member;
+	
+
+	public Member getMember() {
+		if(member == null)
+			member = new Member();
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
 
 	public String getRegistrationRemark() {
 		return registrationRemark;
@@ -36,14 +53,6 @@ public class Registration {
 
 	public void setRegistrationMeal(Integer registrationMeal) {
 		this.registrationMeal = registrationMeal;
-	}
-
-	public String getActivityName() {
-		return activityName;
-	}
-
-	public void setActivityName(String activityName) {
-		this.activityName = activityName;
 	}
 
 	public Integer getAInum() {
@@ -88,12 +97,22 @@ public class Registration {
 		this.isSignOut = isSignOut;
 	}
 
-	public Date getCancelRegistration() {
+	public Timestamp getCancelRegistration() {
 		return cancelRegistration;
 	}
 
-	public void setCancelRegistration(Date cancelRegistration) {
+	public void setCancelRegistration(Timestamp cancelRegistration) {
 		this.cancelRegistration = cancelRegistration;
+	}
+
+	public String getCancelRegistrationString() {
+		
+		this.cancelRegistrationString = DateUtil.getDateFromTimestamp(cancelRegistration);
+		return cancelRegistrationString;
+	}
+
+	public void setCancelRegistrationString(String cancelRegistrationString) {
+		this.cancelRegistrationString = cancelRegistrationString;
 	}
 
 	
