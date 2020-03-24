@@ -44,10 +44,10 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivityInfo(rs.getString("activityInfo"));
 				activity.setAttendPeople(rs.getInt("attendPeople"));
 				activity.setActivitySpace(rs.getString("activitySpace"));
-//				activity.setActivityStartDate(rs.getString("activityStartDate"));
-//				activity.setActivityEndDate(rs.getString("activityEndDate"));
-//				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
-//				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
+				activity.setActivityStartDate(rs.getDate("activityStartDate"));
+				activity.setActivityEndDate(rs.getDate("activityEndDate"));
+				activity.setStartSignUpDate(rs.getDate("startSignUpDate"));
+				activity.setEndSignUpDate(rs.getDate("endSignUpDate"));
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 
 				activityList.add(activity);
@@ -126,10 +126,10 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivityInfo(rs.getString("activityInfo"));
 				activity.setAttendPeople(rs.getInt("attendPeople"));
 				activity.setActivitySpace(rs.getString("activitySpace"));
-//				activity.setActivityStartDate(rs.getString("activityStartDate"));
-//				activity.setActivityEndDate(rs.getString("activityEndDate"));
-//				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
-//				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
+				activity.setActivityStartDate(rs.getDate("activityStartDate"));
+				activity.setActivityEndDate(rs.getDate("activityEndDate"));
+				activity.setStartSignUpDate(rs.getDate("startSignUpDate"));
+				activity.setEndSignUpDate(rs.getDate("endSignUpDate"));
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 			}
 			smt.close();
@@ -313,10 +313,10 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivityInfo(rs.getString("activityInfo"));
 				activity.setAttendPeople(rs.getInt("attendPeople"));
 				activity.setActivitySpace(rs.getString("activitySpace"));
-//				activity.setActivityStartDate(rs.getString("activityStartDate"));
-//				activity.setActivityEndDate(rs.getString("activityEndDate"));
-//				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
-//				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
+				activity.setActivityStartDate(rs.getDate("activityStartDate"));
+				activity.setActivityEndDate(rs.getDate("activityEndDate"));
+				activity.setStartSignUpDate(rs.getDate("startSignUpDate"));
+				activity.setEndSignUpDate(rs.getDate("endSignUpDate"));
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 
 				activityList.add(activity);
