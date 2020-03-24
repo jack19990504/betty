@@ -63,20 +63,6 @@ public class ActivityController {
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
-	
-	@GET
-	@Path("/organizer/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getOrganizerActivity(@PathParam("id") String id) {
-		
-				Activity activity = new Activity();
-				activity.setActivityOrganizer(id);
-				
-				final List<Activity> activityList = activityDAO.getOrganizerActivityList(activity);
-
-				return Response.status(200).entity(activityList).build();
-	}
-	
 
 	@DELETE
 	@Path("/{id}")
@@ -184,7 +170,7 @@ public class ActivityController {
         writeToFile(uploadedInputStream, uploadedFileLocation);
 
         String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
-        activity.setActivityCover(output);
+        activity.setActivityCover(uploadedFileLocation);
         activity.setActivityId(id);
         activityDAO.updateCover(activity);
         return Response.status(200).entity(output).build();
