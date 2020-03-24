@@ -50,6 +50,17 @@ public class Activity {
 	private Integer activityMeal;
 
 	private String activityCover;
+	
+	private String activityLinkName;
+	
+	private String activityLink;
+	
+	private String activitySummary;
+	
+	private String activityMoreContent;
+	
+	private String activityPrecautions;
+	
 
 	// private String activityType;
 
@@ -197,4 +208,46 @@ public class Activity {
 		this.activityCover = activityCover;
 	}
 
+	public String getActivityLinkName() {
+		return activityLinkName;
+	}
+
+	public void setActivityLinkName(String activityLinkName) {
+		this.activityLinkName = activityLinkName;
+	}
+
+	public String getActivityLink() {
+		return activityLink;
+	}
+
+	public void setActivityLink(String activityLink) {
+		this.activityLink = activityLink;
+	}
+
+	public String getActivitySummary() {
+		return activitySummary;
+	}
+
+	public void setActivitySummary(String activitySummary) {
+		this.activitySummary = activitySummary;
+	}
+
+	public String getActivityMoreContent() {
+		return activityMoreContent;
+	}
+
+	public void setActivityMoreContent(String activityMoreContent) {
+		this.activityMoreContent = activityMoreContent;
+	}
+
+	public String getActivityPrecautions() {
+		return activityPrecautions;
+	}
+
+	public void setActivityPrecautions(String activityPrecaution) {
+		this.activityPrecautions = activityPrecaution;
+	}
+
+	
+	
 }

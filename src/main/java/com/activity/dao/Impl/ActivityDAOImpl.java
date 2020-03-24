@@ -66,6 +66,12 @@ public class ActivityDAOImpl implements ActivityDAO {
 				
 				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityCover(rs.getString("activityCover"));
+				activity.setActivityLinkName(rs.getString("activityLinkName"));
+				activity.setActivityLink(rs.getString("activityLink"));
+				activity.setActivitySummary(rs.getString("activitySummary"));
+				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
+				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
 
 				activityList.add(activity);
 			}
@@ -162,6 +168,12 @@ public class ActivityDAOImpl implements ActivityDAO {
 //				activity.setEndSignUpDateString(ft.format(d4));
 				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityCover(rs.getString("activityCover"));
+				activity.setActivityLinkName(rs.getString("activityLinkName"));
+				activity.setActivityLink(rs.getString("activityLink"));
+				activity.setActivitySummary(rs.getString("activitySummary"));
+				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
+				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
 			}
 			smt.close();
 			rs.close();
@@ -185,7 +197,10 @@ public class ActivityDAOImpl implements ActivityDAO {
 		Connection conn = null;
 		PreparedStatement smt = null;
 		final String sql = "UPDATE activity SET " + "activityName = ? ," + " activityOrganizer = ?, "
-				+ "activityInfo = ?," + "attendPeople = ? ," + "activitySpace = ? ," + "activityMeal = ? " + " where activityId = ?";
+				+ "activityInfo = ?," + "attendPeople = ? ," + "activitySpace = ? ," + "startSignUpDate = ?," 
+				+ "endSignUpDate = ?, " + "activityStartDate = ?," + "activityEndDate = ?," + "activityMeal = ?, " 
+				+ "activityCover = ?, " + "activityLinkName = ?, " + "activityLink = ?, " + "activitySummary = ?,"
+				+ "activityMoreContent = ?," + "activityPrecautions = ?" + " where activityId = ?";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -195,8 +210,18 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setString(3,activity.getActivityInfo() != null ? activity.getActivityInfo() : oldActivity.getActivityInfo());
 			smt.setInt(4,activity.getAttendPeople() != null ? activity.getAttendPeople() : oldActivity.getAttendPeople());
 			smt.setString(5,activity.getActivitySpace() != null ? activity.getActivitySpace() : oldActivity.getActivitySpace());
-			smt.setInt(6,activity.getActivityMeal() != null ? activity.getActivityMeal() : oldActivity.getActivityMeal());
-			smt.setInt(7, activity.getActivityId() != null ? activity.getActivityId() : oldActivity.getActivityId());
+			smt.setTimestamp(6,activity.getStartSignUpDate() != null ? activity.getStartSignUpDate() : oldActivity.getStartSignUpDate());
+			smt.setTimestamp(7,activity.getEndSignUpDate() != null ? activity.getEndSignUpDate() : oldActivity.getEndSignUpDate());
+			smt.setTimestamp(8,activity.getActivityStartDate() != null ? activity.getActivityStartDate() : oldActivity.getActivityStartDate());
+			smt.setTimestamp(9,activity.getActivityEndDate() != null ? activity.getActivityEndDate() : oldActivity.getActivityEndDate());
+			smt.setInt(10,activity.getActivityMeal() != null ? activity.getActivityMeal() : oldActivity.getActivityMeal());
+			smt.setString(11,activity.getActivityCover() != null ? activity.getActivityCover() : oldActivity.getActivityCover());
+			smt.setString(12,activity.getActivityLinkName() != null ? activity.getActivityLinkName() : oldActivity.getActivityLinkName());
+			smt.setString(13,activity.getActivityLink() != null ? activity.getActivityLink() : oldActivity.getActivityLink());
+			smt.setString(14,activity.getActivitySummary() != null ? activity.getActivitySummary() : oldActivity.getActivitySummary());
+			smt.setString(15,activity.getActivityMoreContent() != null ? activity.getActivityMoreContent() : oldActivity.getActivityMoreContent());
+			smt.setString(16,activity.getActivityPrecautions() != null ? activity.getActivityPrecautions() : oldActivity.getActivityPrecautions());
+			smt.setInt(17, activity.getActivityId());
 			smt.executeUpdate();
 			smt.close();
 
@@ -248,8 +273,9 @@ public class ActivityDAOImpl implements ActivityDAO {
 		PreparedStatement smt = null;
 		final String sql = "INSERT INTO activity(activityName , activityOrganizer , activityInfo , "
 				+ "attendPeople , activitySpace, startSignUpDate , endSignUpDate, activityStartDate, "
-				+ "activityEndDate , activityMeal)"
-				+ " VALUES(? ,? ,? ,? ,? ,NOW() ,NOW() ,NOW() ,NOW() ,? )";
+				+ "activityEndDate , activityMeal , activityLinkName, activityLink, activitySummary, "
+				+ "activityMoreContent, activityPrecautions)"
+				+ " VALUES(? ,? ,? ,? ,? ,NOW() ,NOW() ,NOW() ,NOW() , ?, ?, ?, ?, ?, ? )";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -260,6 +286,11 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setInt(4, activity.getAttendPeople());
 			smt.setString(5, activity.getActivitySpace());
 			smt.setInt(6, activity.getActivityMeal());
+			smt.setString(7,activity.getActivityLinkName());
+			smt.setString(8,activity.getActivityName());
+			smt.setString(9,activity.getActivitySummary());
+			smt.setString(10,activity.getActivityMoreContent());
+			smt.setString(11,activity.getActivityPrecautions());
 
 			smt.executeUpdate();
 			smt.close();
@@ -363,6 +394,12 @@ public class ActivityDAOImpl implements ActivityDAO {
 //				activity.setEndSignUpDateString(ft.format(d4));
 				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityCover(rs.getString("activityCover"));
+				activity.setActivityLinkName(rs.getString("activityLinkName"));
+				activity.setActivityLink(rs.getString("activityLink"));
+				activity.setActivitySummary(rs.getString("activitySummary"));
+				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
+				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
 
 				activityList.add(activity);
 			}
@@ -457,6 +494,12 @@ public class ActivityDAOImpl implements ActivityDAO {
 				
 				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityCover(rs.getString("activityCover"));
+				activity.setActivityLinkName(rs.getString("activityLinkName"));
+				activity.setActivityLink(rs.getString("activityLink"));
+				activity.setActivitySummary(rs.getString("activitySummary"));
+				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
+				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
 
 				activityOrganizerList.add(activity);
 			}

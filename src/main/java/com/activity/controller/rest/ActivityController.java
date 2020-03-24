@@ -171,7 +171,7 @@ public class ActivityController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
-	@POST
+	@PATCH
     @Path("/files/{actId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response hello(@FormDataParam("file") InputStream uploadedInputStream,
@@ -184,9 +184,10 @@ public class ActivityController {
         writeToFile(uploadedInputStream, uploadedFileLocation);
 
         String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
-        activity.setActivityCover(output);
+        final Activity oldactivity = activityDAO.get(activity);
+        activity.setActivityCover(uploadedFileLocation);
         activity.setActivityId(id);
-        activityDAO.updateCover(activity);
+        activityDAO.update(oldactivity, activity);
         return Response.status(200).entity(output).build();
     }
 	
