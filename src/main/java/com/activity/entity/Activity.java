@@ -1,39 +1,97 @@
 package com.activity.entity;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.activity.util.DateUtil;
+
 public class Activity {
-	
+
 	private Integer activityId;
-	//activityName , activityOrganizer , activityInfo , attendPeople , activitySpace,startSignUpDate ,
-	//endSignUpDate, activityStartDate, activityEndDate , organizerTel , organizerContactInfo , activityMeal
+	// activityName , activityOrganizer , activityInfo , attendPeople ,
+	// activitySpace,startSignUpDate ,
+	// endSignUpDate, activityStartDate, activityEndDate , organizerTel ,
+	// organizerContactInfo , activityMeal
 	private String activityName;
-	
+
 	private String activityOrganizer;
-	
+
 	private String activityInfo;
-	
+
 	private Integer attendPeople;
-	
+
 	private String activitySpace;
+
+	//database
 	
-	private Date startSignUpDate;
+	private Timestamp startSignUpDate;
+
+	private Timestamp endSignUpDate;
+
+	private Timestamp activityStartDate;
+
+	private Timestamp activityEndDate;
 	
-	private Date endSignUpDate;
 	
-	private Date activityStartDate;
+	//program control 
 	
-	private Date activityEndDate;
+	private String startSignUpDateString;
+
+	private String endSignUpDateString;
+
+	private String activityStartDateString;
+
+	private String activityEndDateString;
 	
+	
+	
+
 	private Integer activityMeal;
-	
+
 	private String activityCover;
-	
-	//private String activityType;
-	
+
+	// private String activityType;
+
 	private List<String> activityTypes = new ArrayList<String>();
+
+	public String getStartSignUpDateString() {
+		this.startSignUpDateString = DateUtil.getDateFromTimestamp(startSignUpDate);
+		return startSignUpDateString;
+	}
+
+	public void setStartSignUpDateString(String startSignUpDateString) {
+		this.startSignUpDateString = startSignUpDateString;
+	}
+
+	public String getEndSignUpDateString() {
+		this.endSignUpDateString = DateUtil.getDateFromTimestamp(endSignUpDate);
+		return endSignUpDateString;
+	}
+
+	public void setEndSignUpDateString(String endSignUpDateString) {
+		this.endSignUpDateString = endSignUpDateString;
+	}
+
+	public String getActivityStartDateString() {
+		this.activityStartDateString = DateUtil.getDateFromTimestamp(activityStartDate);
+		
+		return activityStartDateString;
+	}
+
+	public void setActivityStartDateString(String activityStartDateString) {
+		this.activityStartDateString = activityStartDateString;
+	}
+
+	public String getActivityEndDateString() {
+		this.activityEndDateString = DateUtil.getDateFromTimestamp(activityEndDate);
+		return activityEndDateString;
+	}
+
+	public void setActivityEndDateString(String activityEndDateString) {
+		
+		this.activityEndDateString = activityEndDateString;
+	}
 
 	public Integer getActivityId() {
 		return activityId;
@@ -67,7 +125,6 @@ public class Activity {
 		this.activityInfo = activityInfo;
 	}
 
-	
 	public Integer getAttendPeople() {
 		return attendPeople;
 	}
@@ -84,36 +141,35 @@ public class Activity {
 		this.activitySpace = activitySpace;
 	}
 
-	public Date getStartSignUpDate() {
+	public Timestamp getStartSignUpDate() {
 		return startSignUpDate;
 	}
 
-	public void setStartSignUpDate(Date startSignUpDate) {
+	public void setStartSignUpDate(Timestamp startSignUpDate) {
 		this.startSignUpDate = startSignUpDate;
 	}
 
-	public Date getEndSignUpDate() {
+	public Timestamp getEndSignUpDate() {
 		return endSignUpDate;
 	}
 
-	public void setEndSignUpDate(Date endSignUpDate) {
+	public void setEndSignUpDate(Timestamp endSignUpDate) {
 		this.endSignUpDate = endSignUpDate;
 	}
 
-	
-	public Date getActivityStartDate() {
+	public Timestamp getActivityStartDate() {
 		return activityStartDate;
 	}
 
-	public void setActivityStartDate(Date activityStartDate) {
+	public void setActivityStartDate(Timestamp activityStartDate) {
 		this.activityStartDate = activityStartDate;
 	}
 
-	public Date getActivityEndDate() {
+	public Timestamp getActivityEndDate() {
 		return activityEndDate;
 	}
 
-	public void setActivityEndDate(Date activityEndDate) {
+	public void setActivityEndDate(Timestamp activityEndDate) {
 		this.activityEndDate = activityEndDate;
 	}
 
@@ -141,10 +197,4 @@ public class Activity {
 		this.activityCover = activityCover;
 	}
 
-	
-
-	
-	
-	
-	
 }

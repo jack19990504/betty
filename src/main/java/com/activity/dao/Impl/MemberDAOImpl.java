@@ -1,7 +1,6 @@
 package com.activity.dao.Impl;
 
 import com.activity.dao.MemberDAO;
-import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.sql.Connection;
@@ -118,7 +117,7 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberAddress(rs.getString("memberAddress"));
 				member.setMemberEmail(rs.getString("memberEmail"));
 				member.setMemberPassword(rs.getString("memberPassword"));
-				member.setMemberBirthday(rs.getDate("memberBirthday"));
+				member.setMemberBirthday(rs.getTimestamp("memberBirthday"));
 				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberLineId(rs.getString("memberLineId"));
 				member.setMemberGender(rs.getString("memberGender"));
@@ -297,7 +296,7 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberPassword(rs.getString("memberPassword"));
 				member.setMemberName(rs.getString("memberName"));
 				member.setMemberGender(rs.getString("memberGender"));
-				member.setMemberBirthday(rs.getDate("memberBirthday")); //不確定
+				member.setMemberBirthday(rs.getTimestamp("memberBirthday")); //不確定
 				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberAddress(rs.getString("memberAddress"));
 				member.setMemberLineId(rs.getString("memberLineId"));
