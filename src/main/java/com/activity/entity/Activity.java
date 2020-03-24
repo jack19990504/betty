@@ -56,7 +56,8 @@ public class Activity {
 	private List<String> activityTypes = new ArrayList<String>();
 
 	public String getStartSignUpDateString() {
-		this.startSignUpDateString = DateUtil.getDateFromTimestamp(startSignUpDate);
+		if(startSignUpDateString.equals(null))
+			this.startSignUpDateString = DateUtil.getDateFromTimestamp(startSignUpDate);
 		return startSignUpDateString;
 	}
 
@@ -65,7 +66,8 @@ public class Activity {
 	}
 
 	public String getEndSignUpDateString() {
-		this.endSignUpDateString = DateUtil.getDateFromTimestamp(endSignUpDate);
+		if(endSignUpDateString.equals(null))
+			this.endSignUpDateString = DateUtil.getDateFromTimestamp(endSignUpDate);
 		return endSignUpDateString;
 	}
 
@@ -74,7 +76,8 @@ public class Activity {
 	}
 
 	public String getActivityStartDateString() {
-		this.activityStartDateString = DateUtil.getDateFromTimestamp(activityStartDate);
+		if(activityStartDateString.equals(null))
+			this.activityStartDateString = DateUtil.getDateFromTimestamp(activityStartDate);
 		
 		return activityStartDateString;
 	}
@@ -84,6 +87,7 @@ public class Activity {
 	}
 
 	public String getActivityEndDateString() {
+		if(activityEndDateString.equals(null))
 		this.activityEndDateString = DateUtil.getDateFromTimestamp(activityEndDate);
 		return activityEndDateString;
 	}

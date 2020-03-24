@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,8 @@ public class MemberDAOImpl implements MemberDAO {
 		PreparedStatement smt = null;
 		final String sql = "INSERT INTO member(memberEmail, memberPassword, memberName, memberGender, memberPhone, memberAddress,"
 				+ " memberType, memberEncodedPassword, memberEnabled, memberID, memberBloodType, emergencyContact, "
-				+ "emergencyContactRelation, emergencyContactPhone) "
-				+ " VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?)";
+				+ "emergencyContactRelation, emergencyContactPhone , memberBirthday) "
+				+ " VALUES ( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?,?)";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -52,6 +53,8 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(12, member.getEmergencyContact());
 			smt.setString(13, member.getEmergencyContactRelation());
 			smt.setString(14, member.getEmergencyContactPhone());
+			Timestamp ts = Timestamp.valueOf(member.getMemberBirthdayString());	
+			smt.setTimestamp(15,ts );
 //			System.out.println(member.getMemberEmail() + member.getMemberPassword() +
 //					member.getMemberName() + member.getMemberGender()+
 //					member.getMemberTel() + member.getMemberPhone() + member .getMemberAddress()+
@@ -225,7 +228,7 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(1,member.getMemberPassword() != null ? member.getMemberPassword() : oldMember.getMemberPassword());
 			smt.setString(2,member.getMemberName() != null ? member.getMemberName() : oldMember.getMemberName());
 			smt.setString(3, member.getMemberGender() != null ? member.getMemberGender(): oldMember.getMemberGender());
-//			smt.setDate(4,member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); //有需要嗎
+			smt.setTimestamp(4,member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); //有需要嗎
 			smt.setString(4,member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
 			smt.setString(5,member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());
 			smt.setString(6,member.getMemberBloodType() != null ? member.getMemberBloodType() : oldMember.getMemberBloodType());
