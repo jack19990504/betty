@@ -63,6 +63,20 @@ public class ActivityController {
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
+	
+	@GET
+	@Path("/organizer/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getOrganizerActivity(@PathParam("id") String id) {
+		
+				Activity activity = new Activity();
+				activity.setActivityOrganizer(id);
+				
+				final List<Activity> activityList = activityDAO.getOrganizerActivityList(activity);
+
+				return Response.status(200).entity(activityList).build();
+	}
+	
 
 	@DELETE
 	@Path("/{id}")

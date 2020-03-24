@@ -13,6 +13,8 @@ public interface ActivityDAO {
 	
 	public Activity get(Activity activity);
 	
+	public List<Activity> getOrganizerActivityList(Activity activity);
+	
 	public void update(Activity oldActivity,Activity activity);
 	
 	public void delete(Activity activity);

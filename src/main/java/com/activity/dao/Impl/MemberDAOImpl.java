@@ -1,7 +1,6 @@
 package com.activity.dao.Impl;
 
 import com.activity.dao.MemberDAO;
-import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.sql.Connection;

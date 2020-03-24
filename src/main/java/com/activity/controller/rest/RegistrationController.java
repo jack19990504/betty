@@ -68,12 +68,18 @@ public class RegistrationController {
 			Member member = new Member();
 			member.setMemberEmail(authUtil.getCurrentUsername());
 			Integer cancelTimes = registrationDAO.getUserCancelTimeInMonth(member);
+			Integer notAttendTimes = registrationDAO.getNoCancelAndNoAttend(member);
 			System.out.println(member.getMemberEmail() + "\t" + cancelTimes);
 			//如超過三次則無法報名
 			if (cancelTimes >= 3) {
 				webResponse.UNPROCESSABLE_ENTITY();
 				webResponse.setData("You cancel 3 registrations within a month! \n please wait until next month!");
-			} else {
+			}
+			else if(notAttendTimes >= 2){
+				webResponse.UNPROCESSABLE_ENTITY();
+				webResponse.setData("You did not cancel and attend 3 registrations within a month! \n please wait until next month!");
+			}
+			else {
 				registrationDAO.insert(registration);
 				webResponse.OK();
 				webResponse.setData(registration);
@@ -164,8 +170,8 @@ public class RegistrationController {
 		
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet1;
-		String filePath = "C:/Users/jack1/Desktop/somthing/upload/" + filename  + ".xls";
-	
+		//String filePath = "C:/Users/jack1/Desktop/somthing/upload/" + filename  + ".xls";
+		String filePath = "C:\\Users\\Morris\\Desktop\\upload\\" + filename  + ".xls";
 		sheet1 = workbook.createSheet("TEST");
 		// 設定開始欄位為第一欄
 		

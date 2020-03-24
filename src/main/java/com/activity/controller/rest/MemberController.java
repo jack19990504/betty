@@ -49,7 +49,8 @@ public class MemberController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll() {
 		List<Member> memberList = memberDAO.getList();
-		return Response.status(200).entity(memberList).build();
+		Gson gson = new Gson();
+		return Response.status(200).entity(gson.toJson(memberList)).build();
 	}
 
 	@PATCH

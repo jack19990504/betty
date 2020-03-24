@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.activity.dao.ActivityDAO;
@@ -59,7 +58,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 //				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
 //				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
 //				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
-//				
+				
 //				activity.setActivityStartDateString(ft.format(d1));
 //				activity.setActivityEndDateString(ft.format(d2));
 //				activity.setStartSignUpDateString(ft.format(d3));
@@ -144,10 +143,24 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivityInfo(rs.getString("activityInfo"));
 				activity.setAttendPeople(rs.getInt("attendPeople"));
 				activity.setActivitySpace(rs.getString("activitySpace"));
-//				activity.setActivityStartDate(rs.getString("activityStartDate"));
-//				activity.setActivityEndDate(rs.getString("activityEndDate"));
-//				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
-//				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
+				
+				activity.setActivityStartDate(rs.getTimestamp("activityStartDate"));
+				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
+				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
+				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
+				
+//				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+//				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+//				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
+//				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
+//				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
+//				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
+				
+//				activity.setActivityStartDateString(ft.format(d1));
+//				activity.setActivityEndDateString(ft.format(d2));
+//				activity.setStartSignUpDateString(ft.format(d3));
+//				activity.setEndSignUpDateString(ft.format(d4));
+				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 			}
 			smt.close();
@@ -331,10 +344,24 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivityInfo(rs.getString("activityInfo"));
 				activity.setAttendPeople(rs.getInt("attendPeople"));
 				activity.setActivitySpace(rs.getString("activitySpace"));
-//				activity.setActivityStartDate(rs.getString("activityStartDate"));
-//				activity.setActivityEndDate(rs.getString("activityEndDate"));
-//				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
-//				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
+				
+				activity.setActivityStartDate(rs.getTimestamp("activityStartDate"));
+				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
+				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
+				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
+				
+//				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+//				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+//				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
+//				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
+//				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
+//				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
+//				
+//				activity.setActivityStartDateString(ft.format(d1));
+//				activity.setActivityEndDateString(ft.format(d2));
+//				activity.setStartSignUpDateString(ft.format(d3));
+//				activity.setEndSignUpDateString(ft.format(d4));
+				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 
 				activityList.add(activity);
@@ -388,6 +415,69 @@ public class ActivityDAOImpl implements ActivityDAO {
 
 		
 	}
+
+	@Override
+	public List<Activity> getOrganizerActivityList(Activity activity) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement smt = null;
+		List<Activity> activityOrganizerList = new ArrayList<Activity>();
+		final String sql = "SELECT * FROM activity WHERE activityOrganizer = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, activity.getActivityOrganizer());
+			rs = smt.executeQuery();
+			while (rs.next()) {
+				activity = new Activity();
+				activity.setActivityId(rs.getInt("activityId"));
+				activity.setActivityName(rs.getString("activityName"));
+				activity.setActivityOrganizer(rs.getString("activityOrganizer"));
+				activity.setActivityInfo(rs.getString("activityInfo"));
+				activity.setAttendPeople(rs.getInt("attendPeople"));
+				activity.setActivitySpace(rs.getString("activitySpace"));
+				
+				activity.setActivityStartDate(rs.getTimestamp("activityStartDate"));
+				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
+				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
+				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
+				
+//				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+//				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
+//				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
+//				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
+//				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
+//				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
+//				
+//				activity.setActivityStartDateString(ft.format(d1));
+//				activity.setActivityEndDateString(ft.format(d2));
+//				activity.setStartSignUpDateString(ft.format(d3));
+//				activity.setEndSignUpDateString(ft.format(d4));
+				
+				
+				activity.setActivityMeal(rs.getInt("activityMeal"));
+
+				activityOrganizerList.add(activity);
+			}
+			rs.close();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return activityOrganizerList;
+	}
+
 	
 	
 }
