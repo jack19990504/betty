@@ -44,7 +44,7 @@ public class MemberController {
 	@Autowired
     private JavaMailSender javaMailSender;
 	
-	@GET
+	@POST
 	@Path("/check")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -52,9 +52,9 @@ public class MemberController {
 		final WebResponse webResponse = new WebResponse();
 		Member member1 = new Member();
 		member1.setMemberEmail(member.getMemberEmail());
-		memberDAO.get(member1);
-		if(member1.getMemberName() != null) {
-			webResponse.getError().setMessage("此帳號已註冊");
+		if(memberDAO.get(member1).getMemberName() != null) {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("此帳號已註冊");
 		}
 		else {
 			webResponse.OK();
