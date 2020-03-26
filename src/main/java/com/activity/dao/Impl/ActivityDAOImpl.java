@@ -4,11 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,18 +48,13 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
 				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
 				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
-				
-//				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-//				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-//				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
-//				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
-//				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
-//				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
-				
-//				activity.setActivityStartDateString(ft.format(d1));
-//				activity.setActivityEndDateString(ft.format(d2));
-//				activity.setStartSignUpDateString(ft.format(d3));
-//				activity.setEndSignUpDateString(ft.format(d4));
+
+				//program control
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString() : "");
+				activity.setActivityEndDateString(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString() : "");
+				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString() : "");
+				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString() : "");
+			
 				
 				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
@@ -150,22 +142,15 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setAttendPeople(rs.getInt("attendPeople"));
 				activity.setActivitySpace(rs.getString("activitySpace"));
 				
-				activity.setActivityStartDate(rs.getTimestamp("activityStartDate"));
-				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
-				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
-				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
-				
-//				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-//				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-//				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
-//				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
-//				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
-//				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
-				
-//				activity.setActivityStartDateString(ft.format(d1));
-//				activity.setActivityEndDateString(ft.format(d2));
-//				activity.setStartSignUpDateString(ft.format(d3));
-//				activity.setEndSignUpDateString(ft.format(d4));
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString() : "");
+				activity.setActivityEndDateString(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString() : "");
+				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString() : "");
+				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString() : "");
+				//program control
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString() : "");
+				activity.setActivityEndDateString(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString() : "");
+				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString() : "");
+				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString() : "");
 				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 				activity.setActivityCover(rs.getString("activityCover"));
@@ -273,9 +258,14 @@ public class ActivityDAOImpl implements ActivityDAO {
 		PreparedStatement smt = null;
 		final String sql = "INSERT INTO activity(activityName , activityOrganizer , activityInfo , "
 				+ "attendPeople , activitySpace, startSignUpDate , endSignUpDate, activityStartDate, "
+<<<<<<< HEAD
 				+ "activityEndDate , activityMeal , activityLinkName, activityLink, activitySummary, "
 				+ "activityMoreContent, activityPrecautions)"
 				+ " VALUES(? ,? ,? ,? ,? ,? ,? ,? ,? , ?, ?, ?, ?, ?, ? )";
+=======
+				+ "activityEndDate , activityMeal)"
+				+ " VALUES(? ,? ,? ,? ,? ,? ,? ,? ,? ,? )";
+>>>>>>> branch 'jack1' of https://github.com/jack19990504/betty.git
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -285,6 +275,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setString(3, activity.getActivityInfo());
 			smt.setInt(4, activity.getAttendPeople());
 			smt.setString(5, activity.getActivitySpace());
+<<<<<<< HEAD
 			smt.setTimestamp(6, activity.getStartSignUpDate());
 			smt.setTimestamp(7, activity.getEndSignUpDate());
 			smt.setTimestamp(8, activity.getActivityStartDate());
@@ -295,6 +286,14 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setString(13,activity.getActivitySummary());
 			smt.setString(14,activity.getActivityMoreContent());
 			smt.setString(15,activity.getActivityPrecautions());
+=======
+			smt.setInt(10, activity.getActivityMeal());
+
+			smt.setTimestamp(6, activity.getStartSignUpDate());
+			smt.setTimestamp(7, activity.getEndSignUpDate());
+			smt.setTimestamp(8, activity.getActivityStartDate());
+			smt.setTimestamp(9, activity.getActivityEndDate());
+>>>>>>> branch 'jack1' of https://github.com/jack19990504/betty.git
 
 			smt.executeUpdate();
 			smt.close();
@@ -384,18 +383,11 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
 				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
 				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
-				
-//				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-//				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-//				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
-//				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
-//				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
-//				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
-//				
-//				activity.setActivityStartDateString(ft.format(d1));
-//				activity.setActivityEndDateString(ft.format(d2));
-//				activity.setStartSignUpDateString(ft.format(d3));
-//				activity.setEndSignUpDateString(ft.format(d4));
+				//program control
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString() : "");
+				activity.setActivityEndDateString(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString() : "");
+				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString() : "");
+				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString() : "");
 				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 				activity.setActivityCover(rs.getString("activityCover"));
@@ -484,17 +476,11 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
 				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
 				
-//				SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-//				ft.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
-//				Date d1 = new Date(rs.getTimestamp("activityStartDate").getTime());
-//				Date d2 = new Date(rs.getTimestamp("activityEndDate").getTime());
-//				Date d3 = new Date(rs.getTimestamp("startSignUpDate").getTime());
-//				Date d4 = new Date(rs.getTimestamp("endSignUpDate").getTime());
-//				
-//				activity.setActivityStartDateString(ft.format(d1));
-//				activity.setActivityEndDateString(ft.format(d2));
-//				activity.setStartSignUpDateString(ft.format(d3));
-//				activity.setEndSignUpDateString(ft.format(d4));
+				//program control
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString() : "");
+				activity.setActivityEndDateString(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString() : "");
+				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString() : "");
+				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString() : "");
 				
 				
 				activity.setActivityMeal(rs.getInt("activityMeal"));

@@ -22,5 +22,6 @@ public interface MemberDAO {
 	
 	public Member check(Member member);
 
+	public void updateMemberPassword(Member member);
 
 }

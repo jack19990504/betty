@@ -63,7 +63,7 @@ public class ActivityController {
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
-	
+
 	@GET
 	@Path("/organizer/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -76,7 +76,6 @@ public class ActivityController {
 
 				return Response.status(200).entity(activityList).build();
 	}
-	
 
 	@DELETE
 	@Path("/{id}")
@@ -147,15 +146,13 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Activity activity) {
 		final WebResponse webResponse = new WebResponse();
-		final AuthenticationUtil authUtil = new AuthenticationUtil();
-		if (authUtil.checkAuthority()) {
+		
 			activityDAO.insert(activity);
 			webResponse.OK();
 			webResponse.setData(activity);
-		} else {
-			webResponse.UNAUTHORIZED();
-			webResponse.setData("authentication failed!");
-		}
+		
+			
+		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
@@ -163,7 +160,8 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getList() {
 		final WebResponse webResponse = new WebResponse();
-		
+
+			
 			final List<Activity> activityList = activityDAO.getList();
 			webResponse.OK();
 			webResponse.setData(activityList);
@@ -184,7 +182,10 @@ public class ActivityController {
         writeToFile(uploadedInputStream, uploadedFileLocation);
 
         String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
+<<<<<<< HEAD
         final Activity oldactivity = activityDAO.get(activity);
+=======
+>>>>>>> branch 'jack1' of https://github.com/jack19990504/betty.git
         activity.setActivityCover(uploadedFileLocation);
         activity.setActivityId(id);
         activityDAO.update(oldactivity, activity);
