@@ -14,7 +14,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -52,12 +51,7 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(12, member.getEmergencyContact());
 			smt.setString(13, member.getEmergencyContactRelation());
 			smt.setString(14, member.getEmergencyContactPhone());
-			Timestamp ts = Timestamp.valueOf(member.getMemberBirthdayString());	
-			smt.setTimestamp(15,ts );
-//			System.out.println(member.getMemberEmail() + member.getMemberPassword() +
-//					member.getMemberName() + member.getMemberGender()+
-//					member.getMemberTel() + member.getMemberPhone() + member .getMemberAddress()+
-//					member.getMemberType() + member.getMemberEnabled() +encodedPassword);
+			smt.setTimestamp(15,member.getMemberBirthday() );
 			smt.executeUpdate();
 			smt.close();
 
@@ -121,6 +115,10 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberEmail(rs.getString("memberEmail"));
 				member.setMemberPassword(rs.getString("memberPassword"));
 				member.setMemberBirthday(rs.getTimestamp("memberBirthday"));
+
+				//program control
+				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString() : "");
+				
 				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberLineId(rs.getString("memberLineId"));
 				member.setMemberGender(rs.getString("memberGender"));
@@ -189,7 +187,7 @@ public class MemberDAOImpl implements MemberDAO {
 	public void resetLineUserId(String account) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "Update member SET memberlineId = ?" + "where memberEmail = ?";
+		final String sql = "Update member SET memberlineId = ? " + " where memberEmail = ?";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -300,6 +298,10 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberName(rs.getString("memberName"));
 				member.setMemberGender(rs.getString("memberGender"));
 				member.setMemberBirthday(rs.getTimestamp("memberBirthday")); //不確定
+				
+				//program control
+				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString() : "");
+
 				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberAddress(rs.getString("memberAddress"));
 				member.setMemberLineId(rs.getString("memberLineId"));
@@ -329,6 +331,40 @@ public class MemberDAOImpl implements MemberDAO {
 			}
 		}
 		return memberList;
+	}
+
+	@Override
+	public void updateMemberPassword(Member member) {
+		
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "UPDATE member SET " + "memberPassword = ? ," + " memberEncodedPassword = ? "
+				+ " where memberEmail = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+
+			smt.setString(1,member.getMemberPassword());
+			smt.setString(2, member.getMemberEncodedPassword());
+			smt.setString(3,member.getMemberEmail());
+			
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		
 	}
 
 }

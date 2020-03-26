@@ -146,15 +146,13 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Activity activity) {
 		final WebResponse webResponse = new WebResponse();
-		final AuthenticationUtil authUtil = new AuthenticationUtil();
-		if (authUtil.checkAuthority()) {
+		
 			activityDAO.insert(activity);
 			webResponse.OK();
 			webResponse.setData(activity);
-		} else {
-			webResponse.UNAUTHORIZED();
-			webResponse.setData("authentication failed!");
-		}
+		
+			
+		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
@@ -162,7 +160,8 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getList() {
 		final WebResponse webResponse = new WebResponse();
-		
+
+			
 			final List<Activity> activityList = activityDAO.getList();
 			webResponse.OK();
 			webResponse.setData(activityList);

@@ -85,8 +85,7 @@ public class Member {
 	}
 
 	public String getMemberBirthdayString() {
-		if(memberBirthdayString.equals(null))
-			this.memberBirthdayString = DateUtil.getDateFromTimestamp(memberBirthday);
+		
 		return memberBirthdayString;
 	}
 
