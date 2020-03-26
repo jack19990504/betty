@@ -275,7 +275,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				+ "attendPeople , activitySpace, startSignUpDate , endSignUpDate, activityStartDate, "
 				+ "activityEndDate , activityMeal , activityLinkName, activityLink, activitySummary, "
 				+ "activityMoreContent, activityPrecautions)"
-				+ " VALUES(? ,? ,? ,? ,? ,NOW() ,NOW() ,NOW() ,NOW() , ?, ?, ?, ?, ?, ? )";
+				+ " VALUES(? ,? ,? ,? ,? ,? ,? ,? ,? , ?, ?, ?, ?, ?, ? )";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -285,12 +285,16 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setString(3, activity.getActivityInfo());
 			smt.setInt(4, activity.getAttendPeople());
 			smt.setString(5, activity.getActivitySpace());
-			smt.setInt(6, activity.getActivityMeal());
-			smt.setString(7,activity.getActivityLinkName());
-			smt.setString(8,activity.getActivityName());
-			smt.setString(9,activity.getActivitySummary());
-			smt.setString(10,activity.getActivityMoreContent());
-			smt.setString(11,activity.getActivityPrecautions());
+			smt.setTimestamp(6, activity.getStartSignUpDate());
+			smt.setTimestamp(7, activity.getEndSignUpDate());
+			smt.setTimestamp(8, activity.getActivityStartDate());
+			smt.setTimestamp(9, activity.getActivityEndDate());
+			smt.setInt(10, activity.getActivityMeal());
+			smt.setString(11,activity.getActivityLinkName());
+			smt.setString(12,activity.getActivityName());
+			smt.setString(13,activity.getActivitySummary());
+			smt.setString(14,activity.getActivityMoreContent());
+			smt.setString(15,activity.getActivityPrecautions());
 
 			smt.executeUpdate();
 			smt.close();

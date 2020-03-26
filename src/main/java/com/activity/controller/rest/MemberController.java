@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.activity.controller.rest.MemberController;
 import com.activity.dao.MemberDAO;
 import com.activity.entity.Member;
+import com.activity.util.WebResponse;
 import com.google.gson.Gson;
 
 @Path("/member")
@@ -36,12 +37,19 @@ public class MemberController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Member member) {
-		
-
-		memberDAO.insert(member);
-
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(member)).build();
+		final WebResponse webResponse = new WebResponse();
+		Member member1 = new Member();
+		member1.setMemberEmail(member.getMemberEmail());
+		memberDAO.get(member1);
+		if(member1.getMemberName() != null) {
+			webResponse.getError().setMessage("此帳號已註冊");
+		}
+		else {
+			memberDAO.insert(member);
+			webResponse.OK();
+			webResponse.setData(member);
+		}
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
 	@CrossOrigin
@@ -49,8 +57,7 @@ public class MemberController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll() {
 		List<Member> memberList = memberDAO.getList();
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(memberList)).build();
+		return Response.status(200).entity(memberList).build();
 	}
 
 	@PATCH
@@ -61,8 +68,8 @@ public class MemberController {
 		member.setMemberEmail(id);
 		final Member oldMember = memberDAO.get(member);
 		memberDAO.update(oldMember, member);
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(member)).build();
+	
+		return Response.status(200).entity(member).build();
 	}
 	
 	@DELETE
@@ -91,8 +98,8 @@ public class MemberController {
 		
 		
 		System.out.println("id="+id);
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(member)).build();
+	
+		return Response.status(200).entity(member).build();
 		
 	}
 }
