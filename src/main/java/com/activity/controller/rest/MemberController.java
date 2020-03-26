@@ -27,10 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.activity.controller.rest.MemberController;
 import com.activity.dao.MemberDAO;
 import com.activity.entity.Member;
-<<<<<<< HEAD
-=======
 import com.activity.util.AuthenticationUtil;
->>>>>>> branch 'jack1' of https://github.com/jack19990504/betty.git
 import com.activity.util.WebResponse;
 import com.google.gson.Gson;
 

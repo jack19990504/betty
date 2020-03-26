@@ -258,14 +258,9 @@ public class ActivityDAOImpl implements ActivityDAO {
 		PreparedStatement smt = null;
 		final String sql = "INSERT INTO activity(activityName , activityOrganizer , activityInfo , "
 				+ "attendPeople , activitySpace, startSignUpDate , endSignUpDate, activityStartDate, "
-<<<<<<< HEAD
 				+ "activityEndDate , activityMeal , activityLinkName, activityLink, activitySummary, "
 				+ "activityMoreContent, activityPrecautions)"
 				+ " VALUES(? ,? ,? ,? ,? ,? ,? ,? ,? , ?, ?, ?, ?, ?, ? )";
-=======
-				+ "activityEndDate , activityMeal)"
-				+ " VALUES(? ,? ,? ,? ,? ,? ,? ,? ,? ,? )";
->>>>>>> branch 'jack1' of https://github.com/jack19990504/betty.git
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -275,7 +270,6 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setString(3, activity.getActivityInfo());
 			smt.setInt(4, activity.getAttendPeople());
 			smt.setString(5, activity.getActivitySpace());
-<<<<<<< HEAD
 			smt.setTimestamp(6, activity.getStartSignUpDate());
 			smt.setTimestamp(7, activity.getEndSignUpDate());
 			smt.setTimestamp(8, activity.getActivityStartDate());
@@ -286,14 +280,6 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setString(13,activity.getActivitySummary());
 			smt.setString(14,activity.getActivityMoreContent());
 			smt.setString(15,activity.getActivityPrecautions());
-=======
-			smt.setInt(10, activity.getActivityMeal());
-
-			smt.setTimestamp(6, activity.getStartSignUpDate());
-			smt.setTimestamp(7, activity.getEndSignUpDate());
-			smt.setTimestamp(8, activity.getActivityStartDate());
-			smt.setTimestamp(9, activity.getActivityEndDate());
->>>>>>> branch 'jack1' of https://github.com/jack19990504/betty.git
 
 			smt.executeUpdate();
 			smt.close();
