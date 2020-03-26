@@ -44,10 +44,11 @@ public class MemberController {
 	@Autowired
     private JavaMailSender javaMailSender;
 	
-	@POST
+	@GET
+	@Path("/check")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response insert(Member member) {
+	public Response checkExist(Member member) {
 		final WebResponse webResponse = new WebResponse();
 		Member member1 = new Member();
 		member1.setMemberEmail(member.getMemberEmail());
@@ -56,11 +57,22 @@ public class MemberController {
 			webResponse.getError().setMessage("此帳號已註冊");
 		}
 		else {
-			memberDAO.insert(member);
 			webResponse.OK();
 			webResponse.setData(member);
 		}
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+		
+	
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response insert(Member member) {
+		
+		memberDAO.insert(member);
+			
+		return Response.status(200).entity(member).build();
 	}
 	
 	@CrossOrigin

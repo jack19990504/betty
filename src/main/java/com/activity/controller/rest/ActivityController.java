@@ -182,7 +182,9 @@ public class ActivityController {
         writeToFile(uploadedInputStream, uploadedFileLocation);
 
         String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
+
         final Activity oldactivity = activityDAO.get(activity);
+
         activity.setActivityCover(uploadedFileLocation);
         activity.setActivityId(id);
         activityDAO.update(oldactivity, activity);
