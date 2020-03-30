@@ -34,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/api/**").hasAuthority("1")
 		.and().cors().and()
 		.csrf().disable()
-		.formLogin().loginPage("/login").failureUrl("/login-error")
+		.formLogin().loginPage("/login").defaultSuccessUrl("/index",true).failureUrl("/login-error")
 		.failureUrl("/login-error").and().exceptionHandling().accessDeniedPage("/");
 
 
