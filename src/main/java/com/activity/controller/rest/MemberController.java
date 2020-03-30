@@ -69,7 +69,7 @@ public class MemberController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Member member) {
-		
+
 		memberDAO.insert(member);
 			
 		return Response.status(200).entity(member).build();

@@ -2,6 +2,7 @@ package com.activity.dao;
 
 import java.util.List;
 
+import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Registration;
 
@@ -30,4 +31,6 @@ public interface RegistrationDAO {
 	public Registration getOneRegistration(Registration registration);
 	
 	public List<Registration> getListWithMemberInformation(int id);
+	
+	public Integer checkAttendPeople(Registration registration);
 }
