@@ -58,7 +58,7 @@ public class FileUploadController {
 	// 可一次上傳多筆檔案
 	@POST
 	@Path("/multifiles")
-	@Consumes(MediaType.MULTIPART_FORM_DATA+";charset=utf-8")
+	@Consumes(MediaType.MULTIPART_FORM_DATA + ";charset=utf-8")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response uploadMultipart(FormDataMultiPart multiPart) throws IOException {
 		List<FormDataBodyPart> fields = multiPart.getFields("file");
@@ -69,11 +69,11 @@ public class FileUploadController {
 
 			// get file origin name
 			FormDataContentDisposition f = field.getFormDataContentDisposition();
-			//轉成UTF8編碼
-			String fileName = new String(f.getFileName().getBytes("ISO8859-1"),"UTF-8");
-			
+			// 轉成UTF8編碼
+			String fileName = new String(f.getFileName().getBytes("ISO8859-1"), "UTF-8");
+
 			String suffix = f.getFileName().substring(f.getFileName().length() - 4);
-			//System.out.println(suffix);
+			// System.out.println(suffix);
 			System.out.println(fileName);
 			// if file is not a jpg or a png file
 			if (!suffix.equals(".jpg") && !suffix.equals(".png") && !suffix.equals("jpeg")) {
@@ -84,10 +84,19 @@ public class FileUploadController {
 			writeToFile(field.getValueAs(InputStream.class), uploadedFileLocation + fileName);
 		}
 		if (!errorMsg.equals("")) {
-			return Response.status(200).entity("all the pics are uploaded, \nexcept "+errorMsg+" which are not acceptable").build();
-		
+			webResponse.BAD_REQUEST();
+			webResponse.setData("all the pics are uploaded, except " + errorMsg + " which are not acceptable");
+			return Response.status(webResponse.getStatusCode())
+					.entity(webResponse.getData()).build();
+
 		}
-		return Response.status(200).entity("all the pics are successfully uploaded").build();
+		else
+		{
+			webResponse.OK();
+			webResponse.setData("all the pics are successfully uploaded");
+			return Response.status(200).entity(webResponse.getData()).build();
+		}
+		
 	}
 
 	@POST
@@ -97,6 +106,7 @@ public class FileUploadController {
 			@FormDataParam("file") FormDataContentDisposition fileDetail) throws IOException {
 		final WebResponse webResponse = new WebResponse();
 		final AuthenticationUtil authUtil = new AuthenticationUtil();
+		//如不是未登入使用者
 		if (!authUtil.getCurrentUsername().trim().equalsIgnoreCase("anonymousUser")) {
 			// 人臉list檔名
 			String faceListName = dictLocation + "\\list_" + authUtil.getCurrentUsername() + ".txt";

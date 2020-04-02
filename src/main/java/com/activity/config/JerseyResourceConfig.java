@@ -12,9 +12,9 @@ import com.activity.controller.rest.FileUploadController;
 import com.activity.controller.rest.LineController;
 import com.activity.controller.rest.MemberController;
 import com.activity.controller.rest.OrganizerController;
-import com.activity.controller.rest.RegistrationController;
 import com.activity.controller.rest.TrainFaceController;
 import com.activity.controller.rest.PhotoController;
+import com.activity.controller.rest.RegistrationController;
 
 
 /**

@@ -138,7 +138,10 @@ public class LineController {
 					else if(resetLineUserId)
 					{
 						String init  = event.getMessage().getText();
-						
+						if(!init.startsWith("帳號"))
+						{
+							sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請重新輸入!");
+						}
 						String datas[]  = init.split("\n");
 						String account = datas[0].substring(3).trim();
 						String password = datas[1].substring(3).trim();
@@ -185,10 +188,17 @@ public class LineController {
 					{
 						
 						String init  = event.getMessage().getText();
-						
+						if(!init.startsWith("帳號"))
+						{
+							sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請重新輸入!");
+						}
 						String datas[]  = init.split("\n");
 						String account = datas[0].substring(3).trim();
 						String password = datas[1].substring(3).trim();
+						if(account.length()== 0 || password.length() == 0)
+						{
+							sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請重新輸入!");
+						}
 						System.out.println(account);
 						System.out.println(password);
 						Member member = new Member();
@@ -208,7 +218,7 @@ public class LineController {
 						{
 							//如未登錄過LineId
 							
-							if(member.getMemberLineId() == null)
+							if(member.getMemberLineId() == null  || member.getMemberLineId().equals(""))
 							{
 								//測試此LINE用戶是否已綁定過其他帳號
 								Member test = new Member();
@@ -229,28 +239,7 @@ public class LineController {
 								}
 								
 							}
-							else if(member.getMemberLineId().equals(""))
-							{
-								//測試此LINE用戶是否已綁定過其他帳號
-								Member test = new Member();
-								test.setMemberLineId(event.getSource().getUserId());
-								test = memberDAO.check(test);
-								System.out.println(test.getMemberEmail());
-								System.out.println(test.getMemberLineId());
-								//如已綁定過
-								if(test.getMemberEmail()!= null)
-								{
-									saveLineUserId =false;
-									sendResponseMessages(event.getReplyToken(), "綁定失敗，此Line帳號已綁定其他用戶帳號!");
-								}
-								//如未綁定
-								else
-								{
-									saveLineUserId =false;
-									memberDAO.UpdateLineUserId(event.getSource().getUserId(), account, password);
-									sendResponseMessages(event.getReplyToken(), "綁定成功!");
-								}
-							}
+							
 							else 
 							{
 								System.out.println(!member.getMemberLineId().equals(""));
