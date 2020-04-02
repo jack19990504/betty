@@ -25,8 +25,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.controller.rest.RegistrationController;
+import com.activity.dao.ActivityDAO;
 import com.activity.dao.RegistrationDAO;
 import com.activity.engine.util.AttributeCheck;
+import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Registration;
 import com.activity.util.AuthenticationUtil;
@@ -41,6 +43,7 @@ public class RegistrationController {
 
 	@Autowired
 	RegistrationDAO registrationDAO;
+	ActivityDAO activityDAO;
 
 	@CrossOrigin
 	@POST
@@ -56,13 +59,14 @@ public class RegistrationController {
 		tRegistration.setMember_Email(registration.getMember_Email());
 		tRegistration.setActivity_Id(registration.getActivity_Id());
 		tRegistration = registrationDAO.getOneRegistration(tRegistration);
+		Integer attendPeople = registrationDAO.checkAttendPeople(tRegistration);
 		//檢查此使用者是否報名過此活動，如是則顯示錯誤訊息
 		if (attributeCheck.stringsNotNull(tRegistration.getMember_Email())) {
 
 			webResponse.UNPROCESSABLE_ENTITY();
 			webResponse.setData("You have already registered this activity!");
 
-		} 
+		}
 		else {
 			//檢查使用者在近一個月內取消報名的次數
 			Member member = new Member();
@@ -78,6 +82,14 @@ public class RegistrationController {
 			else if(notAttendTimes >= 2){
 				webResponse.UNPROCESSABLE_ENTITY();
 				webResponse.setData("You did not cancel and attend 3 registrations within a month! \n please wait until next month!");
+			}
+			else if (attendPeople > 0) {
+				Activity activity = new Activity();
+				activity.setActivityId(registration.getActivity_Id());
+				if(attendPeople == activity.getAttendPeople()) {
+					webResponse.UNPROCESSABLE_ENTITY();
+					webResponse.setData("Applicants are full !");
+				}				
 			}
 			else {
 				registrationDAO.insert(registration);
@@ -101,8 +113,8 @@ public class RegistrationController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getActivityList(@PathParam("Getid") int id) {
 		List<Registration> registrationList = registrationDAO.getActivityList(id);
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(registrationList)).build();
+		
+		return Response.status(200).entity(registrationList).build();
 	}
 
 	@PATCH
@@ -116,8 +128,7 @@ public class RegistrationController {
 
 		final Registration oldRegistration = registrationDAO.get(registration);
 		registrationDAO.update(oldRegistration, registration);
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(registration)).build();
+		return Response.status(200).entity(registration).build();
 	}
 
 	@DELETE
@@ -138,8 +149,7 @@ public class RegistrationController {
 		registration.setMember_Email(id);
 		registration = registrationDAO.get(registration);
 		System.out.println("id=" + id);
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(registration)).build();
+		return Response.status(200).entity(registration).build();
 
 	}
 

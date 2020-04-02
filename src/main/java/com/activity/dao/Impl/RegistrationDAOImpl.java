@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.activity.dao.RegistrationDAO;
+import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Registration;;
 
@@ -470,6 +471,42 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			}
 		}
 		return registrationList;
+	}
+
+	@Override
+	public Integer checkAttendPeople(Registration registration) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement smt = null;
+		ResultSet rs = null;
+		final String sql = "SELECT COUNT(member_Email) as 'registrationPeople' " + 
+				"FROM registration" + 
+				"WHERE activity_Id = ?;";
+		Integer attendPeople = 0;
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setInt(1, registration.getActivity_Id());
+			rs = smt.executeQuery();
+
+			if (rs.next()) {
+				attendPeople = rs.getInt("registrationPeople");
+			}
+			smt.close();
+			rs.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return attendPeople;
 	}
 
 }
