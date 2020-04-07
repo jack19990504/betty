@@ -33,8 +33,7 @@ public class ActivityAnnounceController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getList() {
 		List<ActivityAnnounce> ActivityAnnounceList = activityAnnounceDAO.getList();
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(ActivityAnnounceList)).build();
+		return Response.status(200).entity(ActivityAnnounceList).build();
 	}
 	
 	@GET
@@ -45,8 +44,7 @@ public class ActivityAnnounceController {
 		activityAnnounce.setAInum(id);
 		activityAnnounce = activityAnnounceDAO.get(activityAnnounce);
 		System.out.println("id="+id);
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(activityAnnounce)).build();
+		return Response.status(200).entity(activityAnnounce).build();
 	}
 	
 	@POST
@@ -57,8 +55,7 @@ public class ActivityAnnounceController {
 
 		activityAnnounceDAO.insert(activityAnnounce);
 
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(activityAnnounce)).build();
+		return Response.status(200).entity(activityAnnounce).build();
 	}
 	
 	@PATCH
@@ -69,8 +66,7 @@ public class ActivityAnnounceController {
 		activityAnnounce.setAInum(id);
 		final ActivityAnnounce oldActivityAnnounce = activityAnnounceDAO.get(activityAnnounce);
 		activityAnnounceDAO.update(oldActivityAnnounce, activityAnnounce);
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(activityAnnounce)).build();
+		return Response.status(200).entity(activityAnnounce).build();
 	}
 	
 	@DELETE
