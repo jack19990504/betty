@@ -217,7 +217,7 @@ public class LineController {
 						else
 						{
 							//如未登錄過LineId
-							
+							//
 							if(member.getMemberLineId() == null  || member.getMemberLineId().equals(""))
 							{
 								//測試此LINE用戶是否已綁定過其他帳號
