@@ -451,6 +451,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				registration.getMember().setMemberLineId(rs.getString("memberLineId"));
 				registration.getMember().setMemberID(rs.getString("memberID"));
 				registration.getMember().setMemberBloodType(rs.getString("memberBloodType"));
+				registration.getMember().setMemberLineId(rs.getString("memberLineId"));
 
 				registrationList.add(registration);
 			}

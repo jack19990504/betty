@@ -25,6 +25,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -44,17 +45,21 @@ public class LineController {
 //			"Ubcdf942fb35591a3c29c5f1c763cc0a8",
 //			"Uedb45f1ab77ed45363238641d987b33b",
 //			"Ufdfd00bdb0fcd6694ff944f19ae876a7"};
-	@Autowired
-	ActivityDAO activityDAO;
+	
 	
 	private boolean saveLineUserId = false;
 	private boolean resetLineUserId = false;
+	
+	@Autowired
+	ActivityDAO activityDAO;
 	
 	@Autowired
 	RegistrationDAO registerDAO;
 	
 	@Autowired
 	MemberDAO memberDAO;
+	
+
 
 	@Path("/test")
 	@POST
@@ -63,6 +68,39 @@ public class LineController {
 		sendPostMessagesToMutiPerson("測試",UserIDs);
 	}
 	
+	@Path("/postMessage/{activityId}")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public void sendRemindMessages(@PathParam("activityId") Integer id)
+	{
+		List<Registration> registrationList = registerDAO.getListWithMemberInformation(id);
+		
+		Activity activity = new Activity();
+		activity.setActivityId(id);
+		activity = activityDAO.get(activity);
+		
+		String startDate = activity.getActivityStartDateString().substring(0,activity.getActivityStartDateString().length()-2); 
+		
+		String message = "提醒您，您所報名的活動 : " + activity.getActivityName() + "\\n即將在 " + startDate + " 開始";
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for(Registration r : registrationList)
+		{
+			String memLineId = r.getMember().getMemberLineId();
+			if(!memLineId.equals(null) || !memLineId.equals(""))
+			{
+				sb.append(memLineId);
+				sb.append(",");
+			}
+		}
+		String idString = sb.substring(0,sb.length()-1);
+		String[] lineIds = idString.split(",");
+		
+		System.out.println(message);
+		System.out.println(idString);		
+		sendPostMessagesToMutiPerson(message,lineIds);
+	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -75,21 +113,21 @@ public class LineController {
 				switch (event.getMessage().getType()) {
 				case "text": // 當message type為text時，進入此case執行，目前子是將使用者傳來的文字訊息在其前加上echo字串後，回傳給使用者
 					if (event.getMessage().getText().equals("可報名活動")) {
-						String n = "目前可報名的活動有 :"+"\\n";
-						String[] list = new String[activityList.size()];
-						int i = 0;
+						StringBuilder sb = new StringBuilder();
+						
+						
+						sb.append("目前可報名的活動有 :"+"\\n");
 						for (Activity activity : activityList) {
-							n  = n + activity.getActivityName()+"、";
-							list[i] = activity.getActivityName();
-							i++;
-							System.out.println(activity.getActivityName()+"\n"+event.getReplyToken());
-							System.out.println(event.getSource().getUserId());
-							//sendPostMessages(activity.getActivityName(),event.getSource().getUserId());
+							
+							sb.append(activity.getActivityName()+"、");
+			
 						}
-						n = n.substring(0,n.length()-1);
-						System.out.println(n);
-						sendResponseMessages(event.getReplyToken(),n);
-						//sendResponseMessages(event.getReplyToken(),list);
+						
+						System.out.println(event.getSource().getUserId());
+						String message = sb.substring(0,sb.length()-1);
+						System.out.println(sb.toString());
+						sendResponseMessages(event.getReplyToken(),message);
+						
 					} 
 					else if (event.getMessage().getText().equals("選單"))
 					{
