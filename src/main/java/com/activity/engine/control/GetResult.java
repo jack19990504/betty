@@ -24,7 +24,7 @@ import com.google.gson.reflect.TypeToken;
 public class GetResult {
 	static protected String ENGINEPATH = "C:\\Users\\jack1\\Desktop\\face\\Engine";
 	
-	public static void main(String args[]){
+	
 //		List<Face> faceList = new ArrayList<>();
 		
 //		// Get All Retrieve Data
@@ -76,7 +76,7 @@ public class GetResult {
 //				e.printStackTrace();
 //			}
 //		}
-	}
+	
 		
 	
 	/**
@@ -289,7 +289,7 @@ public class GetResult {
 				}
 				
 				if(deleteJson){
-					//sourceJson.delete();
+					sourceJson.delete();
 					destJson.delete();					
 				}
 			}		

@@ -29,6 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.activity.dao.MemberDAO;
 import com.activity.dao.PhotoDAO;
+import com.activity.dao.RegistrationDAO;
 import com.activity.engine.control.EngineFunc;
 import com.activity.engine.control.GetResult;
 import com.activity.engine.entity.Face;
@@ -48,6 +49,9 @@ public class EngineController {
 	
 	@Autowired
 	PhotoDAO photoDAO;
+	
+	@Autowired
+	RegistrationDAO registrationDAO; 
 
 	static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
 	static String outputFacePath = "face";
@@ -72,7 +76,7 @@ public class EngineController {
 		recognizeFace.setTrainedFaceInfoPath(trainedFaceInfoPath);
 		recognizeFace.setJsonPath(jsonPath);
 		recognizeFace.setCam(cam);
-		recognizeFace.setHideMainWindow(false);
+		recognizeFace.setHideMainWindow(true);
 		engineFunc.recognizeFace(recognizeFace);
 
 		return Response.status(200).build();
@@ -91,11 +95,32 @@ public class EngineController {
 		// init func
 		AttributeCheck attributeCheck = new AttributeCheck();
 		WebResponse webResponse = new WebResponse();
-		GetResult getResult = new GetResult();
-		List<Face> faceList = getResult.photoResult(resultJsonPath, jsonName, true);
+		List<Face> faceList = GetResult.photoResult(resultJsonPath, jsonName, false);
 		
 		
 		return Response.status(200).entity(faceList).build();
+	}
+	
+	@GET
+	@Path("/signIn")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response signInRegistrationWithFace()
+	{
+		Member member;
+		while(true)
+		{
+			List<Face> faceList = GetResult.photoResult(resultJsonPath, jsonName, true);
+			
+			member = new Member();
+			member.setMemberEmail(faceList.get(faceList.size()-1).getPersonId());
+			member = memberDAO.get(member);
+			if(member.getMemberPassword()!= null)
+			{
+				return Response.status(200).entity(member).build();
+			}
+			
+		}
+		
 	}
 	
 	@GET

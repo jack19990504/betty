@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.activity.dao.RegistrationDAO;
+import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Registration;;
 
@@ -66,15 +67,14 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		Connection conn = null;
 		PreparedStatement smt = null;
 		ResultSet rs = null;
-		final String sql = "SELECT * FROM `registration` r JOIN activity a "
-				+ "ON r.activity_Id = a.activityId where member_Email = ?";
+		final String sql = "SELECT * FROM `registration`  where AInum = ?";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
-			smt.setString(1, registration.getMember_Email());
+			smt.setInt(1, registration.getAInum());
 			rs = smt.executeQuery();
 			registration = new Registration();
-			while (rs.next()) {
+			if (rs.next()) {
 				registration.setAInum(rs.getInt("AInum"));
 				registration.setMember_Email(rs.getString("member_Email"));
 				registration.setActivity_Id(rs.getInt("activity_Id"));
@@ -82,6 +82,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
+				registration.setCancelRegistration(rs.getTimestamp("cancelRegistration"));
 			}
 			smt.close();
 			rs.close();
@@ -113,6 +114,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			Registration registration;
 			while (rs.next()) {
 				registration = new Registration();
+				registration.setAInum(rs.getInt("AInum"));
 				registration.setMember_Email(rs.getString("member_email"));
 				registration.setActivity_Id(rs.getInt("activity_Id"));
 				registration.setRegistrationRemark(rs.getString("registrationRemark"));
@@ -173,7 +175,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		Connection conn = null;
 		PreparedStatement smt = null;
 		final String sql = "UPDATE registration SET " + " registrationRemark = ?, " + "registrationMeal = ? ,"
-				+ " isSignIn = ? , isSingOut = ?" + "where AInum = ? ";
+				+ " isSignIn = ? , isSignOut = ?" + " where AInum = ? ";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -385,11 +387,9 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		Connection conn = null;
 		PreparedStatement smt = null;
 		ResultSet rs = null;
-		final String sql = "SELECT COUNT(isSignIn) as 'notAttend' " + 
-				"FROM registration r join activity a " + 
-				"WHERE a.activityStartDate BETWEEN date_sub(NOW(),INTERVAL 30 DAY) and NOW() " + 
-				"and r.activity_Id = a.activityId and isSignIn = 0 " + 
-				"and member_Email = ? ;";
+		final String sql = "SELECT COUNT(isSignIn) as 'notAttend' " + "FROM registration r join activity a "
+				+ "WHERE a.activityStartDate BETWEEN date_sub(NOW(),INTERVAL 30 DAY) and NOW() "
+				+ "and r.activity_Id = a.activityId and isSignIn = 0 " + "and member_Email = ? ;";
 		Integer notAttendTime = 0;
 		try {
 			conn = dataSource.getConnection();
@@ -451,6 +451,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				registration.getMember().setMemberLineId(rs.getString("memberLineId"));
 				registration.getMember().setMemberID(rs.getString("memberID"));
 				registration.getMember().setMemberBloodType(rs.getString("memberBloodType"));
+				registration.getMember().setMemberLineId(rs.getString("memberLineId"));
 
 				registrationList.add(registration);
 			}
@@ -470,6 +471,83 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			}
 		}
 		return registrationList;
+	}
+
+	@Override
+	public Integer checkAttendPeople(Registration registration) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement smt = null;
+		ResultSet rs = null;
+		final String sql = "SELECT COUNT(member_Email) as 'registrationPeople' " + "FROM registration"
+				+ "WHERE activity_Id = ?;";
+		Integer attendPeople = 0;
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setInt(1, registration.getActivity_Id());
+			rs = smt.executeQuery();
+
+			if (rs.next()) {
+				attendPeople = rs.getInt("registrationPeople");
+			}
+			smt.close();
+			rs.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return attendPeople;
+	}
+
+	@Override
+	public List<Registration> getMemberList(Registration registration) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		ResultSet rs = null;
+		List<Registration> RegistrationList = new ArrayList<>();
+		final String sql = "SELECT * FROM `registration` where member_Email = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, registration.getMember_Email());
+			rs = smt.executeQuery();
+			
+			while (rs.next()) {
+				registration = new Registration();
+				registration.setAInum(rs.getInt("AInum"));
+				registration.setMember_Email(rs.getString("member_Email"));
+				registration.setActivity_Id(rs.getInt("activity_Id"));
+				registration.setRegistrationRemark(rs.getString("registrationRemark"));
+				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
+				registration.setIsSignIn(rs.getInt("isSignIn"));
+				registration.setIsSignOut(rs.getInt("isSignOut"));
+
+				RegistrationList.add(registration);
+			}
+			smt.close();
+			rs.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return RegistrationList;
 	}
 
 }

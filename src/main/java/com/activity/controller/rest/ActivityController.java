@@ -63,7 +63,7 @@ public class ActivityController {
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
-	
+
 	@GET
 	@Path("/organizer/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -76,7 +76,6 @@ public class ActivityController {
 
 				return Response.status(200).entity(activityList).build();
 	}
-	
 
 	@DELETE
 	@Path("/{id}")
@@ -147,15 +146,13 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Activity activity) {
 		final WebResponse webResponse = new WebResponse();
-		final AuthenticationUtil authUtil = new AuthenticationUtil();
-		if (authUtil.checkAuthority()) {
+		
 			activityDAO.insert(activity);
 			webResponse.OK();
 			webResponse.setData(activity);
-		} else {
-			webResponse.UNAUTHORIZED();
-			webResponse.setData("authentication failed!");
-		}
+		
+			
+		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
@@ -163,7 +160,8 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getList() {
 		final WebResponse webResponse = new WebResponse();
-		
+
+			
 			final List<Activity> activityList = activityDAO.getList();
 			webResponse.OK();
 			webResponse.setData(activityList);
@@ -171,7 +169,7 @@ public class ActivityController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
-	@POST
+	@PATCH
     @Path("/files/{actId}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response hello(@FormDataParam("file") InputStream uploadedInputStream,
@@ -184,9 +182,12 @@ public class ActivityController {
         writeToFile(uploadedInputStream, uploadedFileLocation);
 
         String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
-        activity.setActivityCover(output);
+
+        final Activity oldactivity = activityDAO.get(activity);
+
+        activity.setActivityCover(uploadedFileLocation);
         activity.setActivityId(id);
-        activityDAO.updateCover(activity);
+        activityDAO.update(oldactivity, activity);
         return Response.status(200).entity(output).build();
     }
 	

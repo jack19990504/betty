@@ -9,10 +9,7 @@ import com.activity.util.DateUtil;
 public class Activity {
 
 	private Integer activityId;
-	// activityName , activityOrganizer , activityInfo , attendPeople ,
-	// activitySpace,startSignUpDate ,
-	// endSignUpDate, activityStartDate, activityEndDate , organizerTel ,
-	// organizerContactInfo , activityMeal
+
 	private String activityName;
 
 	private String activityOrganizer;
@@ -51,12 +48,23 @@ public class Activity {
 
 	private String activityCover;
 
+	private String activityLinkName;
+	
+	private String activityLink;
+	
+	private String activitySummary;
+	
+	private String activityMoreContent;
+	
+	private String activityPrecautions;
+	
+
 	// private String activityType;
 
 	private List<String> activityTypes = new ArrayList<String>();
 
 	public String getStartSignUpDateString() {
-		this.startSignUpDateString = DateUtil.getDateFromTimestamp(startSignUpDate);
+		
 		return startSignUpDateString;
 	}
 
@@ -65,7 +73,7 @@ public class Activity {
 	}
 
 	public String getEndSignUpDateString() {
-		this.endSignUpDateString = DateUtil.getDateFromTimestamp(endSignUpDate);
+		
 		return endSignUpDateString;
 	}
 
@@ -74,7 +82,7 @@ public class Activity {
 	}
 
 	public String getActivityStartDateString() {
-		this.activityStartDateString = DateUtil.getDateFromTimestamp(activityStartDate);
+		
 		
 		return activityStartDateString;
 	}
@@ -84,7 +92,7 @@ public class Activity {
 	}
 
 	public String getActivityEndDateString() {
-		this.activityEndDateString = DateUtil.getDateFromTimestamp(activityEndDate);
+		
 		return activityEndDateString;
 	}
 
@@ -196,5 +204,47 @@ public class Activity {
 	public void setActivityCover(String activityCover) {
 		this.activityCover = activityCover;
 	}
+
+	public String getActivityLinkName() {
+		return activityLinkName;
+	}
+
+	public void setActivityLinkName(String activityLinkName) {
+		this.activityLinkName = activityLinkName;
+	}
+
+	public String getActivityLink() {
+		return activityLink;
+	}
+
+	public void setActivityLink(String activityLink) {
+		this.activityLink = activityLink;
+	}
+
+	public String getActivitySummary() {
+		return activitySummary;
+	}
+
+	public void setActivitySummary(String activitySummary) {
+		this.activitySummary = activitySummary;
+	}
+
+	public String getActivityMoreContent() {
+		return activityMoreContent;
+	}
+
+	public void setActivityMoreContent(String activityMoreContent) {
+		this.activityMoreContent = activityMoreContent;
+	}
+
+	public String getActivityPrecautions() {
+		return activityPrecautions;
+	}
+
+	public void setActivityPrecautions(String activityPrecautions) {
+		this.activityPrecautions = activityPrecautions;
+	}
+
+	
 
 }

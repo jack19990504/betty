@@ -1,5 +1,6 @@
 package com.activity.controller;
 
+import javax.servlet.http.HttpServletResponse;
 /*
  * Copyright 2002-2016 the original author or authors.
  *
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * @author Joe Grandja
  */
+
 @Controller
 public class MainController {
 
@@ -30,10 +32,11 @@ public class MainController {
 	public String root() {
 		return "redirect:/index";
 	}
-
+	
 	@RequestMapping("/index")
-	public String index() {
-		return "index";
+	public void index(HttpServletResponse response) {
+		response.setHeader("Location", "http://localhost:3000/");
+	    response.setStatus(302);
 	}
 
 	@RequestMapping("/user/index")
@@ -45,16 +48,18 @@ public class MainController {
 	public String adminIndex() {
 		return "admin/index";
 	}
-
+	
 	@RequestMapping("/login")
-	public String login() {
-		return "login";
+	public void login(HttpServletResponse response) {
+		response.setHeader("Location", "http://localhost:3000/signin");
+	    response.setStatus(302);
 	}
 
 	@RequestMapping("/login-error")
-	public String loginError(Model model) {
+	public void loginError(Model model,HttpServletResponse response) {
 		model.addAttribute("loginError", true);
-		return "login";
+		response.setHeader("Location", "http://localhost:3000/signin?loginError=true");
+	    response.setStatus(302);
 	}
 
 }
