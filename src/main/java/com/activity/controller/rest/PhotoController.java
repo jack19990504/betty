@@ -3,6 +3,7 @@ package com.activity.controller.rest;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -60,25 +61,45 @@ public class PhotoController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
-	@GET
-	@Path("/getPhoto/{path}")
+	@POST
+	@Path("/writePhoto/{path}/{activityId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getPhotoRecord(@PathParam("path") String path) throws FileNotFoundException, IOException{
+	public Response getPhotoRecord(@PathParam("path") String path,@PathParam("activityId") Integer id) throws FileNotFoundException, IOException{
 		AttributeCheck attributeCheck = new AttributeCheck();
 		WebResponse webResponse = new WebResponse();
-		path = "C:\\Users\\jack1\\Desktop\\face\\Engine\\resources\\" + path;
-		System.out.println(path);
-		String result = readfile(path);
-		if(result.equals(""))
+		if(attributeCheck.stringsNotNull(path))
 		{
-			webResponse.NOT_FOUND();
-			webResponse.setData("dict not found or not exist!");
+			path = "C:\\Users\\jack1\\Desktop\\face\\Engine\\resources\\" + path;
+			System.out.println(path);
+			String result = readfile(path);
+			if(result.equals(""))
+			{
+				webResponse.NOT_FOUND();
+				webResponse.setData("dict not found or not exist!");
+			}
+			else
+			{
+				String[] Paths = result.split("\n");
+				for(String pathh : Paths)
+				{
+					if(attributeCheck.stringsNotNull(pathh))
+					{
+						photoDAO.writePhoto(id, pathh);
+					}
+					
+				}
+				webResponse.OK();
+				webResponse.setData(result + "\thas been writed to database");
+			}
 		}
 		else
 		{
-			webResponse.OK();
-			webResponse.setData(result);
+			
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("please enter path");
+			
 		}
+		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
@@ -92,6 +113,9 @@ public class PhotoController {
 				System.out.println("path=" + file.getPath());
 				System.out.println("absolutepath=" + file.getAbsolutePath());
 				System.out.println("name=" + file.getName());
+				String fileName = file.getName();
+				String fileType = fileName.substring(fileName.lastIndexOf("."),fileName.length());
+				System.out.println(fileType);
 
 			} else if (file.isDirectory()) {
 				System.out.println("資料夾");
@@ -99,13 +123,17 @@ public class PhotoController {
 				for (int i = 0; i < filelist.length; i++) {
 					File readfile = new File(filepath + "//" + filelist[i]);
 					if (!readfile.isDirectory()) {
-						result += "path=" + readfile.getPath() +"\t" 
-					+ "absolutepath=" + readfile.getAbsolutePath()
-					+ "\t" + "name=" + readfile.getName() + "\n";
+						String fileName = readfile.getName();
+						String fileType = fileName.substring(fileName.lastIndexOf("."),fileName.length());
+						System.out.println(fileType);
+						
+						if(fileType.equals(".jpg") || fileType.equals(".jpeg") || fileType.equals(".png"))
+							result +=  readfile.getPath() + "\n";
+						
 						System.out.println("path=" + readfile.getPath());
 						System.out.println("absolutepath=" + readfile.getAbsolutePath());
 						System.out.println("name=" + readfile.getName());
-
+						
 					} else if (readfile.isDirectory()) {
 						readfile(filepath + "//" + filelist[i]);
 					}
