@@ -20,8 +20,6 @@ public class Member {
 	
 	private String memberBirthdayString;
 	
-	
-	
 	private String memberPhone;
 	
 	private String memberAddress;
