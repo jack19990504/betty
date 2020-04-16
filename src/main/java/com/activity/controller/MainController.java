@@ -16,9 +16,11 @@ import javax.servlet.http.HttpServletResponse;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import javax.ws.rs.core.Response;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Controller
+@CrossOrigin
 public class MainController {
 
 	@RequestMapping("/")
@@ -48,18 +51,24 @@ public class MainController {
 	public String adminIndex() {
 		return "admin/index";
 	}
-	
+	@CrossOrigin
 	@RequestMapping("/login")
-	public void login(HttpServletResponse response) {
-		response.setHeader("Location", "http://localhost:3000/signin");
-	    response.setStatus(302);
+	public Response login(HttpServletResponse response) {
+		
+		
+		response.addHeader("Access-Control-Allow-Origin" ,"*");
+		response.addHeader("Location", "http://localhost:3000/signin");
+		response.setStatus(302);
+		return Response.status(401).build();
 	}
 
-	@RequestMapping("/login-error")
+	@RequestMapping("/login?error")
 	public void loginError(Model model,HttpServletResponse response) {
 		model.addAttribute("loginError", true);
 		response.setHeader("Location", "http://localhost:3000/signin?loginError=true");
 	    response.setStatus(302);
 	}
+	
+	
 
 }

@@ -55,6 +55,25 @@ public class FileUploadController {
 		return Response.status(200).entity(output).build();
 	}
 
+	// 上傳activity cover
+	@POST
+	@Path("/files/activityCover")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public Response postActivityCover(@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail) {
+		String uploadedFileLocation = "C://upload/" + fileDetail.getFileName();
+		String fileName = fileDetail.getFileName();
+		String suffix = fileName.substring(fileName.lastIndexOf(".") - 4, fileName.length());
+		if (suffix.equals(".jpg") || suffix.equals(".jpeg") || suffix.equals(".png"))
+		{
+			// save it
+			writeToFile(uploadedInputStream, uploadedFileLocation);
+		}
+		String output = "assets/images/" + fileName;
+
+		return Response.status(200).entity(output).build();
+	}
+
 	// 可一次上傳多筆檔案
 	@POST
 	@Path("/multifiles")
@@ -72,11 +91,11 @@ public class FileUploadController {
 			// 轉成UTF8編碼
 			String fileName = new String(f.getFileName().getBytes("ISO8859-1"), "UTF-8");
 
-			String suffix = f.getFileName().substring(f.getFileName().length() - 4);
+			String suffix = f.getFileName().substring(f.getFileName().lastIndexOf("."));
 			// System.out.println(suffix);
 			System.out.println(fileName);
 			// if file is not a jpg or a png file
-			if (!suffix.equals(".jpg") && !suffix.equals(".png") && !suffix.equals("jpeg")) {
+			if (!suffix.equals(".jpg") && !suffix.equals(".png") && !suffix.equals(".jpeg")) {
 				errorMsg += fileName + ",\t";
 				continue;
 			}
@@ -86,17 +105,14 @@ public class FileUploadController {
 		if (!errorMsg.equals("")) {
 			webResponse.BAD_REQUEST();
 			webResponse.setData("all the pics are uploaded, except " + errorMsg + " which are not acceptable");
-			return Response.status(webResponse.getStatusCode())
-					.entity(webResponse.getData()).build();
+			return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 
-		}
-		else
-		{
+		} else {
 			webResponse.OK();
 			webResponse.setData("all the pics are successfully uploaded");
 			return Response.status(200).entity(webResponse.getData()).build();
 		}
-		
+
 	}
 
 	@POST
@@ -106,7 +122,7 @@ public class FileUploadController {
 			@FormDataParam("file") FormDataContentDisposition fileDetail) throws IOException {
 		final WebResponse webResponse = new WebResponse();
 		final AuthenticationUtil authUtil = new AuthenticationUtil();
-		//如不是未登入使用者
+		// 如不是未登入使用者
 		if (!authUtil.getCurrentUsername().trim().equalsIgnoreCase("anonymousUser")) {
 			// 人臉list檔名
 			String faceListName = dictLocation + "\\list_" + authUtil.getCurrentUsername() + ".txt";
