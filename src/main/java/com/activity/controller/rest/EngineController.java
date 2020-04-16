@@ -1,5 +1,6 @@
 package com.activity.controller.rest;
 
+import java.io.File;
 import java.util.ArrayList;
 //import java.io.File;
 //import java.io.IOException;
@@ -16,6 +17,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Context;
@@ -81,6 +83,49 @@ public class EngineController {
 
 		return Response.status(200).build();
 
+	}
+	@POST
+	@Path("/rec/{activityId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRec(@PathParam("activityId") Integer id)
+	{		
+		WebResponse webResponse = new WebResponse();
+	
+		EngineFunc engineFunc = new EngineFunc();
+		RecognizeFace reco = new RecognizeFace();
+		File file = new File(enginePath+"/"+id+".egroupList");
+		if(file.exists())//檢測檔案是否存在
+		{
+			reco.setPhotoListPath(id+".egroupList");
+			reco.setEnginePath(enginePath);
+			reco.setOutputFacePath(outputFacePath);
+			reco.setOutputFramePath(outputFramePath);
+			reco.setTrainedBinaryPath(trainedBinaryPath);
+			reco.setTrainedFaceInfoPath(trainedFaceInfoPath);
+			reco.setJsonPath(jsonPath);
+			
+			boolean isdone =engineFunc.recoFaceWithPhotoList(reco);
+			
+			if(isdone)
+			{
+				webResponse.OK();
+				webResponse.setData("reco successfully");
+			}
+			else
+			{
+				webResponse.BAD_REQUEST();
+				webResponse.setData("reco failed");
+			}
+		}
+		else
+		{
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("the list is not exist!");
+		}
+		
+		
+		
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
 	@POST

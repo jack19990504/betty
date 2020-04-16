@@ -22,6 +22,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -33,6 +34,7 @@ public class FileUploadController {
 	private final String dictLocation = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\resources";
 	static String enginePath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine";
 	static String modelPath = "eGroup\\jack_kobe.Model";
+	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\src\\assets\\images";
 	// private final String dictLocation =
 	// "C:\\Users\\jack1\\Desktop\\face\\Engine\\resources";
 	// static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
@@ -61,27 +63,37 @@ public class FileUploadController {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response postActivityCover(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) {
+		final WebResponse webResponse = new WebResponse();
 		String uploadedFileLocation = "C://upload/" + fileDetail.getFileName();
 		String fileName = fileDetail.getFileName();
 		String suffix = fileName.substring(fileName.lastIndexOf(".") - 4, fileName.length());
-		if (suffix.equals(".jpg") || suffix.equals(".jpeg") || suffix.equals(".png"))
-		{
+		if (suffix.equals(".jpg") || suffix.equals(".jpeg") || suffix.equals(".png")) {
 			// save it
 			writeToFile(uploadedInputStream, uploadedFileLocation);
+			String output = "assets/images/" + fileName;
+			webResponse.OK();
+			webResponse.setData(output);
+		} else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("please give a correct file!");
 		}
-		String output = "assets/images/" + fileName;
 
-		return Response.status(200).entity(output).build();
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
 	// 可一次上傳多筆檔案
 	@POST
-	@Path("/multifiles")
+	@Path("/multifiles/{fileDictName}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA + ";charset=utf-8")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response uploadMultipart(FormDataMultiPart multiPart) throws IOException {
+	public Response uploadMultipart(FormDataMultiPart multiPart, @PathParam("fileDictName") String fileDictName)
+			throws IOException {
 		List<FormDataBodyPart> fields = multiPart.getFields("file");
-		String uploadedFileLocation = "D://upload/";
+		String uploadedFileLocation = reactFolderPath + "/" + fileDictName + "/";
+		File file = new File(uploadedFileLocation);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
 		String errorMsg = "";
 		final WebResponse webResponse = new WebResponse();
 		for (FormDataBodyPart field : fields) {

@@ -34,7 +34,7 @@ public class PhotoDAOImpl implements PhotoDAO {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 
-			smt.setString(1, face.getImageSourcePath());
+			smt.setString(1, face.getImageSourcePath().substring(face.getImageSourcePath().lastIndexOf("assets")));
 			smt.setString(2, face.getPersonId());
 			
 
