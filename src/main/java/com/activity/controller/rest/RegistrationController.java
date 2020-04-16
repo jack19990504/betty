@@ -252,8 +252,87 @@ public class RegistrationController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
+	@POST
+	@Path("/signIn/{activityId}/{memberEmail}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response signInByMemberEmail(@PathParam("activityId") Integer id,@PathParam("memberEmail") String memberEmail)
+	{
+		final AttributeCheck attributeCheck = new AttributeCheck();
+		final WebResponse webResponse = new WebResponse();
+		if(id!=null && attributeCheck.stringsNotNull(memberEmail))
+		{
+			Registration registration = new Registration();
+			registration.setActivity_Id(id);
+			registration.setMember_Email(memberEmail);
+			
+			registration = registrationDAO.getOneRegistration(registration);
+			if(registration.getAInum() != null)
+			{
+				registrationDAO.signInByMemberEmail(registration);
+				webResponse.OK();
+				registration = registrationDAO.getOneRegistration(registration);
+				webResponse.setData(registration);
+			}
+			else
+			{
+				webResponse.NOT_FOUND();
+				webResponse.setData("查無報名資料!");
+			}
+		}
+		else
+		{
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("id or memberEmail required!");
+		}
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
+
+	@POST
+	@Path("/signOut/{activityId}/{memberEmail}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response signOutByMemberEmail(@PathParam("activityId") Integer id,@PathParam("memberEmail") String memberEmail)
+	{
+		final AttributeCheck attributeCheck = new AttributeCheck();
+		final WebResponse webResponse = new WebResponse();
+		if(id!=null && attributeCheck.stringsNotNull(memberEmail))
+		{
+			Registration registration = new Registration();
+			registration.setActivity_Id(id);
+			registration.setMember_Email(memberEmail);
+			
+			
+			registration = registrationDAO.getOneRegistration(registration);
+			System.out.println(registration.getMember_Email() +"\t" + registration.getActivity_Id() + "\t" + registration.getAInum());
+			
+			if(registration.getAInum() != null)
+			{
+				registrationDAO.signOutByMemberEmail(registration);
+				webResponse.OK();
+				registration = registrationDAO.getOneRegistration(registration);
+				System.out.println(registration.getIsSignIn() +  "\t" + registration.getIsSignOut());
+				webResponse.setData(registration);
+			}
+			else
+			{
+				webResponse.NOT_FOUND();
+				webResponse.setData("查無報名資料!");
+			}
+		}
+		else
+		{
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("id or memberEmail required!");
+		}
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
+	
+	
+	
 	@GET
 	@Path("/writeExcel/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response writeExcel(@PathParam("id") Integer id) throws Exception {
 		

@@ -36,4 +36,8 @@ public interface RegistrationDAO {
 	public List<Registration> getListWithMemberInformation(int id);
 	
 	public Integer checkAttendPeople(Registration registration);
+	
+	public void signInByMemberEmail(Registration registration);
+	
+	public void signOutByMemberEmail(Registration registration);
 }

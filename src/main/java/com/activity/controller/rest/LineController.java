@@ -104,7 +104,7 @@ public class LineController {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response callback(@RequestBody EventWrapper events) {
+	public Response callback( EventWrapper events) {
 		List<Activity> activityList = activityDAO.getList();
 		for (Event event : events.getEvents()) {
 			switch (event.getType()) {
@@ -291,7 +291,7 @@ public class LineController {
 						}
 						
 					}
-					else if(event.getMessage().getText().endsWith("活動"))
+					else if(event.getMessage().getText().endsWith("活動") && !event.getMessage().getText().equals("活動"))
 					{
 						final String type = event.getMessage().getText().substring(0,event.getMessage().getText().length()-2);
 						List<Activity> aList = new ArrayList<Activity>();

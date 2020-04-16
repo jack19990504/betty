@@ -43,7 +43,9 @@ public class ActivityAnnounceDAOImpl implements ActivityAnnounceDAO{
 				activityAnnounce.setActivityId(rs.getInt("activityId"));
 				activityAnnounce.setAnnounceTitle(rs.getString("announceTitle"));
 				activityAnnounce.setAnnounceContent(rs.getString("announceContent"));
-
+				activityAnnounce.setAnnounceTime(rs.getTimestamp("announceTime"));
+				activityAnnounce.setAnnounceTimeString(rs.getTimestamp("announceTime") != null ? rs.getTimestamp("announceTime").toString() : "");
+				
 				activityAnnounceList.add(activityAnnounce);
 			}
 			rs.close();
@@ -82,6 +84,8 @@ public class ActivityAnnounceDAOImpl implements ActivityAnnounceDAO{
 				activityAnnounce.setActivityId(rs.getInt("activityId"));
 				activityAnnounce.setAnnounceTitle(rs.getString("announceTitle"));
 				activityAnnounce.setAnnounceContent(rs.getString("announceContent"));
+				activityAnnounce.setAnnounceTime(rs.getTimestamp("announceTime"));
+				activityAnnounce.setAnnounceTimeString(rs.getTimestamp("announceTime") != null ? rs.getTimestamp("announceTime").toString() : "");
 			}
 			smt.close();
 			rs.close();
@@ -104,8 +108,8 @@ public class ActivityAnnounceDAOImpl implements ActivityAnnounceDAO{
 	public void insert(ActivityAnnounce activityAnnounce) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "INSERT INTO activityannounce(activityId, announceTitle, announceContent)"
-				+ " VALUES(? ,? ,? )";
+		final String sql = "INSERT INTO activityannounce(activityId, announceTitle, announceContent, announceTime)"
+				+ " VALUES(? ,? ,? ,NOW())";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);

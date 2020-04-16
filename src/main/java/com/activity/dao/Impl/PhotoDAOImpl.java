@@ -56,4 +56,37 @@ public class PhotoDAOImpl implements PhotoDAO {
 
 	}
 
+	@Override
+	public void writePhoto(Integer activityId,String photoPath) {
+		
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "INSERT INTO photo (photoId , activityId) VALUES "
+				+ "(? , ? );";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+
+			smt.setString(1, photoPath);
+			smt.setInt(2, activityId);
+			
+
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+	}
+
 }
