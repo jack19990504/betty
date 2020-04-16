@@ -95,7 +95,7 @@ public class FileUploadController {
 			// System.out.println(suffix);
 			System.out.println(fileName);
 			// if file is not a jpg or a png file
-			if (!suffix.equals(".jpg") && !suffix.equals(".png") && !suffix.equals(".	jpeg")) {
+			if (!suffix.equals(".jpg") && !suffix.equals(".png") && !suffix.equals(".jpeg")) {
 				errorMsg += fileName + ",\t";
 				continue;
 			}
