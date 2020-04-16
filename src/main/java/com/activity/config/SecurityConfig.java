@@ -25,19 +25,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/api/line/**").permitAll()
 		//允許line bot不登入也可存取API
 		.antMatchers(HttpMethod.GET ,"/api/activity/**").permitAll()
+		//任何人皆可抓取所有活動清單or任一活動
 		.antMatchers("/api/member/check").permitAll()
 		.antMatchers(HttpMethod.POST ,"/api/member/**").permitAll()
-		//任何人皆可抓取所有活動清單or任一活動
+		
 		.antMatchers(HttpMethod.GET ,"/api/registration/","/api/login/name/").hasAnyAuthority("0","1")
 		.antMatchers(HttpMethod.POST ,"/api/files/uploadFace/").hasAnyAuthority("0","1")
 		//會員或管理員可使用這隻POST API上傳人臉
-		.antMatchers("/api/member/**").hasAnyAuthority("0","1")
+		.antMatchers("/api/member/**").hasAnyAuthority("1")
 		//會員與管理者皆可存取member API
-		.antMatchers("/api/**").hasAuthority("1")
+		.antMatchers("/api/**").hasAuthority("1") 
 		.and().cors().and()
 		.csrf().disable()
-		.formLogin().loginPage("/login").defaultSuccessUrl("/index",true).failureUrl("/login-error")
-		.failureUrl("/login-error").and().exceptionHandling().accessDeniedPage("/");
+		.formLogin().loginProcessingUrl("/login").failureUrl("http://localhost:3000/signin?loginError=true")
+		.and().logout().logoutUrl("/logout").logoutSuccessUrl("http://localhost:3000/").invalidateHttpSession(true).deleteCookies("JSESSIONID")
+		;
 
 
 		
