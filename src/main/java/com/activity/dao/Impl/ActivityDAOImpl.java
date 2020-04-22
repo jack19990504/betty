@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.activity.dao.ActivityDAO;
 import com.activity.entity.Activity;
+import com.activity.entity.Organizer;
+import com.activity.entity.Search;
 
 @Repository
 public class ActivityDAOImpl implements ActivityDAO {
@@ -496,6 +498,116 @@ public class ActivityDAOImpl implements ActivityDAO {
 		}
 		return activityOrganizerList;
 	}
+
+	@Override
+	public List<Activity> getActivitySearch(Search search) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement smt = null;
+		List<Activity> activityList = new ArrayList<Activity>();
+		final String sql = "SELECT * FROM activity where activityName like ? or activityOrganizer like ? "
+				+ "or activitySpace like ? ";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, "%"+search.getSearch()+"%");
+			smt.setString(2, "%"+search.getSearch()+"%");
+			smt.setString(3, "%"+search.getSearch()+"%");
+			rs = smt.executeQuery();
+			Activity activity;
+			while (rs.next()) {
+				activity = new Activity();
+				activity.setActivityId(rs.getInt("activityId"));
+				activity.setActivityName(rs.getString("activityName"));
+				activity.setActivityOrganizer(rs.getString("activityOrganizer"));
+				activity.setActivityInfo(rs.getString("activityInfo"));
+				activity.setAttendPeople(rs.getInt("attendPeople"));
+				activity.setActivitySpace(rs.getString("activitySpace"));
+				
+				activity.setActivityStartDate(rs.getTimestamp("activityStartDate"));
+				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
+				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
+				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
+
+				//program control
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString() : "");
+				activity.setActivityEndDateString(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString() : "");
+				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString() : "");
+				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString() : "");
+			
+				
+				
+				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityCover(rs.getString("activityCover"));
+				activity.setActivityLinkName(rs.getString("activityLinkName"));
+				activity.setActivityLink(rs.getString("activityLink"));
+				activity.setActivitySummary(rs.getString("activitySummary"));
+				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
+				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
+
+				activityList.add(activity);
+			}
+			rs.close();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return activityList;
+	}
+
+//	@Override
+//	public List<Organizer> getOrganizerSearch(Activity activity) {
+//		// TODO Auto-generated method stub
+//		Connection conn = null;
+//		ResultSet rs = null;
+//		PreparedStatement smt = null;
+//		List<Organizer> organizerList = new ArrayList<Organizer>();
+//		final String sql = "SELECT * FROM organizer where organizerName like ?";
+//		try {
+//			conn = dataSource.getConnection();
+//			smt = conn.prepareStatement(sql);
+//			smt.setString(1, "%"+activity.getSearch()+"%");
+//			rs = smt.executeQuery();
+//			Organizer organizer;
+//			while (rs.next()) {
+//				organizer = new Organizer();
+//				organizer.setMemberEmail(rs.getString("memberEmail"));
+//				organizer.setOrganizerName(rs.getString("organizerName"));
+//				organizer.setOrganizerPhone(rs.getString("organizerPhone"));
+//				organizer.setOrganizerInfo(rs.getString("organizerinfo"));
+//				organizer.setOrganizerEmail(rs.getString("organizerEmail"));
+//				organizer.setOrganizerAddress(rs.getString("organizerAddress"));
+//				
+//				organizerList.add(organizer);
+//			}
+//			rs.close();
+//			smt.close();
+//
+//		} catch (SQLException e) {
+//
+//			throw new RuntimeException(e);
+//
+//		} finally {
+//			if (conn != null) {
+//				try {
+//					conn.close();
+//				} catch (SQLException e) {
+//				}
+//			}
+//		}
+//		return organizerList;
+//	}
 
 	
 	

@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.activity.dao.OrganizerDAO;
-import com.activity.entity.Member;
 import com.activity.entity.Organizer;
+import com.activity.entity.Search;
 @Repository
 public class OrganizerDAOImpl implements OrganizerDAO{
 	@Autowired
@@ -141,6 +141,7 @@ public class OrganizerDAOImpl implements OrganizerDAO{
 				
 				organizerList.add(organizer);
 			}
+			
 			rs.close();
 			smt.close();
 
@@ -195,4 +196,47 @@ public class OrganizerDAOImpl implements OrganizerDAO{
 		return organizer;
 	}
 	
+	@Override
+	public List<Organizer> getOrganizerSearch(Search search) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement smt = null;
+		List<Organizer> organizerList = new ArrayList<Organizer>();
+		final String sql = "SELECT * FROM organizer where organizerName like ? ";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, "%"+search.getSearch()+"%");
+			rs = smt.executeQuery();
+			Organizer organizer;
+			while (rs.next()) {
+				organizer = new Organizer();
+				organizer.setMemberEmail(rs.getString("memberEmail"));
+				organizer.setOrganizerName(rs.getString("organizerName"));
+				organizer.setOrganizerInfo(rs.getString("organizerInfo"));
+				organizer.setOrganizerAddress(rs.getString("organizerAddress"));
+				organizer.setOrganizerEmail(rs.getString("organizerEmail"));
+				organizer.setOrganizerPhone(rs.getString("organizerPhone"));
+				
+				
+				organizerList.add(organizer);
+			}
+			rs.close();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return organizerList;
+	}
 }

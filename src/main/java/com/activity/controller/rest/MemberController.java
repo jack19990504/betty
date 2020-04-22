@@ -69,30 +69,53 @@ public class MemberController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Member member) {
-
-		memberDAO.insert(member);
+		final WebResponse webResponse = new WebResponse();
+			memberDAO.insert(member);
+			webResponse.OK();
+			webResponse.setData(member);
 			
-		return Response.status(200).entity(member).build();
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
 	@CrossOrigin
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll() {
-		List<Member> memberList = memberDAO.getList();
-		return Response.status(200).entity(memberList).build();
+		final WebResponse webResponse = new WebResponse();
+			
+			List<Member> memberList = memberDAO.getList();
+			webResponse.OK();
+			webResponse.setData(memberList);
+			
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
 	@PATCH
 	@Path("/{Patchid}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("Patchid") String id, Member member) {
+		final WebResponse webResponse = new WebResponse();
+		if(id != null) {
+			member.setMemberEmail(id);
+			final Member oldMember = memberDAO.get(member);
+			if(oldMember.getMemberEmail() != null) {
+				memberDAO.update(oldMember, member);
+				member.setMemberEmail(id);
+				member = memberDAO.get(member);
+				webResponse.OK();
+				webResponse.setData(member);
+			}
+			else {
+				webResponse.NOT_FOUND();
+				webResponse.getError().setMessage("查無資料!");
+			}
+		}
+		else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.getError().setMessage("請輸入帳號!");
+		}
 		
-		member.setMemberEmail(id);
-		final Member oldMember = memberDAO.get(member);
-		memberDAO.update(oldMember, member);
-	
-		return Response.status(200).entity(member).build();
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
 	@DELETE

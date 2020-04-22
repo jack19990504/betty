@@ -117,7 +117,7 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberBirthday(rs.getTimestamp("memberBirthday"));
 
 				//program control
-				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString() : "");
+				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString().substring(0,10) : "");
 				
 				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberLineId(rs.getString("memberLineId"));

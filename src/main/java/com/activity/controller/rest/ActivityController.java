@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.ActivityDAO;
 import com.activity.entity.Activity;
+import com.activity.entity.Organizer;
+import com.activity.entity.Search;
 import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
 
@@ -53,7 +55,7 @@ public class ActivityController {
 					webResponse.setData(activity);
 				} else {
 					webResponse.NOT_FOUND();
-					webResponse.getError().setMessage("找不到資料!");
+					webResponse.getError().setMessage("查無資料!");
 				}
 			} else {
 				webResponse.UNPROCESSABLE_ENTITY();
@@ -68,14 +70,57 @@ public class ActivityController {
 	@Path("/organizer/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getOrganizerActivity(@PathParam("id") String id) {
-		
-				Activity activity = new Activity();
-				activity.setActivityOrganizer(id);
+		final WebResponse webResponse = new WebResponse();
+		if(id != null) {
+			Activity activity = new Activity();
+			activity.setActivityOrganizer(id);
+			final List<Activity> activityList = activityDAO.getOrganizerActivityList(activity);
+			if(activityList != null) {
+				webResponse.OK();
+				webResponse.setData(activityList);
+			}
+			else {
+				webResponse.NOT_FOUND();
+				webResponse.getError().setMessage("查無資料!");
+			}
+		}
+		else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.getError().setMessage("請輸入主辦單位!");
+		}
 				
-				final List<Activity> activityList = activityDAO.getOrganizerActivityList(activity);
-
-				return Response.status(200).entity(activityList).build();
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
+	
+	@GET
+	@Path("/search")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getActivitySearch(Search search) {
+		final WebResponse webResponse = new WebResponse();
+		if(search.getSearch() != null) {
+			List<Activity> activityList = activityDAO.getActivitySearch(search);
+			webResponse.OK();
+			webResponse.setData(activityList);
+		}
+		else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.getError().setMessage("請輸入搜尋字串");
+		}
+				
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
+//	@GET
+//	@Path("/organizer/search")
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Response getOrganizerSearch(Activity activity) {
+//		
+//		List<Organizer> organizerList = activityDAO.getOrganizerSearch(activity);		
+//		
+//		return Response.status(200).entity(organizerList).build();
+//	}
 
 	@DELETE
 	@Path("/{id}")
@@ -128,7 +173,7 @@ public class ActivityController {
 					webResponse.setData(activity);
 				} else {
 					webResponse.NOT_FOUND();
-					webResponse.getError().setMessage("找不到資料!");
+					webResponse.getError().setMessage("查無資料!");
 				}
 			} else {
 				webResponse.UNPROCESSABLE_ENTITY();

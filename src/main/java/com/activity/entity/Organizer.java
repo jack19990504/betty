@@ -13,6 +13,9 @@ public class Organizer {
 	private String organizerEmail;
 	
 	private String organizerAddress;
+	
+	
+	private String search;
 
 	public String getMemberEmail() {
 		return memberEmail;
@@ -60,6 +63,14 @@ public class Organizer {
 
 	public void setOrganizerAddress(String organizerAddress) {
 		this.organizerAddress = organizerAddress;
+	}
+
+	public String getSearch() {
+		return search;
+	}
+
+	public void setSearch(String search) {
+		this.search = search;
 	}
 	
 	
