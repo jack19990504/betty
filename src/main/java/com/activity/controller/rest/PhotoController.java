@@ -15,9 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.PhotoDAO;
 import com.activity.dao.Impl.PhotoDAOImpl;
+import com.activity.engine.control.EngineFunc;
 import com.activity.engine.control.GetResult;
 import com.activity.engine.entity.Face;
+import com.activity.engine.entity.RecognizeFace;
 import com.activity.engine.util.AttributeCheck;
+import com.activity.entity.Activity;
+import com.activity.entity.Member;
+import com.activity.entity.Photo;
 import com.activity.util.WebResponse;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -39,18 +44,18 @@ public class PhotoController {
 	static String jsonPath = "output\\output";
 
 	static String resultJsonPath = "C:\\Users\\jack1\\Desktop\\face\\Engine\\output";
-	static String jsonName = "output.cache.egroup";
+	static String jsonName = ".cache.egroup";
 
 	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\src\\assets\\images\\";
 	
 	//將辨識紀錄寫入資料庫
 	@POST
-	@Path("/writeMemberPhoto")
+	@Path("/writeMemberPhoto/{activityId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response writeMemberPhoto() {
+	public Response writeMemberPhoto(@PathParam("activityId") Integer id) {
 		AttributeCheck attributeCheck = new AttributeCheck();
 		WebResponse webResponse = new WebResponse();
-		List<Face> faceList = GetResult.photoResult(resultJsonPath, jsonName, true);
+		List<Face> faceList = GetResult.photoResult(resultJsonPath, id+jsonName, true);
 		if (faceList.size() == 0) {
 			webResponse.setData("no faces in the result!");
 			webResponse.UNPROCESSABLE_ENTITY();
@@ -66,6 +71,27 @@ public class PhotoController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
+	@POST
+	@Path("/all/{activityId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response all(@PathParam("activityId") Integer id)
+	{
+		AttributeCheck attributeCheck = new AttributeCheck();
+		WebResponse webResponse = new WebResponse();
+		
+		try {
+			recognizePhoto(id);
+			getRec(id);
+			writeMemberPhoto(id);
+		}
+		catch(Exception e)
+		{
+			
+		}
+		
+		
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
 	
 	//將資料夾裡的照片寫入資料庫中
 	@POST
@@ -78,7 +104,7 @@ public class PhotoController {
 		{
 			String path = reactFolderPath + id;
 			System.out.println(path);
-			String result = readfileToDataBase(path);
+			String result = readfileToDataBase(path,id);
 			if(result.equals(""))
 			{
 				webResponse.NOT_FOUND();
@@ -151,8 +177,121 @@ public class PhotoController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
+	//辨識egroupList，輸出辨識結果
+	@POST
+	@Path("/rec/{activityId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRec(@PathParam("activityId") Integer id)
+	{		
+		WebResponse webResponse = new WebResponse();
+		EngineFunc engineFunc = new EngineFunc();
+		RecognizeFace reco = new RecognizeFace();
+		File file = new File(enginePath+"/"+id+".egroupList");
+		if(file.exists())//檢測檔案是否存在
+		{
+			reco.setPhotoListPath(id+".egroupList");
+			reco.setEnginePath(enginePath);
+			reco.setOutputFacePath(outputFacePath);
+			reco.setThreshold(0.65);
+			reco.setThreads(3);
+			reco.setResolution("1440p");
+			reco.setOutputFramePath(outputFramePath);
+			reco.setTrainedBinaryPath(trainedBinaryPath);
+			reco.setTrainedFaceInfoPath(trainedFaceInfoPath);
+			reco.setMinimumFaceSize(25);
+			reco.setJsonPath(jsonPath+id);
+			
+			boolean isdone =engineFunc.recoFaceWithPhotoList(reco);
+			
+			if(isdone)
+			{
+				webResponse.OK();
+				webResponse.setData("reco successfully");
+			}
+			else
+			{
+				webResponse.BAD_REQUEST();
+				webResponse.setData("reco failed");
+			}
+		}
+		else
+		{
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("the list is not exist!");
+		}
+		
+		
+		
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
 	
-	public static String readfileToDataBase(String filepath) throws FileNotFoundException, IOException {
+	
+	@GET
+	@Path("/memberPhoto/{memberEmail}/{activityId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getMemberPhoto(@PathParam("memberEmail")String memberEmail,@PathParam("activityId") Integer id)
+	{
+		AttributeCheck attributeCheck = new AttributeCheck();
+		WebResponse webResponse = new WebResponse();
+		if(attributeCheck.stringsNotNull(memberEmail))
+		{
+			Member member = new Member();
+			member.setMemberEmail(memberEmail);
+			List<Photo> memberPhotoList = photoDAO.getMemberPhoto(member,id);
+			if(memberPhotoList.size() == 0)
+			{
+				webResponse.NOT_FOUND();
+				webResponse.setData("no pic!");
+			}
+			else
+			{
+				webResponse.OK();
+				webResponse.setData(memberPhotoList);
+			}
+				
+		}	
+		else
+		{
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("memberEmail required!");
+		}
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
+	@GET
+	@Path("/activityPhoto/{activityId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getActivityPhoto(@PathParam("activityId") Integer id)
+	{
+		AttributeCheck attributeCheck = new AttributeCheck();
+		WebResponse webResponse = new WebResponse();
+		if(id != null)
+		{
+			Activity activity = new Activity();
+			activity.setActivityId(id);
+			List<Photo> memberPhotoList = photoDAO.getActivityPhoto(activity);
+			if(memberPhotoList.size() == 0)
+			{
+				webResponse.NOT_FOUND();
+				webResponse.setData("no pic!");
+			}
+			else
+			{
+				webResponse.OK();
+				webResponse.setData(memberPhotoList);
+			}
+				
+		}	
+		else
+		{
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("memberEmail required!");
+		}
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
+	
+	public static String readfileToDataBase(String filepath,Integer id) throws FileNotFoundException, IOException {
 		String result = "";
 		try {
 			
@@ -169,7 +308,7 @@ public class PhotoController {
 						String fileType = fileName.substring(fileName.lastIndexOf("."),fileName.length());
 						
 						if(fileType.equals(".jpg") || fileType.equals(".jpeg") || fileType.equals(".png"))
-							result +=  "assets\\images\\" + fileName + "\n";
+							result +=  "assets/images/"+id+"/" + fileName + "\n";
 						
 					} else if (readfile.isDirectory()) {
 						readfile(filepath + "//" + filelist[i]);

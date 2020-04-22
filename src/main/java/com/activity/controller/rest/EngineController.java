@@ -60,7 +60,7 @@ public class EngineController {
 	static String outputFramePath = "frame";
 	static String trainedBinaryPath = "eGroup\\jack_kobe.Model.binary";
 	static String trainedFaceInfoPath = "eGroup\\jack_kobe.Model.faceInfo";
-	static String jsonPath = "output\\output";
+	static String jsonPath = "output\\";
 	static String cam = "0";
 
 	static String resultJsonPath = "C:\\Users\\jack1\\Desktop\\face\\Engine\\output";
@@ -99,10 +99,14 @@ public class EngineController {
 			reco.setPhotoListPath(id+".egroupList");
 			reco.setEnginePath(enginePath);
 			reco.setOutputFacePath(outputFacePath);
+			reco.setThreshold(0.65);
+			reco.setThreads(3);
+			reco.setResolution("1440p");
 			reco.setOutputFramePath(outputFramePath);
 			reco.setTrainedBinaryPath(trainedBinaryPath);
 			reco.setTrainedFaceInfoPath(trainedFaceInfoPath);
-			reco.setJsonPath(jsonPath);
+			reco.setMinimumFaceSize(25);
+			reco.setJsonPath(jsonPath+id);
 			
 			boolean isdone =engineFunc.recoFaceWithPhotoList(reco);
 			

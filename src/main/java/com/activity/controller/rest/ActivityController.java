@@ -41,25 +41,24 @@ public class ActivityController {
 	public Response get(@PathParam("id") Integer id) {
 		final WebResponse webResponse = new WebResponse();
 		final AuthenticationUtil authUtil = new AuthenticationUtil();
-		
-			if (id != null) {
-				Activity activity = new Activity();
-				activity.setActivityId(id);
-				
-				activity = activityDAO.get(activity);
-				if (activity.getActivityName() != null) {
-					activityDAO.getActivityTypes(activity);
-					webResponse.OK();
-					webResponse.setData(activity);
-				} else {
-					webResponse.NOT_FOUND();
-					webResponse.getError().setMessage("找不到資料!");
-				}
+
+		if (id != null) {
+			Activity activity = new Activity();
+			activity.setActivityId(id);
+
+			activity = activityDAO.get(activity);
+			if (activity.getActivityName() != null) {
+				activityDAO.getActivityTypes(activity);
+				webResponse.OK();
+				webResponse.setData(activity);
 			} else {
-				webResponse.UNPROCESSABLE_ENTITY();
-				webResponse.getError().setMessage("請輸入活動ID!");
+				webResponse.NOT_FOUND();
+				webResponse.getError().setMessage("找不到資料!");
 			}
-		 
+		} else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.getError().setMessage("請輸入活動ID!");
+		}
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
@@ -68,13 +67,13 @@ public class ActivityController {
 	@Path("/organizer/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getOrganizerActivity(@PathParam("id") String id) {
-		
-				Activity activity = new Activity();
-				activity.setActivityOrganizer(id);
-				
-				final List<Activity> activityList = activityDAO.getOrganizerActivityList(activity);
 
-				return Response.status(200).entity(activityList).build();
+		Activity activity = new Activity();
+		activity.setActivityOrganizer(id);
+
+		final List<Activity> activityList = activityDAO.getOrganizerActivityList(activity);
+
+		return Response.status(200).entity(activityList).build();
 	}
 
 	@DELETE
@@ -146,13 +145,12 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Activity activity) {
 		final WebResponse webResponse = new WebResponse();
-		
-			activityDAO.insert(activity);
-			webResponse.OK();
-			webResponse.setData(activity);
-		
-			
-		
+
+		activityDAO.insert(activity);
+		webResponse.OK();
+		activity = activityDAO.getActivityByCols(activity);
+		webResponse.setData(activity);
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
@@ -161,56 +159,53 @@ public class ActivityController {
 	public Response getList() {
 		final WebResponse webResponse = new WebResponse();
 
-			
-			final List<Activity> activityList = activityDAO.getList();
-			webResponse.OK();
-			webResponse.setData(activityList);
-		
+		final List<Activity> activityList = activityDAO.getList();
+		webResponse.OK();
+		webResponse.setData(activityList);
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
-	
+
 	@PATCH
-    @Path("/files/{actId}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response hello(@FormDataParam("file") InputStream uploadedInputStream,
-            @FormDataParam("file") FormDataContentDisposition fileDetail,@PathParam("actId") Integer id,Activity activity)
-    {
-    	String uploadedFileLocation = "d://upload/" + fileDetail.getFileName();
-    	String fileName = fileDetail.getFileName();
-    	String test = fileName.substring(fileName.length()-4, fileName.length());
-        // save it
-        writeToFile(uploadedInputStream, uploadedFileLocation);
+	@Path("/files/{actId}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public Response hello(@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail, @PathParam("actId") Integer id,
+			Activity activity) {
+		String uploadedFileLocation = "d://upload/" + fileDetail.getFileName();
+		String fileName = fileDetail.getFileName();
+		String test = fileName.substring(fileName.length() - 4, fileName.length());
+		// save it
+		writeToFile(uploadedInputStream, uploadedFileLocation);
 
-        String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
+		String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
 
-        final Activity oldactivity = activityDAO.get(activity);
+		final Activity oldactivity = activityDAO.get(activity);
 
-        activity.setActivityCover(uploadedFileLocation);
-        activity.setActivityId(id);
-        activityDAO.update(oldactivity, activity);
-        return Response.status(200).entity(output).build();
-    }
-	
-	private void writeToFile(InputStream uploadedInputStream,
-            String uploadedFileLocation) {
+		activity.setActivityCover(uploadedFileLocation);
+		activity.setActivityId(id);
+		activityDAO.update(oldactivity, activity);
+		return Response.status(200).entity(output).build();
+	}
 
-            try {
-                OutputStream out = new FileOutputStream(new File(
-                        uploadedFileLocation));
-                int read = 0;
-                byte[] bytes = new byte[1024];
+	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
 
-                out = new FileOutputStream(new File(uploadedFileLocation));
-                while ((read = uploadedInputStream.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                out.flush();
-                out.close();
-            } catch (IOException e) {
+		try {
+			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
+			int read = 0;
+			byte[] bytes = new byte[1024];
 
-                e.printStackTrace();
-            }
+			out = new FileOutputStream(new File(uploadedFileLocation));
+			while ((read = uploadedInputStream.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+			out.flush();
+			out.close();
+		} catch (IOException e) {
 
-        }
+			e.printStackTrace();
+		}
+
+	}
 
 }
