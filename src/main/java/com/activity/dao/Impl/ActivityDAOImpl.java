@@ -261,8 +261,8 @@ public class ActivityDAOImpl implements ActivityDAO {
 		final String sql = "INSERT INTO activity(activityName , activityOrganizer , activityInfo , "
 				+ "attendPeople , activitySpace, startSignUpDate , endSignUpDate, activityStartDate, "
 				+ "activityEndDate , activityMeal , activityLinkName, activityLink, activitySummary, "
-				+ "activityMoreContent, activityPrecautions)"
-				+ " VALUES(? ,? ,? ,? ,? ,? ,? ,? ,? , ?, ?, ?, ?, ?, ? )";
+				+ "activityMoreContent, activityPrecautions,activityCover)"
+				+ " VALUES(? ,? ,? ,? ,? ,? ,? ,? ,? , ?, ?, ?, ?, ?, ? , ?)";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -278,10 +278,11 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setTimestamp(9, activity.getActivityEndDate());
 			smt.setInt(10, activity.getActivityMeal());
 			smt.setString(11,activity.getActivityLinkName());
-			smt.setString(12,activity.getActivityName());
+			smt.setString(12,activity.getActivityLink());
 			smt.setString(13,activity.getActivitySummary());
 			smt.setString(14,activity.getActivityMoreContent());
 			smt.setString(15,activity.getActivityPrecautions());
+			smt.setString(16, activity.getActivityCover());
 
 			smt.executeUpdate();
 			smt.close();
@@ -500,6 +501,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 	}
 
 	@Override
+
 	public List<Activity> getActivitySearch(Search search) {
 		// TODO Auto-generated method stub
 		Connection conn = null;
@@ -608,6 +610,73 @@ public class ActivityDAOImpl implements ActivityDAO {
 //		}
 //		return organizerList;
 //	}
+
+	public Activity getActivityByCols(Activity activity) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		ResultSet rs = null;
+		final String sql = "SELECT * FROM activity WHERE activityName = ? and " + 
+		" activityOrganizer = ? and "+ "activityInfo = ? and " + "attendPeople = ? and " + 
+		"activitySpace = ? and "  + "activityMeal = ? and " +
+		"activityCover = ? and " + "activityLinkName = ? ORDER BY activityId DESC LIMIT 1";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1,activity.getActivityName());
+			smt.setString(2, activity.getActivityOrganizer());
+			smt.setString(3,activity.getActivityInfo());
+			smt.setInt(4,activity.getAttendPeople());
+			smt.setString(5,activity.getActivitySpace());
+			smt.setInt(6,activity.getActivityMeal() );
+			smt.setString(7,activity.getActivityCover());
+			smt.setString(8,activity.getActivityLinkName());
+			rs = smt.executeQuery();
+
+			activity = new Activity();
+			if (rs.next()) {
+				activity.setActivityId(rs.getInt("activityId"));
+				activity.setActivityName(rs.getString("activityName"));
+				activity.setActivityOrganizer(rs.getString("activityOrganizer"));
+				activity.setActivityInfo(rs.getString("activityInfo"));
+				activity.setAttendPeople(rs.getInt("attendPeople"));
+				activity.setActivitySpace(rs.getString("activitySpace"));
+				
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString() : "");
+				activity.setActivityEndDateString(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString() : "");
+				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString() : "");
+				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString() : "");
+				//program control
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString() : "");
+				activity.setActivityEndDateString(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString() : "");
+				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString() : "");
+				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString() : "");
+				
+				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityCover(rs.getString("activityCover"));
+				activity.setActivityLinkName(rs.getString("activityLinkName"));
+				activity.setActivityLink(rs.getString("activityLink"));
+				activity.setActivitySummary(rs.getString("activitySummary"));
+				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
+				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
+			}
+			smt.close();
+			rs.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return activity;
+	}
+	
+
 
 	
 	

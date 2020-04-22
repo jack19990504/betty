@@ -136,6 +136,36 @@ public class RecognizeFace{
 	public void setEnginePath(String enginePath) {
 		this.enginePath = enginePath;
 	}
+	
+	public void generateCliWithNoWindow() {
+		this.disk = enginePath.substring(0,1);
+		if(attributeCheck.stringsNotNull(enginePath,disk)){
+			String inputSource = " --cam "+cam;
+			if(attributeCheck.stringsNotNull(rtspURL)){
+				inputSource = " --rtsp "+rtspURL;	
+			}else if(attributeCheck.stringsNotNull(videoPath)){
+				inputSource = " --video "+videoPath;	
+			}else if(attributeCheck.stringsNotNull(photoListPath)){
+				inputSource = " --photo-list "+photoListPath;
+			}		
+			cli = new StringBuilder(
+					"cd "+enginePath+" && "+disk+": && RecognizeFace "
+					+ (threshold!=null?"--threshold "+threshold+" ":"")
+					+ (isHideThreadWindow==true?"":" --show-thread-window ")
+					+ (resolution!=null?"--resolution "+resolution+" ":"")
+					+ "--output-frame \""+outputFramePath+"\" "
+					+ "--output-face \""+outputFacePath+"\" "
+					+ inputSource+" "
+					+ (minimumFaceSize!=null?"--minimum-face-size "+minimumFaceSize+" ":"")
+					+ (threads!=null?"--threads "+threads+" ":"")
+					+ (sampleRate!=null?"--sample-rate "+sampleRate+" ":"")
+					+ trainedBinaryPath+" "+trainedFaceInfoPath+" "+jsonPath+"");
+		}else{
+			cli = null;
+		}
+		System.out.println("cli="+cli);
+	}
+	
 	public void generateCli() {
 		this.disk = enginePath.substring(0,1);
 		if(attributeCheck.stringsNotNull(enginePath,disk)){
