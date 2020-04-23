@@ -172,4 +172,60 @@ public class PhotoDAOImpl implements PhotoDAO {
 		}
 		return photoList;
 	}
+
+	@Override
+	public void deletePhoto(Photo photo) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "DELETE FROM photo WHERE photoId = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, photo.getPhotoId());
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+	}
+		
+	
+
+	@Override
+	public void deleteMemberPhoto(Photo photo) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "DELETE FROM memberphoto WHERE AINum = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setInt(1, photo.getAINum()	);
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+	}
 }

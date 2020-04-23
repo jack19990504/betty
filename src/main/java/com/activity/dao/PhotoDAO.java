@@ -16,4 +16,8 @@ public interface PhotoDAO {
 	public List<Photo> getMemberPhoto(Member member,Integer activityId);
 	
 	public List<Photo> getActivityPhoto(Activity activity);
+	
+	public void deletePhoto(Photo photo);
+	
+	public void deleteMemberPhoto(Photo photo);
 }
