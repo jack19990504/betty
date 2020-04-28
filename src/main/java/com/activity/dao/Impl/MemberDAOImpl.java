@@ -214,7 +214,7 @@ public class MemberDAOImpl implements MemberDAO {
 	public void update(Member oldMember, Member member) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "UPDATE member SET " + "memberPassword = ? ," +"memberName = ? ," + " memberGender = ?, "
+		final String sql = "UPDATE member SET " + "memberPassword = ? ," + "memberName = ? ," + " memberGender = ?, " + "memberBirthday = ? ,"
 				+ "memberPhone = ? ," + "memberAddress = ? ," + "memberBloodType = ? ,"+ "emergencyContact = ? ,"
 				+ "emergencyContactRelation = ? ,"+ "emergencyContactPhone = ? "
 				+ " where memberEmail = ?";
@@ -226,13 +226,13 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(2,member.getMemberName() != null ? member.getMemberName() : oldMember.getMemberName());
 			smt.setString(3, member.getMemberGender() != null ? member.getMemberGender(): oldMember.getMemberGender());
 			smt.setTimestamp(4,member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); //有需要嗎
-			smt.setString(4,member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
-			smt.setString(5,member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());
-			smt.setString(6,member.getMemberBloodType() != null ? member.getMemberBloodType() : oldMember.getMemberBloodType());
-			smt.setString(7,member.getEmergencyContact() != null ? member.getEmergencyContact() : oldMember.getEmergencyContact());
-			smt.setString(8,member.getEmergencyContactRelation() != null ? member.getEmergencyContactRelation() : oldMember.getEmergencyContactRelation());
-			smt.setString(9,member.getEmergencyContactPhone() != null ? member.getEmergencyContactPhone() : oldMember.getEmergencyContactPhone());
-			smt.setString(10,member.getMemberEmail());
+			smt.setString(5,member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
+			smt.setString(6,member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());
+			smt.setString(7,member.getMemberBloodType() != null ? member.getMemberBloodType() : oldMember.getMemberBloodType());
+			smt.setString(8,member.getEmergencyContact() != null ? member.getEmergencyContact() : oldMember.getEmergencyContact());
+			smt.setString(9,member.getEmergencyContactRelation() != null ? member.getEmergencyContactRelation() : oldMember.getEmergencyContactRelation());
+			smt.setString(10,member.getEmergencyContactPhone() != null ? member.getEmergencyContactPhone() : oldMember.getEmergencyContactPhone());
+			smt.setString(11,member.getMemberEmail());
 			
 			smt.executeUpdate();
 			smt.close();
