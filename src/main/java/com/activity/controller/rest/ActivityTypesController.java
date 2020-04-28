@@ -13,12 +13,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.ActivityTypesDAO;
 import com.activity.entity.ActivityTypes;
 import com.activity.util.WebResponse;
-
+@CrossOrigin("*") 
 @Path("/activityTypes")
 @RestController
 public class ActivityTypesController {

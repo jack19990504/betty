@@ -1,6 +1,5 @@
 package com.activity.controller.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -15,15 +14,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activity.controller.rest.OrganizerController;
 import com.activity.dao.OrganizerDAO;
 import com.activity.entity.Organizer;
 import com.google.gson.Gson;
 
 @Path("/organizer")
-
+@CrossOrigin("*") 
 @RestController
 
 public class OrganizerController {

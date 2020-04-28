@@ -1,7 +1,6 @@
 package com.activity.controller.rest;
 
 import java.io.File;
-import java.util.ArrayList;
 //import java.io.File;
 //import java.io.IOException;
 //import java.nio.file.Files;
@@ -11,23 +10,17 @@ import java.util.ArrayList;
 //import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.activity.dao.MemberDAO;
 import com.activity.dao.PhotoDAO;
@@ -38,10 +31,9 @@ import com.activity.engine.entity.Face;
 import com.activity.engine.entity.RecognizeFace;
 import com.activity.engine.util.AttributeCheck;
 import com.activity.engine.util.CmdUtil;
-import com.activity.engine.util.FileUtil;
 import com.activity.entity.Member;
 import com.activity.util.WebResponse;
-
+@CrossOrigin("*") 
 @Path("/engine")
 @RestController
 public class EngineController {

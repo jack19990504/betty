@@ -1,12 +1,6 @@
 package com.activity.controller.rest;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import java.util.UUID;
 
 import javax.ws.rs.Consumes;
@@ -21,20 +15,21 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activity.controller.rest.MemberController;
 import com.activity.dao.MemberDAO;
 import com.activity.entity.Member;
 import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
-import com.google.gson.Gson;
 
 @Path("/member")
 
 @RestController
-//@CrossOrigin
+@CrossOrigin("*") 
 public class MemberController {
 
 	@Autowired

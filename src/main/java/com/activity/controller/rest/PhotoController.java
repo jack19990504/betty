@@ -1,5 +1,9 @@
 package com.activity.controller.rest;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,24 +18,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.PhotoDAO;
-import com.activity.dao.Impl.PhotoDAOImpl;
-import com.activity.engine.control.EngineFunc;
 import com.activity.engine.control.GetResult;
 import com.activity.engine.entity.Face;
-import com.activity.engine.entity.RecognizeFace;
 import com.activity.engine.util.AttributeCheck;
 import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Photo;
 import com.activity.util.WebResponse;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.File;
-
+@CrossOrigin("*") 
 @RestController
 @Path("/photo")
 public class PhotoController {
