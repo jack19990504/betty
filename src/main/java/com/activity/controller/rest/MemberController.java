@@ -78,6 +78,7 @@ public class MemberController {
 	@PATCH
 	@Path("/{Patchid}")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("Patchid") String id, Member member) {
 
 		final WebResponse webResponse = new WebResponse();
