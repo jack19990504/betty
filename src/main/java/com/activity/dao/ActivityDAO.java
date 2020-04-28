@@ -26,6 +26,8 @@ public interface ActivityDAO {
 	public List<Activity> getListByType(String...strings );
 	
 	public void updateCover(Activity activity);
+	
+	public Activity getActivityByCols(Activity activity);
 
 
 	

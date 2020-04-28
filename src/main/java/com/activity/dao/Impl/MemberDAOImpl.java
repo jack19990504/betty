@@ -1,20 +1,20 @@
 package com.activity.dao.Impl;
 
-import com.activity.dao.MemberDAO;
-import com.activity.entity.Member;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+
+import com.activity.dao.MemberDAO;
+import com.activity.entity.Member;
 
 @Repository
 public class MemberDAOImpl implements MemberDAO {
@@ -216,7 +216,7 @@ public class MemberDAOImpl implements MemberDAO {
 		PreparedStatement smt = null;
 		final String sql = "UPDATE member SET " + "memberPassword = ? ," + "memberName = ? ," + " memberGender = ?, " + "memberBirthday = ? ,"
 				+ "memberPhone = ? ," + "memberAddress = ? ," + "memberBloodType = ? ,"+ "emergencyContact = ? ,"
-				+ "emergencyContactRelation = ? ,"+ "emergencyContactPhone = ? "
+				+ "emergencyContactRelation = ? ,"+ "emergencyContactPhone = ? , memberBirthDay = ? "
 				+ " where memberEmail = ?";
 		try {
 			conn = dataSource.getConnection();
@@ -225,13 +225,13 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(1,member.getMemberPassword() != null ? member.getMemberPassword() : oldMember.getMemberPassword());
 			smt.setString(2,member.getMemberName() != null ? member.getMemberName() : oldMember.getMemberName());
 			smt.setString(3, member.getMemberGender() != null ? member.getMemberGender(): oldMember.getMemberGender());
-			smt.setTimestamp(4,member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); //有需要嗎
-			smt.setString(5,member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
-			smt.setString(6,member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());
-			smt.setString(7,member.getMemberBloodType() != null ? member.getMemberBloodType() : oldMember.getMemberBloodType());
-			smt.setString(8,member.getEmergencyContact() != null ? member.getEmergencyContact() : oldMember.getEmergencyContact());
-			smt.setString(9,member.getEmergencyContactRelation() != null ? member.getEmergencyContactRelation() : oldMember.getEmergencyContactRelation());
-			smt.setString(10,member.getEmergencyContactPhone() != null ? member.getEmergencyContactPhone() : oldMember.getEmergencyContactPhone());
+			smt.setTimestamp(10,member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); //有需要嗎
+			smt.setString(4,member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
+			smt.setString(5,member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());
+			smt.setString(6,member.getMemberBloodType() != null ? member.getMemberBloodType() : oldMember.getMemberBloodType());
+			smt.setString(7,member.getEmergencyContact() != null ? member.getEmergencyContact() : oldMember.getEmergencyContact());
+			smt.setString(8,member.getEmergencyContactRelation() != null ? member.getEmergencyContactRelation() : oldMember.getEmergencyContactRelation());
+			smt.setString(9,member.getEmergencyContactPhone() != null ? member.getEmergencyContactPhone() : oldMember.getEmergencyContactPhone());
 			smt.setString(11,member.getMemberEmail());
 			
 			smt.executeUpdate();

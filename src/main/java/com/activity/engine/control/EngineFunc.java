@@ -87,6 +87,18 @@ public class EngineFunc extends BaseController{
 		}
 		return flag;
 	}
+	
+	public boolean recoFaceWithPhotoList(RecognizeFace recognizeFace)
+	{
+		boolean flag = false;
+		recognizeFace.generateCliWithNoWindow();
+		if(recognizeFace.getCommandList()!=null){
+			System.out.println("hello");
+			final CmdUtil cmdUtil = new CmdUtil();
+			flag = cmdUtil.cmdProcessBuilder(recognizeFace.getCommandList());				
+		}
+		return flag;
+	}
 		
 	public TrainResult trainFace(TrainFace trainFace){		
 		// init variabl

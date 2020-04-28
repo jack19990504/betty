@@ -14,15 +14,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.ActivityAnnounceDAO;
 import com.activity.entity.ActivityAnnounce;
-import com.activity.util.AuthenticationUtil;
-import com.activity.util.WebResponse;
-import com.google.gson.Gson;
 
 @Path("/activityannounce")
+@CrossOrigin("*") 
 @RestController
 public class ActivityAnnounceController {
 	

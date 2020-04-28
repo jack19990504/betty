@@ -1,6 +1,6 @@
 package com.activity.controller.rest;
 
-import java.util.ArrayList;
+import java.io.File;
 //import java.io.File;
 //import java.io.IOException;
 //import java.nio.file.Files;
@@ -10,22 +10,17 @@ import java.util.ArrayList;
 //import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.activity.dao.MemberDAO;
 import com.activity.dao.PhotoDAO;
@@ -36,10 +31,9 @@ import com.activity.engine.entity.Face;
 import com.activity.engine.entity.RecognizeFace;
 import com.activity.engine.util.AttributeCheck;
 import com.activity.engine.util.CmdUtil;
-import com.activity.engine.util.FileUtil;
 import com.activity.entity.Member;
 import com.activity.util.WebResponse;
-
+@CrossOrigin("*") 
 @Path("/engine")
 @RestController
 public class EngineController {
@@ -58,7 +52,7 @@ public class EngineController {
 	static String outputFramePath = "frame";
 	static String trainedBinaryPath = "eGroup\\jack_kobe.Model.binary";
 	static String trainedFaceInfoPath = "eGroup\\jack_kobe.Model.faceInfo";
-	static String jsonPath = "output\\output";
+	static String jsonPath = "output\\";
 	static String cam = "0";
 
 	static String resultJsonPath = "C:\\Users\\jack1\\Desktop\\face\\Engine\\output";
@@ -81,6 +75,53 @@ public class EngineController {
 
 		return Response.status(200).build();
 
+	}
+	@POST
+	@Path("/rec/{activityId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRec(@PathParam("activityId") Integer id)
+	{		
+		WebResponse webResponse = new WebResponse();
+	
+		EngineFunc engineFunc = new EngineFunc();
+		RecognizeFace reco = new RecognizeFace();
+		File file = new File(enginePath+"/"+id+".egroupList");
+		if(file.exists())//檢測檔案是否存在
+		{
+			reco.setPhotoListPath(id+".egroupList");
+			reco.setEnginePath(enginePath);
+			reco.setOutputFacePath(outputFacePath);
+			reco.setThreshold(0.65);
+			reco.setThreads(3);
+			reco.setResolution("1440p");
+			reco.setOutputFramePath(outputFramePath);
+			reco.setTrainedBinaryPath(trainedBinaryPath);
+			reco.setTrainedFaceInfoPath(trainedFaceInfoPath);
+			reco.setMinimumFaceSize(25);
+			reco.setJsonPath(jsonPath+id);
+			
+			boolean isdone =engineFunc.recoFaceWithPhotoList(reco);
+			
+			if(isdone)
+			{
+				webResponse.OK();
+				webResponse.setData("reco successfully");
+			}
+			else
+			{
+				webResponse.BAD_REQUEST();
+				webResponse.setData("reco failed");
+			}
+		}
+		else
+		{
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("the list is not exist!");
+		}
+		
+		
+		
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
 	@POST
