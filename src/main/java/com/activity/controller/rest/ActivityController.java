@@ -190,7 +190,8 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Activity activity) {
 		final WebResponse webResponse = new WebResponse();
-
+		final AuthenticationUtil auth = new AuthenticationUtil();
+		activity.setActivityOrganizer(auth.getCurrentUsername());
 		activityDAO.insert(activity);
 		webResponse.OK();
 		activity = activityDAO.getActivityByCols(activity);

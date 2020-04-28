@@ -225,7 +225,7 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(1,member.getMemberPassword() != null ? member.getMemberPassword() : oldMember.getMemberPassword());
 			smt.setString(2,member.getMemberName() != null ? member.getMemberName() : oldMember.getMemberName());
 			smt.setString(3, member.getMemberGender() != null ? member.getMemberGender(): oldMember.getMemberGender());
-			smt.setTimestamp(4,member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); //有需要嗎
+			//smt.setTimestamp(4,member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); //有需要嗎
 			smt.setString(4,member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
 			smt.setString(5,member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());
 			smt.setString(6,member.getMemberBloodType() != null ? member.getMemberBloodType() : oldMember.getMemberBloodType());

@@ -86,14 +86,29 @@ public class OrganizerController {
 	}
 	
 	@DELETE
+	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response delete(Organizer organizer) {
-		
-//		Organizer organizer = new Organizer();
-//		organizer.setMemberEmail(id);
-//		organizer = organizerDAO.get(organizer);
-		organizerDAO.delete(organizer);
-		return Response.status(200).build();
+	public Response delete(@PathParam("id") String id, Organizer organizer) {
+		final WebResponse webResponse = new WebResponse();
+		if(id != null) {
+			organizer.setMemberEmail(id);
+			organizer = organizerDAO.get(organizer);
+			if(organizer.getOrganizerName() != null) {
+				organizerDAO.delete(organizer);
+				webResponse.OK();
+				webResponse.setData(organizer);
+			}
+			else {
+				webResponse.NOT_FOUND();
+				webResponse.setData("查無此主辦單位");
+			}
+		}
+		else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("請輸入帳號");
+		}
+			
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}                     //有需要刪除主辦單位資料?
 	
 	@GET
