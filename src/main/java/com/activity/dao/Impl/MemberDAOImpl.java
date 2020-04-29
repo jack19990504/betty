@@ -117,7 +117,7 @@ public class MemberDAOImpl implements MemberDAO {
 				member.setMemberBirthday(rs.getTimestamp("memberBirthday"));
 
 				//program control
-				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString() : "");
+				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString().substring(0,10) : "");
 				
 				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberLineId(rs.getString("memberLineId"));
@@ -214,9 +214,9 @@ public class MemberDAOImpl implements MemberDAO {
 	public void update(Member oldMember, Member member) {
 		Connection conn = null;
 		PreparedStatement smt = null;
-		final String sql = "UPDATE member SET " + "memberPassword = ? ," +"memberName = ? ," + " memberGender = ?, "
-				+ "memberPhone = ? ," + "memberAddress = ? ," + "memberBloodType = ? ,"+ "emergencyContact = ? ,"
-				+ "emergencyContactRelation = ? ,"+ "emergencyContactPhone = ? , memberBirthDay = ? "
+		final String sql = "UPDATE member SET memberPassword = ? ,memberName = ? , memberGender = ?, "
+				+ "memberPhone = ? ,memberAddress = ? ,memberBloodType = ? ,emergencyContact = ? ,"
+				+ "emergencyContactRelation = ? ,emergencyContactPhone = ? , memberBirthday = ? "
 				+ " where memberEmail = ?";
 		try {
 			conn = dataSource.getConnection();
@@ -225,6 +225,7 @@ public class MemberDAOImpl implements MemberDAO {
 			smt.setString(1,member.getMemberPassword() != null ? member.getMemberPassword() : oldMember.getMemberPassword());
 			smt.setString(2,member.getMemberName() != null ? member.getMemberName() : oldMember.getMemberName());
 			smt.setString(3, member.getMemberGender() != null ? member.getMemberGender(): oldMember.getMemberGender());
+			System.out.println(member.getMemberBirthday()+"\t"+oldMember.getMemberBirthday());
 			smt.setTimestamp(10,member.getMemberBirthday() != null ? member.getMemberBirthday() : oldMember.getMemberBirthday()); //有需要嗎
 			smt.setString(4,member.getMemberPhone() != null ? member.getMemberPhone() : oldMember.getMemberPhone());
 			smt.setString(5,member.getMemberAddress() != null ? member.getMemberAddress() : oldMember.getMemberAddress());

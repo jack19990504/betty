@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.FeedbackDAO;
 import com.activity.entity.Feedback;
+import com.activity.util.WebResponse;
 import com.google.gson.Gson;
 
 @Path("/feedback")
@@ -30,33 +31,63 @@ public class FeedbackController {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response insert(Feedback feedback) {
-		
-
-		feedbackDAO.insert(feedback);
-
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(feedback)).build();
+		final WebResponse webResponse = new WebResponse();
+			
+			feedbackDAO.insert(feedback);
+			webResponse.OK();
+			webResponse.setData(feedback);
+			
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
 	@GET
 	@Path("/activity/{Getid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getActivityList(@PathParam("Getid") int id) {
-		List<Feedback> feedbackList = feedbackDAO.getActivityFeedback(id);
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(feedbackList)).build();
+	public Response getActivityList(@PathParam("Getid") Integer id) {
+		final WebResponse webResponse = new WebResponse();
+		if(id != null) {
+			List<Feedback> feedbackList = feedbackDAO.getActivityFeedback(id);
+			if (feedbackList != null) {
+				webResponse.OK();
+				webResponse.setData(feedbackList);
+			}
+			else {
+				webResponse.NOT_FOUND();
+				webResponse.getError().setMessage("查無資料!");
+			}
+		}
+		else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.getError().setMessage("請輸入活動代碼");
+		}
+		
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
 	@GET
 	@Path("/{id}")
 	@Produces("application/json")
-	public Response get(@PathParam("id") int id) {
-		Feedback feedback = new Feedback();
-		feedback.setAInum(id);
-		feedback = feedbackDAO.get(feedback);
+	public Response get(@PathParam("id") Integer id) {
+		final WebResponse webResponse = new WebResponse();
+		if(id != null) {
+			Feedback feedback = new Feedback();
+			feedback.setAInum(id);
+			feedback = feedbackDAO.get(feedback);
+			if(feedback.getMember_Email() != null) {
+				webResponse.OK();
+				webResponse.setData(feedback);
+			}
+			else {
+				webResponse.NOT_FOUND();
+				webResponse.getError().setMessage("查無資料!");
+			}
+		}
+		else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.getError().setMessage("id required");
+		}
 		System.out.println("id="+id);
-		Gson gson = new Gson();
-		return Response.status(200).entity(gson.toJson(feedback)).build();
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 		
 	}
 

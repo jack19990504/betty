@@ -96,8 +96,13 @@ public class RegistrationController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll() {
-		List<Registration> registrationList = registrationDAO.getList();
-		return Response.status(200).entity(registrationList).build();
+		final WebResponse webResponse = new WebResponse();
+		
+			List<Registration> registrationList = registrationDAO.getList();
+			webResponse.OK();
+			webResponse.setData(registrationList);
+			
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
 	@GET

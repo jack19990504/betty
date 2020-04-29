@@ -245,6 +245,4 @@ public class Activity {
 		this.activityPrecautions = activityPrecautions;
 	}
 
-	
-
 }
