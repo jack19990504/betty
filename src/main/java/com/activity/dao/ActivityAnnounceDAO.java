@@ -13,5 +13,5 @@ public interface ActivityAnnounceDAO {
 	
 	public void update(ActivityAnnounce oldActivityAnnounce, ActivityAnnounce acitivtyAnnounce);
 	
-	public void delete(int id);
+	public void delete(ActivityAnnounce activityAnnounce);
 }

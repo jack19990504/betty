@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.ActivityAnnounceDAO;
 import com.activity.entity.ActivityAnnounce;
+import com.activity.util.WebResponse;
 
 @Path("/activityannounce")
 @CrossOrigin("*") 
@@ -31,51 +32,107 @@ public class ActivityAnnounceController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getList() {
-		List<ActivityAnnounce> ActivityAnnounceList = activityAnnounceDAO.getList();
-		return Response.status(200).entity(ActivityAnnounceList).build();
+		final WebResponse webResponse = new WebResponse();
+		
+			List<ActivityAnnounce> ActivityAnnounceList = activityAnnounceDAO.getList();
+			webResponse.OK();
+			webResponse.setData(ActivityAnnounceList);
+			
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
 	@GET
 	@Path("/{id}")
 	@Produces("application/json")
-	public Response get(@PathParam("id") int id) {
-		ActivityAnnounce activityAnnounce = new ActivityAnnounce();
-		activityAnnounce.setAInum(id);
-		activityAnnounce = activityAnnounceDAO.get(activityAnnounce);
+	public Response get(@PathParam("id") Integer id) {
+		final WebResponse webResponse = new WebResponse();
+		if(id != null) {
+			ActivityAnnounce activityAnnounce = new ActivityAnnounce();
+			activityAnnounce.setAInum(id);
+			activityAnnounce = activityAnnounceDAO.get(activityAnnounce);
+			if(activityAnnounce.getAnnounceTitle() != null) {
+				webResponse.OK();
+				webResponse.setData(activityAnnounce);
+			}
+			else {
+				webResponse.NOT_FOUND();
+				webResponse.getError().setMessage("data not found");
+			}
+		}
+		else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.getError().setMessage("id required");
+		}
+		
 		System.out.println("id="+id);
-		return Response.status(200).entity(activityAnnounce).build();
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(ActivityAnnounce activityAnnounce) {
-		
-
-		activityAnnounceDAO.insert(activityAnnounce);
-
-		return Response.status(200).entity(activityAnnounce).build();
+		final WebResponse webResponse = new WebResponse();
+			activityAnnounceDAO.insert(activityAnnounce);
+			webResponse.OK();
+			webResponse.setData(activityAnnounce);
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
 	@PATCH
 	@Path("/{Patchid}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@PathParam("Patchid") int id, ActivityAnnounce activityAnnounce) {
+	public Response update(@PathParam("Patchid") Integer id, ActivityAnnounce activityAnnounce) {
+		final WebResponse webResponse = new WebResponse();
+		if(id != null) {
+			activityAnnounce.setAInum(id);
+			final ActivityAnnounce oldActivityAnnounce = activityAnnounceDAO.get(activityAnnounce);
+			if(oldActivityAnnounce.getAnnounceTitle() != null) {
+				activityAnnounceDAO.update(oldActivityAnnounce, activityAnnounce);
+				activityAnnounce = activityAnnounceDAO.get(activityAnnounce);
+				webResponse.OK();
+				webResponse.setData(activityAnnounce);
+			}
+			else {
+				webResponse.NOT_FOUND();
+				webResponse.getError().setMessage("Data not found");
+			}
+		}
+		else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.getError().setMessage("id required");
+		}
 		
-		activityAnnounce.setAInum(id);
-		final ActivityAnnounce oldActivityAnnounce = activityAnnounceDAO.get(activityAnnounce);
-		activityAnnounceDAO.update(oldActivityAnnounce, activityAnnounce);
-		return Response.status(200).entity(activityAnnounce).build();
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
 	@DELETE
 	@Path("/{AInum}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response delete(@PathParam("AInum") int id,ActivityAnnounce activityAnnounce) {
+	public Response delete(@PathParam("AInum") Integer id) {
 //		ActivityAnnounce activityAnnounce = new ActivityAnnounce();
 //		activityAnnounce = activityAnnounceDAO.get(activityAnnounce);
-		activityAnnounceDAO.delete(id);
-		return Response.status(200).build();
+		final WebResponse webResponse = new WebResponse();
+		if(id != null) {
+			ActivityAnnounce  activityAnnounce = new ActivityAnnounce();
+			activityAnnounce.setAInum(id);
+			activityAnnounce = activityAnnounceDAO.get(activityAnnounce);
+			if(activityAnnounce.getAnnounceTitle() != null) {
+				activityAnnounce.setAInum(id);
+				activityAnnounceDAO.delete(activityAnnounce);
+				webResponse.OK();
+				webResponse.setData(activityAnnounce);
+			}
+			else {
+				webResponse.NOT_FOUND();
+				webResponse.getError().setMessage("Data not found");
+			}
+		}
+		else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.getError().setMessage("id required");
+		}
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
 	

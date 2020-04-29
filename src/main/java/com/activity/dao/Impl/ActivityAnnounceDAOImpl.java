@@ -168,14 +168,14 @@ public class ActivityAnnounceDAOImpl implements ActivityAnnounceDAO{
 	}
 
 	@Override
-	public void delete(int id) {
+	public void delete(ActivityAnnounce activityAnnounce) {
 		Connection conn = null;
 		PreparedStatement smt = null;
 		final String sql = "DELETE FROM activityannounce WHERE AInum = ?";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
-			smt.setInt(1, id);
+			smt.setInt(1, activityAnnounce.getAInum());
 			smt.executeUpdate();
 			smt.close();
 
