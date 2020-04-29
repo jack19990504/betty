@@ -4,8 +4,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.activity.util.DateUtil;
-
 public class Activity {
 
 	private Integer activityId;
@@ -92,8 +90,11 @@ public class Activity {
 	}
 
 	public String getActivityEndDateString() {
-		
-		return activityEndDateString;
+		System.out.println(activityEndDateString);
+		if(activityEndDateString.equals(""))
+			return activityEndDateString;
+		else
+			return activityEndDateString.substring(0,16);
 	}
 
 	public void setActivityEndDateString(String activityEndDateString) {

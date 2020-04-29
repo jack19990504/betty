@@ -26,13 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.ActivityDAO;
 import com.activity.entity.Activity;
-import com.activity.entity.Organizer;
 import com.activity.entity.Search;
 import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
 @CrossOrigin("*") 
 @Path("/activity")
-@RestController
+@RestController 
 public class ActivityController {
 
 	@Autowired
