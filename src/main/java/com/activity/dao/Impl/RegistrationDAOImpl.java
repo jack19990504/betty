@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import com.activity.dao.RegistrationDAO;
 import com.activity.entity.Activity;
 import com.activity.entity.Member;
@@ -514,14 +515,17 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		PreparedStatement smt = null;
 		ResultSet rs = null;
 		List<Registration> RegistrationList = new ArrayList<>();
-		final String sql = "SELECT * FROM `registration` where member_Email = ?";
+		final String sql = "SELECT * FROM `registration` r JOIN member m ON r.member_Email = m.memberEmail join activity a on r.activity_Id = a.activityId where member_Email = ? ";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 			smt.setString(1, registration.getMember_Email());
 			rs = smt.executeQuery();
-			
+			Member member;
+			Activity activity;
 			while (rs.next()) {
+				member = new Member();
+				activity = new Activity();
 				registration = new Registration();
 				registration.setAInum(rs.getInt("AInum"));
 				registration.setMember_Email(rs.getString("member_Email"));
@@ -530,7 +534,60 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
+				
+				
+				//member
+				member.setMemberName(rs.getString("memberName"));
+				member.setMemberAddress(rs.getString("memberAddress"));
+				member.setMemberEmail(rs.getString("memberEmail"));
+				member.setMemberPassword(rs.getString("memberPassword"));
+				member.setMemberBirthday(rs.getTimestamp("memberBirthday"));
 
+				//program control
+				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString().substring(0,10) : "");
+				
+				member.setMemberPhone(rs.getString("memberPhone"));
+				member.setMemberLineId(rs.getString("memberLineId"));
+				member.setMemberGender(rs.getString("memberGender"));
+				member.setMemberID(rs.getString("memberID"));
+				member.setMemberBloodType(rs.getString("memberBloodType"));
+				member.setEmergencyContact(rs.getString("emergencyContact"));
+				member.setEmergencyContactRelation(rs.getString("emergencyContactRelation"));
+				member.setEmergencyContactPhone(rs.getString("emergencyContactPhone"));
+				
+				
+				//activity
+				
+				activity.setActivityId(rs.getInt("activityId"));
+				activity.setActivityName(rs.getString("activityName"));
+				activity.setActivityOrganizer(rs.getString("activityOrganizer"));
+				activity.setActivityInfo(rs.getString("activityInfo"));
+				activity.setAttendPeople(rs.getInt("attendPeople"));
+				activity.setActivitySpace(rs.getString("activitySpace"));
+				
+				activity.setActivityStartDate(rs.getTimestamp("activityStartDate"));
+				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
+				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
+				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
+
+				//program control
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString().substring(0,16) : "");
+				activity.setActivityEndDateString(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString().substring(0,16) : "");
+				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString().substring(0,16) : "");
+				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0,16) : "");
+				
+				
+				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityCover(rs.getString("activityCover"));
+				activity.setActivityLinkName(rs.getString("activityLinkName"));
+				activity.setActivityLink(rs.getString("activityLink"));
+				activity.setActivitySummary(rs.getString("activitySummary"));
+				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
+				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
+
+				registration.setMember(member);
+				registration.setActivity(activity);
+				
 				RegistrationList.add(registration);
 			}
 			smt.close();

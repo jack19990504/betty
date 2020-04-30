@@ -137,7 +137,7 @@ public class MailTemplate {
 			"<!--<![endif]-->\r\n" + 
 			"<div align=\"center\" class=\"img-container center autowidth\" style=\"padding-right: 25px;padding-left: 25px;\">\r\n" + 
 			"<!--[if mso]><table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr style=\"line-height:0px\"><td style=\"padding-right: 25px;padding-left: 25px;\" align=\"center\"><![endif]-->\r\n" + 
-			"<div style=\"font-size:1px;line-height:25px\"> </div><img align=\"center\" alt=\"Image\" border=\"0\" class=\"center autowidth\" src=\"images/yourlogo_white6.png\" style=\"text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 100px; display: block;\" title=\"Image\" width=\"100\"/>\r\n" + 
+			"<div style=\"font-size:1px;line-height:25px\"> </div><img align=\"center\" alt=\"Image\" border=\"0\" class=\"center autowidth\" src=\"https://i.imgur.com/GNnFcaz.png\" style=\"text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 100px; display: block;\" title=\"Image\" width=\"100\"/>\r\n" + 
 			"<div style=\"font-size:1px;line-height:25px\"> </div>\r\n" + 
 			"<!--[if mso]></td></tr></table><![endif]-->\r\n" + 
 			"</div>\r\n" + 
