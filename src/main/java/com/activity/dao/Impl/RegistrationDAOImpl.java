@@ -577,7 +577,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0,16) : "");
 				
 				
-				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityMeal(rs.getString("activityMeal"));
 				activity.setActivityCover(rs.getString("activityCover"));
 				activity.setActivityLinkName(rs.getString("activityLinkName"));
 				activity.setActivityLink(rs.getString("activityLink"));

@@ -59,7 +59,7 @@ public class Activity {
 	
 	
 
-	private Integer activityMeal;
+	private String activityMeal;
 
 	private String activityCover;
 
@@ -199,11 +199,11 @@ public class Activity {
 		this.activityEndDate = activityEndDate;
 	}
 
-	public Integer getActivityMeal() {
+	public String getActivityMeal() {
 		return activityMeal;
 	}
 
-	public void setActivityMeal(Integer activityMeal) {
+	public void setActivityMeal(String activityMeal) {
 		this.activityMeal = activityMeal;
 	}
 
