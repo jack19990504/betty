@@ -154,6 +154,18 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString().substring(0, 16) : "");
 				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0, 16) : "");
 				
+				
+				activity.setActivityStartDateStringDate(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString().substring(0, 10) : "");
+				activity.setActivityEndDateStringDate(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString().substring(0, 10) : "");
+				activity.setStartSignUpDateStringDate(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString().substring(0, 10) : "");
+				activity.setEndSignUpDateStringDate(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0, 10) : "");
+				
+				activity.setActivityStartDateStringMinute(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString().substring(11, 16) : "");
+				activity.setActivityEndDateStringMinute(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString().substring(11, 16) : "");
+				activity.setStartSignUpDateStringMinute(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString().substring(11, 16) : "");
+				activity.setEndSignUpDateStringMinute(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(11, 16) : "");
+				
+				
 				activity.setActivityMeal(rs.getInt("activityMeal"));
 				activity.setActivityCover(rs.getString("activityCover"));
 				activity.setActivityLinkName(rs.getString("activityLinkName"));

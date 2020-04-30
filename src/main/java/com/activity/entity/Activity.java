@@ -40,6 +40,23 @@ public class Activity {
 	private String activityEndDateString;
 	
 	
+	private String startSignUpDateStringDate;
+
+	private String endSignUpDateStringDate;
+
+	private String activityStartDateStringDate;
+
+	private String activityEndDateStringDate;
+	
+	private String startSignUpDateStringMinute;
+
+	private String endSignUpDateStringMinute;
+
+	private String activityStartDateStringMinute;
+
+	private String activityEndDateStringMinute;
+	
+	
 	
 
 	private Integer activityMeal;
@@ -244,6 +261,70 @@ public class Activity {
 
 	public void setActivityPrecautions(String activityPrecautions) {
 		this.activityPrecautions = activityPrecautions;
+	}
+
+	public String getStartSignUpDateStringDate() {
+		return startSignUpDateStringDate;
+	}
+
+	public void setStartSignUpDateStringDate(String startSignUpDateStringDate) {
+		this.startSignUpDateStringDate = startSignUpDateStringDate;
+	}
+
+	public String getEndSignUpDateStringDate() {
+		return endSignUpDateStringDate;
+	}
+
+	public void setEndSignUpDateStringDate(String endSignUpDateStringDate) {
+		this.endSignUpDateStringDate = endSignUpDateStringDate;
+	}
+
+	public String getActivityStartDateStringDate() {
+		return activityStartDateStringDate;
+	}
+
+	public void setActivityStartDateStringDate(String activityStartDateStringDate) {
+		this.activityStartDateStringDate = activityStartDateStringDate;
+	}
+
+	public String getActivityEndDateStringDate() {
+		return activityEndDateStringDate;
+	}
+
+	public void setActivityEndDateStringDate(String activityEndDateStringDate) {
+		this.activityEndDateStringDate = activityEndDateStringDate;
+	}
+
+	public String getStartSignUpDateStringMinute() {
+		return startSignUpDateStringMinute;
+	}
+
+	public void setStartSignUpDateStringMinute(String startSignUpDateStringMinute) {
+		this.startSignUpDateStringMinute = startSignUpDateStringMinute;
+	}
+
+	public String getEndSignUpDateStringMinute() {
+		return endSignUpDateStringMinute;
+	}
+
+	public void setEndSignUpDateStringMinute(String endSignUpDateStringMinute) {
+		this.endSignUpDateStringMinute = endSignUpDateStringMinute;
+	}
+
+	public String getActivityStartDateStringMinute() {
+		return activityStartDateStringMinute;
+	}
+
+	public void setActivityStartDateStringMinute(String activityStartDateStringMinute) {
+		this.activityStartDateStringMinute = activityStartDateStringMinute;
+	}
+
+	public String getActivityEndDateStringMinute() {
+		return activityEndDateStringMinute;
+	}
+
+	public void setActivityEndDateStringMinute(String activityEndDateStringMinute) {
+		this.activityEndDateStringMinute = activityEndDateStringMinute;
 	}
 
 }
