@@ -1,14 +1,10 @@
 package com.activity.controller.rest;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import java.util.UUID;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -21,20 +17,23 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activity.controller.rest.MemberController;
 import com.activity.dao.MemberDAO;
+import com.activity.entity.MailTemplate;
 import com.activity.entity.Member;
 import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
-import com.google.gson.Gson;
 
 @Path("/member")
 
 @RestController
-//@CrossOrigin
+@CrossOrigin("*")
 public class MemberController {
 
 	@Autowired
@@ -67,10 +66,10 @@ public class MemberController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Member member) {
 		final WebResponse webResponse = new WebResponse();
-			memberDAO.insert(member);
-			webResponse.OK();
-			webResponse.setData(member);
-			
+		memberDAO.insert(member);
+		webResponse.OK();
+		webResponse.setData(member);
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
@@ -79,17 +78,18 @@ public class MemberController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll() {
 		final WebResponse webResponse = new WebResponse();
-			
-			List<Member> memberList = memberDAO.getList();
-			webResponse.OK();
-			webResponse.setData(memberList);
-			
+
+		List<Member> memberList = memberDAO.getList();
+		webResponse.OK();
+		webResponse.setData(memberList);
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
 	@PATCH
 	@Path("/{Patchid}")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("Patchid") String id, Member member) {
 
 		final WebResponse webResponse = new WebResponse();
@@ -179,7 +179,7 @@ public class MemberController {
 	@POST
 	@Path("/forgetpassword/{memberEmail}")
 	@Produces("application/json")
-	public Response forgetPassword(@PathParam("memberEmail") String memberEmail) {
+	public Response forgetPassword(@PathParam("memberEmail") String memberEmail) throws MessagingException {
 
 		final WebResponse webResponse = new WebResponse();
 
@@ -240,50 +240,69 @@ public class MemberController {
 
 		System.out.println(authUtil.getCurrentUsername());
 
-		
-			
-			String memberEmail = authUtil.getCurrentUsername();
-			
-			if (oldPassword.equals(null) || newPassword.equals(null)) {
-				
-				webResponse.UNPROCESSABLE_ENTITY();
-				webResponse.setData("Please enter password !");
-				
+		String memberEmail = authUtil.getCurrentUsername();
+
+		if (oldPassword.equals(null) || newPassword.equals(null)) {
+
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("Please enter password !");
+
+		} else {
+			Member member = new Member();
+			member.setMemberEmail(memberEmail);
+			member = memberDAO.get(member);
+			if (member.getMemberPassword().equals(oldPassword)) {
+				// 加密新密碼
+				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+				String encodedPassword = passwordEncoder.encode(newPassword);
+
+				member.setMemberPassword(newPassword);
+				member.setMemberEncodedPassword(encodedPassword);
+				// 更改密碼
+				memberDAO.updateMemberPassword(member);
+
+				webResponse.setData(member);
+				webResponse.OK();
 			} else {
-				Member member = new Member();
-				member.setMemberEmail(memberEmail);
-				member = memberDAO.get(member);
-				if (member.getMemberPassword().equals(oldPassword)) {
-					// 加密新密碼
-					BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-					String encodedPassword = passwordEncoder.encode(newPassword);
-
-					member.setMemberPassword(newPassword);
-					member.setMemberEncodedPassword(encodedPassword);
-					// 更改密碼
-					memberDAO.updateMemberPassword(member);
-
-					webResponse.setData(member);
-					webResponse.OK();
-				} else {
-					webResponse.BAD_REQUEST();
-					webResponse.setData("Wrong password !");
-
-				}
+				webResponse.BAD_REQUEST();
+				webResponse.setData("Wrong password !");
 
 			}
-		
+
+		}
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
-	public void sendMail(String userId, String password) {
+	public void sendMail(String userId, String password) throws MessagingException {
 		SimpleMailMessage msg = new SimpleMailMessage();
-		msg.setTo(userId);
 
-		msg.setSubject("Your new password !");
-		msg.setText("Your new password is : " + password);
+		MailTemplate mail = new MailTemplate();
 
-		javaMailSender.send(msg);
+		Member member = new Member();
+		member.setMemberEmail(userId);
+		member = memberDAO.get(member);
+
+		mail.setAddressee(member);
+		mail.setNewPassword(password);
+
+//		
+//		msg.setTo(userId);
+//
+//		msg.setSubject("ActFun : 您的新密碼");
+//		msg.setText(mail.getMail());
+
+		MimeMessage mailMessage = javaMailSender.createMimeMessage();
+		mailMessage.setSubject("ActFun : 您的新密碼", "UTF-8");
+
+		MimeMessageHelper helper = new MimeMessageHelper(mailMessage, true, "UTF-8");
+		helper.setFrom("jack19990504@gmail.com");
+		helper.setTo(member.getMemberEmail());
+		helper.setText(mail.getMail(), true);
+
+		javaMailSender.send(mailMessage);
+
+		// javaMailSender.send(msg);
 	}
+
 }

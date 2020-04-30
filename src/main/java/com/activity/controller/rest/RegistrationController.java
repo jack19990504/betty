@@ -17,12 +17,10 @@ import javax.ws.rs.core.Response;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activity.controller.rest.RegistrationController;
 import com.activity.dao.ActivityDAO;
 import com.activity.dao.RegistrationDAO;
 import com.activity.engine.util.AttributeCheck;
@@ -31,10 +29,9 @@ import com.activity.entity.Member;
 import com.activity.entity.Registration;
 import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
-import com.google.gson.Gson;
 
 @Path("/registration")
-
+@CrossOrigin("*") 
 @RestController
 
 public class RegistrationController {

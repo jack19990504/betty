@@ -1,18 +1,5 @@
 package com.activity.controller.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.activity.dao.ActivityDAO;
-import com.activity.dao.MemberDAO;
-import com.activity.dao.RegistrationDAO;
-import com.activity.entity.Activity;
-import com.activity.entity.Member;
-import com.activity.entity.Registration;
-import com.activity.util.line.Event;
-import com.activity.util.line.EventWrapper;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -30,7 +17,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.activity.dao.ActivityDAO;
+import com.activity.dao.MemberDAO;
+import com.activity.dao.RegistrationDAO;
+import com.activity.entity.Activity;
+import com.activity.entity.Member;
+import com.activity.entity.Registration;
+import com.activity.util.line.Event;
+import com.activity.util.line.EventWrapper;
+
+@CrossOrigin("*") 
 @Path("/line")
 @RestController
 public class LineController {
@@ -99,6 +99,31 @@ public class LineController {
 		
 		System.out.println(message);
 		System.out.println(idString);		
+		sendPostMessagesToMutiPerson(message,lineIds);
+	}
+	
+	@POST
+	@Path("/postMessage/announcement/{activityId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void sendAnyMessage(@PathParam("activityId") Integer id,String message) {
+		List<Registration> registrationList = registerDAO.getListWithMemberInformation(id);
+
+		System.out.println(message);
+		
+		message = message.replaceAll("\"", "");
+		StringBuilder sb = new StringBuilder();
+		
+		for(Registration r : registrationList)
+		{
+			String memLineId = r.getMember().getMemberLineId();
+			if(!memLineId.equals(null) || !memLineId.equals(""))
+			{
+				sb.append(memLineId);
+				sb.append(",");
+			}
+		}
+		String idString = sb.substring(0,sb.length()-1);
+		String[] lineIds = idString.split(",");
 		sendPostMessagesToMutiPerson(message,lineIds);
 	}
 	

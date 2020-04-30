@@ -6,6 +6,7 @@ import org.springframework.web.filter.RequestContextFilter;
 import com.activity.controller.*;
 import com.activity.controller.rest.ActivityAnnounceController;
 import com.activity.controller.rest.ActivityController;
+import com.activity.controller.rest.ActivityTypesController;
 import com.activity.controller.rest.EngineController;
 import com.activity.controller.rest.FeedbackController;
 import com.activity.controller.rest.FileUploadController;
@@ -42,6 +43,7 @@ public class JerseyResourceConfig extends ResourceConfig {
         register(ActivityAnnounceController.class);
         register(PhotoController.class);
         register(FeedbackController.class);
+        register(ActivityTypesController.class);
         //packages("com.example.test.*");
     }
     

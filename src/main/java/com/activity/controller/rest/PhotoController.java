@@ -1,7 +1,14 @@
 package com.activity.controller.rest;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -11,24 +18,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.PhotoDAO;
-import com.activity.dao.Impl.PhotoDAOImpl;
-import com.activity.engine.control.EngineFunc;
 import com.activity.engine.control.GetResult;
 import com.activity.engine.entity.Face;
-import com.activity.engine.entity.RecognizeFace;
 import com.activity.engine.util.AttributeCheck;
 import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Photo;
 import com.activity.util.WebResponse;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.File;
-
+@CrossOrigin("*") 
 @RestController
 @Path("/photo")
 public class PhotoController {
@@ -41,7 +42,7 @@ public class PhotoController {
 	static String outputFramePath = "frame";
 	static String trainedBinaryPath = "eGroup\\jack_kobe.Model.binary";
 	static String trainedFaceInfoPath = "eGroup\\jack_kobe.Model.faceInfo";
-	static String jsonPath = "output\\output";
+	static String jsonPath = "output\\";
 
 	static String resultJsonPath = "C:\\Users\\jack1\\Desktop\\face\\Engine\\output";
 	static String jsonName = ".cache.egroup";
@@ -55,43 +56,29 @@ public class PhotoController {
 	public Response writeMemberPhoto(@PathParam("activityId") Integer id) {
 		AttributeCheck attributeCheck = new AttributeCheck();
 		WebResponse webResponse = new WebResponse();
+		System.out.println(id +jsonName);
 		List<Face> faceList = GetResult.photoResult(resultJsonPath, id+jsonName, true);
+		System.out.println(faceList.size());
+		List<String> recoWho = new ArrayList<>();
 		if (faceList.size() == 0) {
 			webResponse.setData("no faces in the result!");
 			webResponse.UNPROCESSABLE_ENTITY();
 		} else {
-			for (Face face : faceList) {
-				if (face.getHasFound().equals("1")) {
-					photoDAO.writePhoto(face);
+			for(int i = 0 ;  i < faceList.size() -1 ; i ++ )
+			{
+				if(faceList.get(i).getHasFound().equals("1"))
+				{
+					photoDAO.writePhoto(faceList.get(i));
+					recoWho.add(faceList.get(i).getPersonId());
 				}
 			}
+			
 			webResponse.OK();
-			webResponse.setData(faceList);
+			webResponse.setData(recoWho);
 		}
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
-	@POST
-	@Path("/all/{activityId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response all(@PathParam("activityId") Integer id)
-	{
-		AttributeCheck attributeCheck = new AttributeCheck();
-		WebResponse webResponse = new WebResponse();
-		
-		try {
-			recognizePhoto(id);
-			getRec(id);
-			writeMemberPhoto(id);
-		}
-		catch(Exception e)
-		{
-			
-		}
-		
-		
-		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
-	}
 	
 	//將資料夾裡的照片寫入資料庫中
 	@POST
@@ -176,56 +163,9 @@ public class PhotoController {
 		}
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
+
 	
-	//辨識egroupList，輸出辨識結果
-	@POST
-	@Path("/rec/{activityId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRec(@PathParam("activityId") Integer id)
-	{		
-		WebResponse webResponse = new WebResponse();
-		EngineFunc engineFunc = new EngineFunc();
-		RecognizeFace reco = new RecognizeFace();
-		File file = new File(enginePath+"/"+id+".egroupList");
-		if(file.exists())//檢測檔案是否存在
-		{
-			reco.setPhotoListPath(id+".egroupList");
-			reco.setEnginePath(enginePath);
-			reco.setOutputFacePath(outputFacePath);
-			reco.setThreshold(0.65);
-			reco.setThreads(3);
-			reco.setResolution("1440p");
-			reco.setOutputFramePath(outputFramePath);
-			reco.setTrainedBinaryPath(trainedBinaryPath);
-			reco.setTrainedFaceInfoPath(trainedFaceInfoPath);
-			reco.setMinimumFaceSize(25);
-			reco.setJsonPath(jsonPath+id);
-			
-			boolean isdone =engineFunc.recoFaceWithPhotoList(reco);
-			
-			if(isdone)
-			{
-				webResponse.OK();
-				webResponse.setData("reco successfully");
-			}
-			else
-			{
-				webResponse.BAD_REQUEST();
-				webResponse.setData("reco failed");
-			}
-		}
-		else
-		{
-			webResponse.UNPROCESSABLE_ENTITY();
-			webResponse.setData("the list is not exist!");
-		}
-		
-		
-		
-		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
-	}
-	
-	
+	//獲取會員某個活動的照片
 	@GET
 	@Path("/memberPhoto/{memberEmail}/{activityId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -258,6 +198,7 @@ public class PhotoController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
+	//獲取單一活動的所有照片
 	@GET
 	@Path("/activityPhoto/{activityId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -287,6 +228,34 @@ public class PhotoController {
 			webResponse.UNPROCESSABLE_ENTITY();
 			webResponse.setData("memberEmail required!");
 		}
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
+	
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response deleteActivityPhoto(Photo photo)
+	{
+		
+		WebResponse webResponse = new WebResponse();
+		photoDAO.deletePhoto(photo);
+		webResponse.OK();
+		webResponse.setData("pic deleted!");
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/memberphoto/{id}")
+	public Response deleteMemberPhoto(@PathParam("id") Integer id)
+	{
+		Photo photo = new Photo();
+		photo.setAINum(id);
+		WebResponse webResponse = new WebResponse();
+		photoDAO.deleteMemberPhoto(photo);
+		webResponse.OK();
+		webResponse.setData("pic deleted!");
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	

@@ -4,7 +4,6 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,14 +29,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.POST ,"/api/member/**").permitAll()
 		
 		.antMatchers(HttpMethod.GET ,"/api/registration/","/api/login/name/").hasAnyAuthority("0","1")
-		.antMatchers(HttpMethod.POST ,"/api/files/uploadFace/").hasAnyAuthority("0","1")
+		.antMatchers(HttpMethod.POST ,"/api/files/uploadFace/**").permitAll()
 		//會員或管理員可使用這隻POST API上傳人臉
 		.antMatchers("/api/member/**").hasAnyAuthority("1")
 		//會員與管理者皆可存取member API
 		.antMatchers("/api/**").hasAuthority("1") 
 		.and().cors().and()
 		.csrf().disable()
-		.formLogin().loginProcessingUrl("/login").failureUrl("http://localhost:3000/signin?loginError=true")
+		.formLogin().loginProcessingUrl("/login").defaultSuccessUrl("http://localhost:3000/",true).failureUrl("http://localhost:3000/signin?loginError=true")
 		.and().logout().logoutUrl("/logout").logoutSuccessUrl("http://localhost:3000/").invalidateHttpSession(true).deleteCookies("JSESSIONID")
 		;
 

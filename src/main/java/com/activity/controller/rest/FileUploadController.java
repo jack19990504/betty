@@ -1,18 +1,6 @@
 package com.activity.controller.rest;
 
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
-import org.springframework.stereotype.Controller;
-
-import com.activity.util.AuthenticationUtil;
-import com.activity.util.WebResponse;
-import com.activity.engine.control.EngineFunc;
-import com.activity.engine.entity.TrainFace;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,17 +15,28 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+import com.activity.engine.control.EngineFunc;
+import com.activity.engine.entity.TrainFace;
+import com.activity.util.WebResponse;
+@CrossOrigin("*") 
 @Path("/files")
 @Controller
 public class FileUploadController {
 
-	private final String dictLocation = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\resources";
-	static String enginePath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine";
+//	private final String dictLocation = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\resources";
+//	static String enginePath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine";
 	static String modelPath = "eGroup\\jack_kobe.Model";
 	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\src\\assets\\images";
-	// private final String dictLocation =
-	// "C:\\Users\\jack1\\Desktop\\face\\Engine\\resources";
-	// static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
+	 private final String dictLocation =
+	 "C:\\Users\\jack1\\Desktop\\face\\Engine\\resources";
+	 static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
 	// static String modelPath = "eGroup\\jack_kobe.Model";
 
 	// 只可上傳一筆
@@ -128,21 +127,19 @@ public class FileUploadController {
 	}
 
 	@POST
-	@Path("/uploadFace")
+	@Path("/uploadFace/{memberEmail}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response TrainFace(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail) throws IOException {
+			@FormDataParam("file") FormDataContentDisposition fileDetail,@PathParam("memberEmail") String memberEmail) throws IOException {
 		final WebResponse webResponse = new WebResponse();
-		final AuthenticationUtil authUtil = new AuthenticationUtil();
-		// 如不是未登入使用者
-		if (!authUtil.getCurrentUsername().trim().equalsIgnoreCase("anonymousUser")) {
+		
 			// 人臉list檔名
-			String faceListName = dictLocation + "\\list_" + authUtil.getCurrentUsername() + ".txt";
+			String faceListName = dictLocation + "\\list_" + memberEmail + ".txt";
 			// 獲取副檔名
 			String fileName = fileDetail.getFileName();
 			String fileExtension = fileName.substring(fileName.length() - 4, fileName.length());// 上傳圖片位置
-			String uploadDict = dictLocation + "\\" + authUtil.getCurrentUsername();
-			String photoName = uploadDict + "\\" + authUtil.getCurrentUsername() + "1" + fileExtension;
+			String uploadDict = dictLocation + "\\" + memberEmail;
+			String photoName = uploadDict + "\\" + memberEmail + "1" + fileExtension;
 			File file = new File(uploadDict);
 			if (!file.exists()) {
 				file.mkdirs();
@@ -151,13 +148,13 @@ public class FileUploadController {
 			writeToFile(uploadedInputStream, photoName);
 
 			// 人臉list內容
-			String data = "resources\\" + authUtil.getCurrentUsername() + "\\" + authUtil.getCurrentUsername() + "1"
-					+ fileExtension + "\t" + authUtil.getCurrentUsername() + "[No]1";
+			String data = "resources\\" + memberEmail + "\\" + memberEmail + "1"
+					+ fileExtension + "\t" + memberEmail + "[No]1";
 			writeFaceList(faceListName, data);
 
 			TrainFace trainFace = new TrainFace();
 			trainFace.setEnginePath(enginePath);
-			trainFace.setTrainListPath("resources\\list_" + authUtil.getCurrentUsername() + ".txt");
+			trainFace.setTrainListPath("resources\\list_" + memberEmail + ".txt");
 			trainFace.setModelPath(modelPath);
 			trainFace.setModelExist(true);
 
@@ -166,10 +163,7 @@ public class FileUploadController {
 
 			webResponse.OK();
 			webResponse.setData("file has been uploaded to " + uploadDict + " and list either to : " + faceListName);
-		} else {
-			webResponse.UNAUTHORIZED();
-			webResponse.setData("please login!");
-		}
+		
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}

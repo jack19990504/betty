@@ -1,6 +1,5 @@
 package com.activity.controller.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -15,9 +14,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.activity.controller.rest.OrganizerController;
 import com.activity.dao.OrganizerDAO;
 import com.activity.entity.Organizer;
 import com.activity.entity.Search;
@@ -25,7 +24,7 @@ import com.activity.util.WebResponse;
 import com.google.gson.Gson;
 
 @Path("/organizer")
-
+@CrossOrigin("*") 
 @RestController
 
 public class OrganizerController {
@@ -63,6 +62,7 @@ public class OrganizerController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("id") String id,Organizer organizer) {
 		final WebResponse webResponse = new WebResponse();
+		System.out.println(id);
 		if(id != null) {
 			organizer.setMemberEmail(id);
 			final Organizer oldOrganizer = organizerDAO.get(organizer);

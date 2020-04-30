@@ -28,6 +28,17 @@ public class Registration {
 	
 	private Member member;
 	
+	private Activity activity;
+
+	
+
+	public Activity getActivity() {
+		return activity;
+	}
+
+	public void setActivity(Activity activity) {
+		this.activity = activity;
+	}
 
 	public Member getMember() {
 		if(member == null)

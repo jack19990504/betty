@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.FeedbackDAO;
@@ -20,7 +21,7 @@ import com.activity.util.WebResponse;
 import com.google.gson.Gson;
 
 @Path("/feedback")
-
+@CrossOrigin("*") 
 @RestController
 public class FeedbackController {
 	

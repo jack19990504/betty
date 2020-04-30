@@ -2,8 +2,6 @@ package com.activity.entity;
 
 import java.sql.Timestamp;
 
-import com.activity.util.DateUtil;
-
 public class Member {
 
 	private String memberEmail;
