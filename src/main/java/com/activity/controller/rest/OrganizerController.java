@@ -21,7 +21,6 @@ import com.activity.dao.OrganizerDAO;
 import com.activity.entity.Organizer;
 import com.activity.entity.Search;
 import com.activity.util.WebResponse;
-import com.google.gson.Gson;
 
 @Path("/organizer")
 @CrossOrigin("*") 

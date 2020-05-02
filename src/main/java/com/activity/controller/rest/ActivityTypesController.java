@@ -38,6 +38,7 @@ public class ActivityTypesController {
 		
 		ActivityTypes activityTypes ;
 		List<ActivityTypes> aList = new ArrayList<>();
+		activityTypesDAO.deleteActivityTypes(id);
 		for(String type : array)
 		{
 			activityTypes =  new ActivityTypes();
@@ -45,6 +46,7 @@ public class ActivityTypesController {
 			activityTypes.setActivityType(type);
 			
 			aList.add(activityTypes);
+			
 			activityTypesDAO.insertActivityTypes(activityTypes);
 		}
 		

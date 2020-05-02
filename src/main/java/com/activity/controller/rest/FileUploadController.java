@@ -50,7 +50,7 @@ public class FileUploadController {
 		String test = fileName.substring(fileName.length() - 4, fileName.length());
 		// save it
 		writeToFile(uploadedInputStream, uploadedFileLocation);
-
+			
 		String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
 
 		return Response.status(200).entity(output).build();
@@ -80,6 +80,28 @@ public class FileUploadController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
+	@POST
+	@Path("/files/{fileDictName}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA+ ";charset=utf-8")
+	public Response hello2(@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail,@PathParam("fileDictName") String fileDictName) throws IOException {
+		String uploadedFileLocation = reactFolderPath + "/" + fileDictName + "/";
+		File file = new File(uploadedFileLocation);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		//String uploadedFileLocation = "C://upload/" + fileDetail.getFileName();
+		String fileName = new String(fileDetail.getFileName().getBytes("ISO8859-1"), "UTF-8");
+		String test = fileName.substring(fileName.length() - 4, fileName.length());
+		// save it
+		System.out.println(fileName);
+		writeToFile(uploadedInputStream, uploadedFileLocation+fileName);
+
+		String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
+
+		return Response.status(200).entity(output).build();
+	}
+	
 	// 可一次上傳多筆檔案
 	@POST
 	@Path("/multifiles/{fileDictName}")
@@ -183,10 +205,11 @@ public class FileUploadController {
 			int read = 0;
 			byte[] bytes = new byte[1024];
 
-			out = new FileOutputStream(new File(uploadedFileLocation));
+			//out = new FileOutputStream(new File(uploadedFileLocation));
 			while ((read = uploadedInputStream.read(bytes)) != -1) {
 				out.write(bytes, 0, read);
 			}
+			uploadedInputStream.close();
 			out.flush();
 			out.close();
 		} catch (IOException e) {
