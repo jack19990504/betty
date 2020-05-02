@@ -1,8 +1,9 @@
 package com.activity.controller.rest;
 
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -20,6 +21,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.activity.dao.ActivityDAO;
 import com.activity.dao.RegistrationDAO;
@@ -346,7 +349,9 @@ public class RegistrationController {
 			
 			if(registrationList.size() != 0)
 			{
-				write(registrationList, "測試檔案");
+				ServletRequestAttributes requestAttribute = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+				HttpServletResponse response = requestAttribute.getResponse();
+				write(registrationList, "123",response);
 				webResponse.OK();
 				webResponse.setData("file has been write successfully !!");
 			}
@@ -368,13 +373,13 @@ public class RegistrationController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
-	public void write(List<Registration> registrationList, String filename) throws Exception {
+	public void write(List<Registration> registrationList, String filename,HttpServletResponse response) throws Exception {
 
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet1;
 		// String filePath = "C:/Users/jack1/Desktop/somthing/upload/" + filename +
 		// ".xls";
-		String filePath = "C:\\Users\\Morris\\Desktop\\upload\\" + filename + ".xls";
+		//String filePath = "C:\\Users\\Morris\\Desktop\\upload\\" + filename + ".xls";
 		sheet1 = workbook.createSheet("TEST");
 		// 設定開始欄位為第一欄
 
@@ -445,10 +450,35 @@ public class RegistrationController {
 			}
 
 		}
-		FileOutputStream fos = new FileOutputStream(filePath);
-		workbook.write(fos);
-		fos.close();
-		workbook.close();
+		String home = System.getProperty("user.home");
+        //下載路徑到 "下載項目"
+        String filePath = home + "/Downloads/" + filename + ".xls";
+        String fileName = filename + ".xls";
+
+
+        //下載.xls檔案到下載項目中（不透過網頁瀏覽器，所以此方法不可行）
+        //FileOutputStream fos = new FileOutputStream(filePath);
+        //workbook.write(fos);
+        //fos.close();
+        //workbook.close();
+
+
+        response.setContentType("application/ms-excel;charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment;filename=".concat(new String(fileName.getBytes("ISO8859-1"), "UTF-8")));
+        OutputStream out = response.getOutputStream();
+        try {
+            workbook.write(out);// output .xls file
+            //inputStream = new ByteArrayInputStream(out.toByteArray());
+            String str = "download" + fileName + "sccessful";
+            System.out.println(str);
+         } catch (Exception e) {
+            e.printStackTrace();
+            String str1 = "download" + fileName + "failed！";
+            System.out.println(str1);
+         } finally {
+            out.flush();
+            out.close();
+         }
 	}
 
 }

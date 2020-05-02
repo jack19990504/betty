@@ -152,15 +152,16 @@ public class ActivityController {
 		}
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
-
+	//@CrossOrigin(origins = "http://localhost:3000")
 	@PATCH
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("id") Integer id, Activity activity) {
 		final WebResponse webResponse = new WebResponse();
-		final AuthenticationUtil authUtil = new AuthenticationUtil();
-		if (authUtil.checkAuthority()) {
+
+		System.out.println("patch");
+		System.out.println(activity.getActivityMoreContent() + "\t" + activity.getActivityId() + "\t" + activity.getActivityPrecautions());
 			if (id != null) {
 				activity.setActivityId(id);
 				final Activity oldactivity = activityDAO.get(activity);
@@ -178,10 +179,7 @@ public class ActivityController {
 				webResponse.UNPROCESSABLE_ENTITY();
 				webResponse.getError().setMessage("請輸入活動ID!");
 			}
-		} else {
-			webResponse.UNAUTHORIZED();
-			webResponse.setData("authentication failed!");
-		}
+		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
@@ -212,7 +210,7 @@ public class ActivityController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
-	@PATCH
+	@POST
 	@Path("/files/{actId}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response hello(@FormDataParam("file") InputStream uploadedInputStream,
