@@ -59,7 +59,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0,16) : "");
 				
 				
-				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityMeal(rs.getString("activityMeal"));
 				activity.setActivityCover(rs.getString("activityCover"));
 				activity.setActivityLinkName(rs.getString("activityLinkName"));
 				activity.setActivityLink(rs.getString("activityLink"));
@@ -166,7 +166,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setEndSignUpDateStringMinute(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(11, 16) : "");
 				
 				
-				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityMeal(rs.getString("activityMeal"));
 				activity.setActivityCover(rs.getString("activityCover"));
 				activity.setActivityLinkName(rs.getString("activityLinkName"));
 				activity.setActivityLink(rs.getString("activityLink"));
@@ -213,7 +213,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setTimestamp(7,activity.getEndSignUpDate() != null ? activity.getEndSignUpDate() : oldActivity.getEndSignUpDate());
 			smt.setTimestamp(8,activity.getActivityStartDate() != null ? activity.getActivityStartDate() : oldActivity.getActivityStartDate());
 			smt.setTimestamp(9,activity.getActivityEndDate() != null ? activity.getActivityEndDate() : oldActivity.getActivityEndDate());
-			smt.setInt(10,activity.getActivityMeal() != null ? activity.getActivityMeal() : oldActivity.getActivityMeal());
+			smt.setString(10,activity.getActivityMeal() != null ? activity.getActivityMeal() : oldActivity.getActivityMeal());
 			smt.setString(11,activity.getActivityCover() != null ? activity.getActivityCover() : oldActivity.getActivityCover());
 			smt.setString(12,activity.getActivityLinkName() != null ? activity.getActivityLinkName() : oldActivity.getActivityLinkName());
 			smt.setString(13,activity.getActivityLink() != null ? activity.getActivityLink() : oldActivity.getActivityLink());
@@ -288,7 +288,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setTimestamp(7, activity.getEndSignUpDate());
 			smt.setTimestamp(8, activity.getActivityStartDate());
 			smt.setTimestamp(9, activity.getActivityEndDate());
-			smt.setInt(10, activity.getActivityMeal());
+			smt.setString(10, activity.getActivityMeal());
 			smt.setString(11,activity.getActivityLinkName());
 			smt.setString(12,activity.getActivityLink());
 			smt.setString(13,activity.getActivitySummary());
@@ -390,7 +390,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString().substring(0, 16) : "");
 				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0, 16) : "");
 				
-				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityMeal(rs.getString("activityMeal"));
 				activity.setActivityCover(rs.getString("activityCover"));
 				activity.setActivityLinkName(rs.getString("activityLinkName"));
 				activity.setActivityLink(rs.getString("activityLink"));
@@ -484,7 +484,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0, 16) : "");
 				
 				
-				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityMeal(rs.getString("activityMeal"));
 				activity.setActivityCover(rs.getString("activityCover"));
 				activity.setActivityLinkName(rs.getString("activityLinkName"));
 				activity.setActivityLink(rs.getString("activityLink"));
@@ -551,7 +551,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0, 16) : "");
 				
 				
-				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityMeal(rs.getString("activityMeal"));
 				activity.setActivityCover(rs.getString("activityCover"));
 				activity.setActivityLinkName(rs.getString("activityLinkName"));
 				activity.setActivityLink(rs.getString("activityLink"));
@@ -638,7 +638,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setString(3,activity.getActivityInfo());
 			smt.setInt(4,activity.getAttendPeople());
 			smt.setString(5,activity.getActivitySpace());
-			smt.setInt(6,activity.getActivityMeal() );
+			smt.setString(6,activity.getActivityMeal() );
 			smt.setString(7,activity.getActivityCover());
 			smt.setString(8,activity.getActivityLinkName());
 			rs = smt.executeQuery();
@@ -662,7 +662,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString().substring(0, 16) : "");
 				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0, 16) : "");
 				
-				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityMeal(rs.getString("activityMeal"));
 				activity.setActivityCover(rs.getString("activityCover"));
 				activity.setActivityLinkName(rs.getString("activityLinkName"));
 				activity.setActivityLink(rs.getString("activityLink"));
