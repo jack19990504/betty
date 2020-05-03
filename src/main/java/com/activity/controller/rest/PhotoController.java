@@ -47,7 +47,7 @@ public class PhotoController {
 	static String resultJsonPath = "C:\\Users\\jack1\\Desktop\\face\\Engine\\output";
 	static String jsonName = ".cache.egroup";
 
-	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\src\\assets\\images\\";
+	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\ActivityPhoto\\";
 	
 	//將辨識紀錄寫入資料庫
 	@POST
@@ -132,7 +132,7 @@ public class PhotoController {
 		WebResponse webResponse = new WebResponse();
 		if(attributeCheck.stringsNotNull(String.valueOf(activityId)))
 		{
-			String dictLocation = reactFolderPath + activityId + "/";
+			String dictLocation = reactFolderPath +activityId + "/";
 			String list = readfile(dictLocation);
 			if(attributeCheck.stringsNotNull(list))
 			{

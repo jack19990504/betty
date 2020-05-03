@@ -40,7 +40,7 @@ public class FileUploadController {
 //	private final String dictLocation = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\resources";
 //	static String enginePath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine";
 	static String modelPath = "eGroup\\jack_kobe.Model";
-	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\src\\assets\\images";
+	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images";
 	private final String dictLocation = "C:\\Users\\jack1\\Desktop\\face\\Engine\\resources";
 	static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
 	// static String modelPath = "eGroup\\jack_kobe.Model";
@@ -77,7 +77,7 @@ public class FileUploadController {
 			activity.setActivityId(id);
 			activity = activityDAO.get(activity);
 			if (!activity.getActivityName().equals(null)) {
-				String uploadedFileLocation = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\"
+				String uploadedFileLocation = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\ActivityCover\\"
 						+ id;
 				System.out.println(uploadedFileLocation);
 				File file = new File(uploadedFileLocation);
@@ -90,7 +90,7 @@ public class FileUploadController {
 				if (suffix.equals(".jpg") || suffix.equals(".jpeg") || suffix.equals(".png")) {
 					// save it
 					writeToFile(uploadedInputStream, uploadedFileLocation + "\\" + fileName);
-					String output = "public\\assets\\images\\" + fileName;
+					String output = "assets\\images\\ActivityCover\\" + id +"\\"+ fileName;
 					
 					activity.setActivityCover(output);
 					activityDAO.updateCover(activity);
@@ -124,7 +124,7 @@ public class FileUploadController {
 		long startTime = System.currentTimeMillis();
 		// System.out.println("test");
 		picN += 1;
-		String uploadedFileLocation = reactFolderPath + "/" + fileDictName + "/";
+		String uploadedFileLocation = reactFolderPath + "/ActivityPhoto/" + fileDictName + "/";
 		File file = new File(uploadedFileLocation);
 		if (!file.exists()) {
 			file.mkdirs();
@@ -141,7 +141,7 @@ public class FileUploadController {
 			long endTime = System.currentTimeMillis();
 			time += endTime - startTime;
 			System.out.println("第" + picN + "照片" + "目前共花了" + time + "秒");
-			writeToFile(uploadedInputStream, uploadedFileLocation + fileName);
+			writeToFile(uploadedInputStream, uploadedFileLocation + fileName);	
 
 			output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
 
