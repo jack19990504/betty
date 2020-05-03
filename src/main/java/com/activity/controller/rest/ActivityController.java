@@ -1,10 +1,5 @@
 package com.activity.controller.rest;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -18,8 +13,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
@@ -210,59 +203,6 @@ public class ActivityController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
-	@POST
-	@Path("/files/{actId}")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response hello(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail, @PathParam("actId") Integer id,
-			Activity activity) {
-		String uploadedFileLocation = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\";
-		File file = new File(uploadedFileLocation);
-		if (!file.exists()) {
-			file.mkdirs();
-		}
-		String fileName = fileDetail.getFileName();
-		String test = fileName.substring(fileName.lastIndexOf("."));
-		String out = "";
-		if (test.equalsIgnoreCase(".jpg") || test.equalsIgnoreCase(".jpeg") || test.equalsIgnoreCase(".png")) {
-			writeToFile(uploadedInputStream, uploadedFileLocation + fileName);
-
-			 out = "File uploaded to : " + uploadedFileLocation + "side = " + test;
-
-			final Activity oldactivity = activityDAO.get(activity);
-			String picPath = "public\\assets\\images\\" + fileName;
-			activity.setActivityCover(picPath);
-			activity.setActivityId(id);
-			activityDAO.update(oldactivity, activity);
-		}
-		else
-		{
-			out = "no";
-		}
-		// save it
-
-		return Response.status(200).entity(out).build();
-	}
-
-	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
-
-		try {
-			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
-			int read = 0;
-			byte[] bytes = new byte[1024];
-
-			//out = new FileOutputStream(new File(uploadedFileLocation));
-			while ((read = uploadedInputStream.read(bytes)) != -1) {
-				out.write(bytes, 0, read);
-			}
-			out.flush();
-			out.close();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-
-	}
+	
 
 }
