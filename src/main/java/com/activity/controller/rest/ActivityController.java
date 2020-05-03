@@ -29,9 +29,10 @@ import com.activity.entity.Activity;
 import com.activity.entity.Search;
 import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
-@CrossOrigin("*") 
+
+@CrossOrigin("*")
 @Path("/activity")
-@RestController 
+@RestController
 public class ActivityController {
 
 	@Autowired
@@ -69,47 +70,44 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getOrganizerActivity(@PathParam("id") String id) {
 		final WebResponse webResponse = new WebResponse();
-		if(id != null) {
+		if (id != null) {
 			Activity activity = new Activity();
 			activity.setActivityOrganizer(id);
 			final List<Activity> activityList = activityDAO.getOrganizerActivityList(activity);
-			if(activityList != null) {
+			if (activityList != null) {
 				webResponse.OK();
 				webResponse.setData(activityList);
-			}
-			else {
+			} else {
 				webResponse.NOT_FOUND();
 				webResponse.getError().setMessage("查無資料!");
 			}
-		}
-		else {
+		} else {
 			webResponse.UNPROCESSABLE_ENTITY();
 			webResponse.getError().setMessage("請輸入主辦單位!");
 		}
-				
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 
 	}
-	
+
 	@GET
 	@Path("/search")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getActivitySearch(Search search) {
 		final WebResponse webResponse = new WebResponse();
-		if(search.getSearch() != null) {
+		if (search.getSearch() != null) {
 			List<Activity> activityList = activityDAO.getActivitySearch(search);
 			webResponse.OK();
 			webResponse.setData(activityList);
-		}
-		else {
+		} else {
 			webResponse.UNPROCESSABLE_ENTITY();
 			webResponse.getError().setMessage("請輸入搜尋字串");
 		}
-				
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
-	
+
 //	@GET
 //	@Path("/organizer/search")
 //	@Consumes(MediaType.APPLICATION_JSON)
@@ -152,7 +150,8 @@ public class ActivityController {
 		}
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
-	//@CrossOrigin(origins = "http://localhost:3000")
+
+	// @CrossOrigin(origins = "http://localhost:3000")
 	@PATCH
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -161,25 +160,26 @@ public class ActivityController {
 		final WebResponse webResponse = new WebResponse();
 
 		System.out.println("patch");
-		System.out.println(activity.getActivityMoreContent() + "\t" + activity.getActivityId() + "\t" + activity.getActivityPrecautions());
-			if (id != null) {
+		System.out.println(activity.getActivityMoreContent() + "\t" + activity.getActivityId() + "\t"
+				+ activity.getActivityPrecautions());
+		if (id != null) {
+			activity.setActivityId(id);
+			final Activity oldactivity = activityDAO.get(activity);
+			if (oldactivity.getActivityId() != null) {
+				activityDAO.update(oldactivity, activity);
 				activity.setActivityId(id);
-				final Activity oldactivity = activityDAO.get(activity);
-				if (oldactivity.getActivityId() != null) {
-					activityDAO.update(oldactivity, activity);
-					activity.setActivityId(id);
-					activity = activityDAO.get(activity);
-					webResponse.OK();
-					webResponse.setData(activity);
-				} else {
-					webResponse.NOT_FOUND();
-					webResponse.getError().setMessage("查無資料!");
-				}
+				activity = activityDAO.get(activity);
+				webResponse.OK();
+				webResponse.setData(activity);
 			} else {
-				webResponse.UNPROCESSABLE_ENTITY();
-				webResponse.getError().setMessage("請輸入活動ID!");
+				webResponse.NOT_FOUND();
+				webResponse.getError().setMessage("查無資料!");
 			}
-		
+		} else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.getError().setMessage("請輸入活動ID!");
+		}
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
@@ -213,23 +213,36 @@ public class ActivityController {
 	@POST
 	@Path("/files/{actId}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response hello(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @PathParam("actId") Integer id,
 			Activity activity) {
-		String uploadedFileLocation = "d://upload/" + fileDetail.getFileName();
+		String uploadedFileLocation = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\";
+		File file = new File(uploadedFileLocation);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
 		String fileName = fileDetail.getFileName();
-		String test = fileName.substring(fileName.length() - 4, fileName.length());
+		String test = fileName.substring(fileName.lastIndexOf("."));
+		String out = "";
+		if (test.equalsIgnoreCase(".jpg") || test.equalsIgnoreCase(".jpeg") || test.equalsIgnoreCase(".png")) {
+			writeToFile(uploadedInputStream, uploadedFileLocation + fileName);
+
+			 out = "File uploaded to : " + uploadedFileLocation + "side = " + test;
+
+			final Activity oldactivity = activityDAO.get(activity);
+			String picPath = "public\\assets\\images\\" + fileName;
+			activity.setActivityCover(picPath);
+			activity.setActivityId(id);
+			activityDAO.update(oldactivity, activity);
+		}
+		else
+		{
+			out = "no";
+		}
 		// save it
-		writeToFile(uploadedInputStream, uploadedFileLocation);
 
-		String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
-
-		final Activity oldactivity = activityDAO.get(activity);
-
-		activity.setActivityCover(uploadedFileLocation);
-		activity.setActivityId(id);
-		activityDAO.update(oldactivity, activity);
-		return Response.status(200).entity(output).build();
+		return Response.status(200).entity(out).build();
 	}
 
 	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
@@ -239,7 +252,7 @@ public class ActivityController {
 			int read = 0;
 			byte[] bytes = new byte[1024];
 
-			out = new FileOutputStream(new File(uploadedFileLocation));
+			//out = new FileOutputStream(new File(uploadedFileLocation));
 			while ((read = uploadedInputStream.read(bytes)) != -1) {
 				out.write(bytes, 0, read);
 			}
