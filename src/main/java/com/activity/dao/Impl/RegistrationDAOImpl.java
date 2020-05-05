@@ -68,13 +68,14 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		Connection conn = null;
 		PreparedStatement smt = null;
 		ResultSet rs = null;
-		final String sql = "SELECT * FROM `registration`  where AInum = ?";
+		final String sql = "SELECT * FROM `registration` r join member m on r.member_Email = m.memberEmail where AInum = ?";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 			smt.setInt(1, registration.getAInum());
 			rs = smt.executeQuery();
 			registration = new Registration();
+			Member member = new Member();
 			if (rs.next()) {
 				registration.setAInum(rs.getInt("AInum"));
 				registration.setMember_Email(rs.getString("member_Email"));
@@ -84,6 +85,28 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
 				registration.setCancelRegistration(rs.getTimestamp("cancelRegistration"));
+
+				//member
+				member.setMemberName(rs.getString("memberName"));
+				member.setMemberAddress(rs.getString("memberAddress"));
+				member.setMemberEmail(rs.getString("memberEmail"));
+				member.setMemberPassword(rs.getString("memberPassword"));
+				member.setMemberBirthday(rs.getTimestamp("memberBirthday"));
+
+				//program control
+				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString().substring(0,10) : "");
+				
+				member.setMemberPhone(rs.getString("memberPhone"));
+				member.setMemberLineId(rs.getString("memberLineId"));
+				member.setMemberGender(rs.getString("memberGender"));
+				member.setMemberID(rs.getString("memberID"));
+				member.setMemberBloodType(rs.getString("memberBloodType"));
+				member.setEmergencyContact(rs.getString("emergencyContact"));
+				member.setEmergencyContactRelation(rs.getString("emergencyContactRelation"));
+				member.setEmergencyContactPhone(rs.getString("emergencyContactPhone"));
+
+				registration.setMember(member);
+
 			}
 			smt.close();
 			rs.close();
@@ -240,14 +263,16 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		PreparedStatement smt = null;
 		List<Registration> registrationList = new ArrayList<Registration>();
 		final String sql = "SELECT * FROM registration r JOIN activity a on "
-				+ "r.activity_Id = a.activityId where a.activityId = ?;";
+				+ "r.activity_Id = a.activityId join member m on r.member_Email = m.memberEmail where a.activityId = ?;";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 			smt.setInt(1, id);
 			rs = smt.executeQuery();
 			Registration registration;
+			Member member;
 			while (rs.next()) {
+				member = new Member();
 				registration = new Registration();
 				registration.setMember_Email(rs.getString("member_email"));
 				registration.setActivity_Id(rs.getInt("activity_Id"));
@@ -255,6 +280,29 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
+
+
+				//member
+				member.setMemberName(rs.getString("memberName"));
+				member.setMemberAddress(rs.getString("memberAddress"));
+				member.setMemberEmail(rs.getString("memberEmail"));
+				member.setMemberPassword(rs.getString("memberPassword"));
+				member.setMemberBirthday(rs.getTimestamp("memberBirthday"));
+
+				//program control
+				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString().substring(0,10) : "");
+				
+				member.setMemberPhone(rs.getString("memberPhone"));
+				member.setMemberLineId(rs.getString("memberLineId"));
+				member.setMemberGender(rs.getString("memberGender"));
+				member.setMemberID(rs.getString("memberID"));
+				member.setMemberBloodType(rs.getString("memberBloodType"));
+				member.setEmergencyContact(rs.getString("emergencyContact"));
+				member.setEmergencyContactRelation(rs.getString("emergencyContactRelation"));
+				member.setEmergencyContactPhone(rs.getString("emergencyContactPhone"));
+
+				registration.setMember(member);
+
 
 				registrationList.add(registration);
 			}

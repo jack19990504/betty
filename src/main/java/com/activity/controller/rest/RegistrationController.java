@@ -43,6 +43,25 @@ public class RegistrationController {
 	RegistrationDAO registrationDAO;
 	ActivityDAO activityDAO;
 
+	@GET
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getOne(@PathParam("id") Integer id){
+
+		Registration registration = new Registration();
+
+		registration.setAInum(id);
+		
+		registration = registrationDAO.get(registration);
+
+
+		return Response.status(200).entity(registration).build();
+	}
+
+
+
+
 	@CrossOrigin
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
