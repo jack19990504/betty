@@ -1,10 +1,5 @@
 package com.activity.controller.rest;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -18,8 +13,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,9 +22,10 @@ import com.activity.entity.Activity;
 import com.activity.entity.Search;
 import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
-@CrossOrigin("*") 
+
+@CrossOrigin("*")
 @Path("/activity")
-@RestController 
+@RestController
 public class ActivityController {
 
 	@Autowired
@@ -69,47 +63,44 @@ public class ActivityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getOrganizerActivity(@PathParam("id") String id) {
 		final WebResponse webResponse = new WebResponse();
-		if(id != null) {
+		if (id != null) {
 			Activity activity = new Activity();
 			activity.setActivityOrganizer(id);
 			final List<Activity> activityList = activityDAO.getOrganizerActivityList(activity);
-			if(activityList != null) {
+			if (activityList != null) {
 				webResponse.OK();
 				webResponse.setData(activityList);
-			}
-			else {
+			} else {
 				webResponse.NOT_FOUND();
 				webResponse.getError().setMessage("查無資料!");
 			}
-		}
-		else {
+		} else {
 			webResponse.UNPROCESSABLE_ENTITY();
 			webResponse.getError().setMessage("請輸入主辦單位!");
 		}
-				
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 
 	}
-	
+
 	@GET
 	@Path("/search")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getActivitySearch(Search search) {
 		final WebResponse webResponse = new WebResponse();
-		if(search.getSearch() != null) {
+		if (search.getSearch() != null) {
 			List<Activity> activityList = activityDAO.getActivitySearch(search);
 			webResponse.OK();
 			webResponse.setData(activityList);
-		}
-		else {
+		} else {
 			webResponse.UNPROCESSABLE_ENTITY();
 			webResponse.getError().setMessage("請輸入搜尋字串");
 		}
-				
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
-	
+
 //	@GET
 //	@Path("/organizer/search")
 //	@Consumes(MediaType.APPLICATION_JSON)
@@ -152,7 +143,8 @@ public class ActivityController {
 		}
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
-	//@CrossOrigin(origins = "http://localhost:3000")
+
+	// @CrossOrigin(origins = "http://localhost:3000")
 	@PATCH
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -161,25 +153,26 @@ public class ActivityController {
 		final WebResponse webResponse = new WebResponse();
 
 		System.out.println("patch");
-		System.out.println(activity.getActivityMoreContent() + "\t" + activity.getActivityId() + "\t" + activity.getActivityPrecautions());
-			if (id != null) {
+		System.out.println(activity.getActivityMoreContent() + "\t" + activity.getActivityId() + "\t"
+				+ activity.getActivityPrecautions());
+		if (id != null) {
+			activity.setActivityId(id);
+			final Activity oldactivity = activityDAO.get(activity);
+			if (oldactivity.getActivityId() != null) {
+				activityDAO.update(oldactivity, activity);
 				activity.setActivityId(id);
-				final Activity oldactivity = activityDAO.get(activity);
-				if (oldactivity.getActivityId() != null) {
-					activityDAO.update(oldactivity, activity);
-					activity.setActivityId(id);
-					activity = activityDAO.get(activity);
-					webResponse.OK();
-					webResponse.setData(activity);
-				} else {
-					webResponse.NOT_FOUND();
-					webResponse.getError().setMessage("查無資料!");
-				}
+				activity = activityDAO.get(activity);
+				webResponse.OK();
+				webResponse.setData(activity);
 			} else {
-				webResponse.UNPROCESSABLE_ENTITY();
-				webResponse.getError().setMessage("請輸入活動ID!");
+				webResponse.NOT_FOUND();
+				webResponse.getError().setMessage("查無資料!");
 			}
-		
+		} else {
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.getError().setMessage("請輸入活動ID!");
+		}
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
@@ -210,46 +203,6 @@ public class ActivityController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 
-	@POST
-	@Path("/files/{actId}")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response hello(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail, @PathParam("actId") Integer id,
-			Activity activity) {
-		String uploadedFileLocation = "d://upload/" + fileDetail.getFileName();
-		String fileName = fileDetail.getFileName();
-		String test = fileName.substring(fileName.length() - 4, fileName.length());
-		// save it
-		writeToFile(uploadedInputStream, uploadedFileLocation);
-
-		String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
-
-		final Activity oldactivity = activityDAO.get(activity);
-
-		activity.setActivityCover(uploadedFileLocation);
-		activity.setActivityId(id);
-		activityDAO.update(oldactivity, activity);
-		return Response.status(200).entity(output).build();
-	}
-
-	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
-
-		try {
-			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
-			int read = 0;
-			byte[] bytes = new byte[1024];
-
-			out = new FileOutputStream(new File(uploadedFileLocation));
-			while ((read = uploadedInputStream.read(bytes)) != -1) {
-				out.write(bytes, 0, read);
-			}
-			out.flush();
-			out.close();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-
-	}
+	
 
 }

@@ -53,7 +53,7 @@ public class RecommendationDAOImpl implements RecommendationDAO{
 //				activity.setActivityEndDate(rs.getString("activityEndDate"));
 //				activity.setStartSignUpDate(rs.getString("startSignUpDate"));
 //				activity.setEndSignUpDate(rs.getString("endSignUpDate"));
-				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityMeal(rs.getString("activityMeal"));
 
 				activityList.add(activity);
 			}

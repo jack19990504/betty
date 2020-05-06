@@ -173,6 +173,7 @@ public class OrganizerDAOImpl implements OrganizerDAO{
 			rs = smt.executeQuery();
 			organizer = new Organizer();
 			if (rs.next()) {
+				organizer.setMemberEmail(rs.getString("memberEmail"));
 				organizer.setOrganizerName(rs.getString("organizerName"));
 				organizer.setOrganizerPhone(rs.getString("organizerPhone"));
 				organizer.setOrganizerInfo(rs.getString("organizerInfo"));

@@ -19,25 +19,34 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import com.activity.dao.ActivityDAO;
 import com.activity.engine.control.EngineFunc;
 import com.activity.engine.entity.TrainFace;
+import com.activity.engine.util.AttributeCheck;
+import com.activity.entity.Activity;
 import com.activity.util.WebResponse;
-@CrossOrigin("*") 
+
+@CrossOrigin("*")
 @Path("/files")
 @Controller
 public class FileUploadController {
 
+	@Autowired
+	ActivityDAO activityDAO;
+
 //	private final String dictLocation = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\resources";
 //	static String enginePath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine";
 	static String modelPath = "eGroup\\jack_kobe.Model";
-	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\src\\assets\\images";
-	 private final String dictLocation =
-	 "C:\\Users\\jack1\\Desktop\\face\\Engine\\resources";
-	 static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
+	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images";
+	private final String dictLocation = "C:\\Users\\jack1\\Desktop\\face\\Engine\\resources";
+	static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
 	// static String modelPath = "eGroup\\jack_kobe.Model";
+	long time = 0;
+	int picN = 0;
 
 	// 只可上傳一筆
 	@POST
@@ -50,7 +59,7 @@ public class FileUploadController {
 		String test = fileName.substring(fileName.length() - 4, fileName.length());
 		// save it
 		writeToFile(uploadedInputStream, uploadedFileLocation);
-			
+
 		String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
 
 		return Response.status(200).entity(output).build();
@@ -58,23 +67,51 @@ public class FileUploadController {
 
 	// 上傳activity cover
 	@POST
-	@Path("/files/activityCover")
+	@Path("/files/activityCover/{id}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response postActivityCover(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail) {
+			@FormDataParam("file") FormDataContentDisposition fileDetail, @PathParam("id") Integer id) {
 		final WebResponse webResponse = new WebResponse();
-		String uploadedFileLocation = "C://upload/" + fileDetail.getFileName();
-		String fileName = fileDetail.getFileName();
-		String suffix = fileName.substring(fileName.lastIndexOf(".") - 4, fileName.length());
-		if (suffix.equals(".jpg") || suffix.equals(".jpeg") || suffix.equals(".png")) {
-			// save it
-			writeToFile(uploadedInputStream, uploadedFileLocation);
-			String output = "assets/images/" + fileName;
-			webResponse.OK();
-			webResponse.setData(output);
+		final AttributeCheck attributeCheck = new AttributeCheck();
+		if (id != null) {
+			Activity activity = new Activity();
+			activity.setActivityId(id);
+			activity = activityDAO.get(activity);
+			if (attributeCheck.stringsNotNull(activity.getActivityName())) {
+				String uploadedFileLocation = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\ActivityCover\\"
+						+ id;
+				System.out.println(uploadedFileLocation);
+				File file = new File(uploadedFileLocation);
+				if (!file.exists()) {
+					file.mkdirs();
+				}
+
+				String fileName = fileDetail.getFileName();
+				String suffix = fileName.substring(fileName.lastIndexOf("."));
+				if (suffix.equals(".jpg") || suffix.equals(".jpeg") || suffix.equals(".png")) {
+					// save it
+					writeToFile(uploadedInputStream, uploadedFileLocation + "\\" + fileName);
+					String output = "assets\\images\\ActivityCover\\" + id +"\\"+ fileName;
+					
+					activity.setActivityCover(output);
+					activityDAO.updateCover(activity);
+					webResponse.OK();
+					webResponse.setData(output);
+				} else {
+					webResponse.UNPROCESSABLE_ENTITY();
+					webResponse.setData("please give a correct file!");
+				}
+			}
+			else
+			{
+				webResponse.setData("Data not found!");
+				webResponse.NOT_FOUND();
+			}
+
 		} else {
+			webResponse.setData("id required!");
 			webResponse.UNPROCESSABLE_ENTITY();
-			webResponse.setData("please give a correct file!");
 		}
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
@@ -82,26 +119,42 @@ public class FileUploadController {
 
 	@POST
 	@Path("/files/{fileDictName}")
-	@Consumes(MediaType.MULTIPART_FORM_DATA+ ";charset=utf-8")
+	@Consumes(MediaType.MULTIPART_FORM_DATA + ";charset=utf-8")
 	public Response hello2(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail,@PathParam("fileDictName") String fileDictName) throws IOException {
-		String uploadedFileLocation = reactFolderPath + "/" + fileDictName + "/";
+			@FormDataParam("file") FormDataContentDisposition fileDetail,
+			@PathParam("fileDictName") String fileDictName) throws IOException {
+		long startTime = System.currentTimeMillis();
+		// System.out.println("test");
+		picN += 1;
+		String uploadedFileLocation = reactFolderPath + "/ActivityPhoto/" + fileDictName + "/";
 		File file = new File(uploadedFileLocation);
 		if (!file.exists()) {
 			file.mkdirs();
 		}
-		//String uploadedFileLocation = "C://upload/" + fileDetail.getFileName();
+		// String uploadedFileLocation = "C://upload/" + fileDetail.getFileName();
 		String fileName = new String(fileDetail.getFileName().getBytes("ISO8859-1"), "UTF-8");
-		String test = fileName.substring(fileName.length() - 4, fileName.length());
+		String test = fileName.substring(fileName.lastIndexOf("."));
 		// save it
 		System.out.println(fileName);
-		writeToFile(uploadedInputStream, uploadedFileLocation+fileName);
+		String output = "";
+		// System.out.println(test);
+		if (test.equalsIgnoreCase(".jpg") || test.equalsIgnoreCase(".png") || test.equalsIgnoreCase(".jpeg")) {
+			// System.out.println("test3");
+			long endTime = System.currentTimeMillis();
+			time += endTime - startTime;
+			System.out.println("第" + picN + "照片" + "目前共花了" + time + "秒");
+			writeToFile(uploadedInputStream, uploadedFileLocation + fileName);	
 
-		String output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
+			output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
+
+		} else {
+			System.out.println("test2");
+			output = "no";
+		}
 
 		return Response.status(200).entity(output).build();
 	}
-	
+
 	// 可一次上傳多筆檔案
 	@POST
 	@Path("/multifiles/{fileDictName}")
@@ -152,40 +205,40 @@ public class FileUploadController {
 	@Path("/uploadFace/{memberEmail}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response TrainFace(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail,@PathParam("memberEmail") String memberEmail) throws IOException {
+			@FormDataParam("file") FormDataContentDisposition fileDetail, @PathParam("memberEmail") String memberEmail)
+			throws IOException {
 		final WebResponse webResponse = new WebResponse();
-		
-			// 人臉list檔名
-			String faceListName = dictLocation + "\\list_" + memberEmail + ".txt";
-			// 獲取副檔名
-			String fileName = fileDetail.getFileName();
-			String fileExtension = fileName.substring(fileName.length() - 4, fileName.length());// 上傳圖片位置
-			String uploadDict = dictLocation + "\\" + memberEmail;
-			String photoName = uploadDict + "\\" + memberEmail + "1" + fileExtension;
-			File file = new File(uploadDict);
-			if (!file.exists()) {
-				file.mkdirs();
-			}
-			// System.out.println(uploadDict +"\n"+photoName);
-			writeToFile(uploadedInputStream, photoName);
 
-			// 人臉list內容
-			String data = "resources\\" + memberEmail + "\\" + memberEmail + "1"
-					+ fileExtension + "\t" + memberEmail + "[No]1";
-			writeFaceList(faceListName, data);
+		// 人臉list檔名
+		String faceListName = dictLocation + "\\list_" + memberEmail + ".txt";
+		// 獲取副檔名
+		String fileName = fileDetail.getFileName();
+		String fileExtension = fileName.substring(fileName.length() - 4, fileName.length());// 上傳圖片位置
+		String uploadDict = dictLocation + "\\" + memberEmail;
+		String photoName = uploadDict + "\\" + memberEmail + "1" + fileExtension;
+		File file = new File(uploadDict);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		// System.out.println(uploadDict +"\n"+photoName);
+		writeToFile(uploadedInputStream, photoName);
 
-			TrainFace trainFace = new TrainFace();
-			trainFace.setEnginePath(enginePath);
-			trainFace.setTrainListPath("resources\\list_" + memberEmail + ".txt");
-			trainFace.setModelPath(modelPath);
-			trainFace.setModelExist(true);
+		// 人臉list內容
+		String data = "resources\\" + memberEmail + "\\" + memberEmail + "1" + fileExtension + "\t" + memberEmail
+				+ "[No]1";
+		writeFaceList(faceListName, data);
 
-			EngineFunc engineFunc = new EngineFunc();
-			engineFunc.trainFace(trainFace);
+		TrainFace trainFace = new TrainFace();
+		trainFace.setEnginePath(enginePath);
+		trainFace.setTrainListPath("resources\\list_" + memberEmail + ".txt");
+		trainFace.setModelPath(modelPath);
+		trainFace.setModelExist(true);
 
-			webResponse.OK();
-			webResponse.setData("file has been uploaded to " + uploadDict + " and list either to : " + faceListName);
-		
+		EngineFunc engineFunc = new EngineFunc();
+		engineFunc.trainFace(trainFace);
+
+		webResponse.OK();
+		webResponse.setData("file has been uploaded to " + uploadDict + " and list either to : " + faceListName);
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
@@ -205,7 +258,7 @@ public class FileUploadController {
 			int read = 0;
 			byte[] bytes = new byte[1024];
 
-			//out = new FileOutputStream(new File(uploadedFileLocation));
+			// out = new FileOutputStream(new File(uploadedFileLocation));
 			while ((read = uploadedInputStream.read(bytes)) != -1) {
 				out.write(bytes, 0, read);
 			}

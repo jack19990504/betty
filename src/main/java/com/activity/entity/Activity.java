@@ -59,7 +59,7 @@ public class Activity {
 	
 	
 
-	private Integer activityMeal;
+	private String activityMeal;
 
 	private String activityCover;
 
@@ -72,6 +72,8 @@ public class Activity {
 	private String activityMoreContent;
 	
 	private String activityPrecautions;
+	
+	private Integer registeredPeople;
 	
 
 	// private String activityType;
@@ -199,11 +201,11 @@ public class Activity {
 		this.activityEndDate = activityEndDate;
 	}
 
-	public Integer getActivityMeal() {
+	public String getActivityMeal() {
 		return activityMeal;
 	}
 
-	public void setActivityMeal(Integer activityMeal) {
+	public void setActivityMeal(String activityMeal) {
 		this.activityMeal = activityMeal;
 	}
 
@@ -327,4 +329,14 @@ public class Activity {
 		this.activityEndDateStringMinute = activityEndDateStringMinute;
 	}
 
+	public Integer getRegisteredPeople() {
+		return registeredPeople;
+	}
+
+	public void setRegisteredPeople(Integer registeredPeople) {
+		this.registeredPeople = registeredPeople;
+	}
+
+	
+	
 }

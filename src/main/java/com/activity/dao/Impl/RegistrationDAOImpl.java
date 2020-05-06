@@ -33,7 +33,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		ResultSet rs = null;
 		PreparedStatement smt = null;
 		List<String> registerList = new ArrayList<>();
-		final String sql = "SELECT r.* FROM Registration r JOIN member m " + "ON r.member_Email = m.memberEmail"
+		final String sql = "SELECT * FROM Registration r JOIN member m " + "ON r.member_Email = m.memberEmail"
 				+ " JOIN activity a ON r.activity_Id = a.activityId " + " where m.memberLineId = ? ;";
 		try {
 			conn = dataSource.getConnection();
@@ -85,7 +85,6 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
 				registration.setCancelRegistration(rs.getTimestamp("cancelRegistration"));
-
 				//member
 				member.setMemberName(rs.getString("memberName"));
 				member.setMemberAddress(rs.getString("memberAddress"));
@@ -104,9 +103,11 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				member.setEmergencyContact(rs.getString("emergencyContact"));
 				member.setEmergencyContactRelation(rs.getString("emergencyContactRelation"));
 				member.setEmergencyContactPhone(rs.getString("emergencyContactPhone"));
-
+				
+				
+				
 				registration.setMember(member);
-
+				
 			}
 			smt.close();
 			rs.close();
@@ -625,7 +626,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0,16) : "");
 				
 				
-				activity.setActivityMeal(rs.getInt("activityMeal"));
+				activity.setActivityMeal(rs.getString("activityMeal"));
 				activity.setActivityCover(rs.getString("activityCover"));
 				activity.setActivityLinkName(rs.getString("activityLinkName"));
 				activity.setActivityLink(rs.getString("activityLink"));
