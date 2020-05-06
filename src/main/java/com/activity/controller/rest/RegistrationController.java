@@ -59,9 +59,6 @@ public class RegistrationController {
 		return Response.status(200).entity(registration).build();
 	}
 
-
-
-
 	@CrossOrigin
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -206,7 +203,7 @@ public class RegistrationController {
 
 	//獲取單一使用者所有報名資訊
 	@GET
-	@Path("/{id}")
+	@Path("/member/{id}")
 	@Produces("application/json")
 	public Response get(@PathParam("id") String id) {
 		
