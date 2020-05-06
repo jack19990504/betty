@@ -277,7 +277,7 @@ public class PhotoController {
 						String fileType = fileName.substring(fileName.lastIndexOf("."),fileName.length());
 						
 						if(fileType.equals(".jpg") || fileType.equals(".jpeg") || fileType.equals(".png"))
-							result +=  "assets/images/"+id+"/" + fileName + "\n";
+							result +=  "assets/images/ActivityPhoto/"+id+"/" + fileName + "\n";
 						
 					} else if (readfile.isDirectory()) {
 						readfile(filepath + "//" + filelist[i]);

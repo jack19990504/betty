@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import com.activity.dao.ActivityDAO;
 import com.activity.engine.control.EngineFunc;
 import com.activity.engine.entity.TrainFace;
+import com.activity.engine.util.AttributeCheck;
 import com.activity.entity.Activity;
 import com.activity.util.WebResponse;
 
@@ -72,11 +73,12 @@ public class FileUploadController {
 	public Response postActivityCover(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @PathParam("id") Integer id) {
 		final WebResponse webResponse = new WebResponse();
+		final AttributeCheck attributeCheck = new AttributeCheck();
 		if (id != null) {
 			Activity activity = new Activity();
 			activity.setActivityId(id);
 			activity = activityDAO.get(activity);
-			if (!activity.getActivityName().equals(null)) {
+			if (attributeCheck.stringsNotNull(activity.getActivityName())) {
 				String uploadedFileLocation = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\ActivityCover\\"
 						+ id;
 				System.out.println(uploadedFileLocation);
