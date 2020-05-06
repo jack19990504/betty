@@ -43,6 +43,42 @@ public class RegistrationController {
 	RegistrationDAO registrationDAO;
 	ActivityDAO activityDAO;
 
+	@GET
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getOne(@PathParam("id") Integer id){
+		final AttributeCheck attributeCheck = new AttributeCheck();
+		final WebResponse webResponse = new WebResponse();
+		if(id != null)
+		{
+			Registration registration = new Registration();
+
+			registration.setAInum(id);
+
+			registration = registrationDAO.get(registration);
+			if(attributeCheck.stringsNotNull(registration.getMember_Email()))
+			{
+				webResponse.OK();
+				webResponse.setData(registration);
+			}
+			else
+			{
+				webResponse.NOT_FOUND();
+				webResponse.setData("no data");
+			}
+		}
+		else
+		{
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("id required");
+		}
+		
+
+
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
 	@CrossOrigin
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

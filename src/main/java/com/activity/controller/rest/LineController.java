@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.activity.dao.ActivityDAO;
 import com.activity.dao.MemberDAO;
 import com.activity.dao.RegistrationDAO;
+import com.activity.engine.util.AttributeCheck;
 import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Registration;
@@ -74,7 +75,7 @@ public class LineController {
 	public void sendRemindMessages(@PathParam("activityId") Integer id)
 	{
 		List<Registration> registrationList = registerDAO.getListWithMemberInformation(id);
-		
+		final AttributeCheck attributeCheck = new AttributeCheck();
 		Activity activity = new Activity();
 		activity.setActivityId(id);
 		activity = activityDAO.get(activity);
@@ -88,7 +89,7 @@ public class LineController {
 		for(Registration r : registrationList)
 		{
 			String memLineId = r.getMember().getMemberLineId();
-			if(!memLineId.equals(null) || !memLineId.equals(""))
+			if(attributeCheck.stringsNotNull(memLineId))	
 			{
 				sb.append(memLineId);
 				sb.append(",");
@@ -130,7 +131,7 @@ public class LineController {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response callback( EventWrapper events) {
-		List<Activity> activityList = activityDAO.getList();
+		
 		for (Event event : events.getEvents()) {
 			switch (event.getType()) {
 			case "message": // 當event為message時進入此case執行，其他event(如follow、unfollow、leave等)的case在此省略，您可自己增加
@@ -138,18 +139,19 @@ public class LineController {
 				switch (event.getMessage().getType()) {
 				case "text": // 當message type為text時，進入此case執行，目前子是將使用者傳來的文字訊息在其前加上echo字串後，回傳給使用者
 					if (event.getMessage().getText().equals("可報名活動")) {
+						List<Activity> activityList = activityDAO.getActivityNames();
 						StringBuilder sb = new StringBuilder();
 						
 						
 						sb.append("目前可報名的活動有 :"+"\\n");
 						for (Activity activity : activityList) {
 							
-							sb.append(activity.getActivityName()+"、");
+							sb.append(activity.getActivityName()+"\\n"+"活動開始時間為:"+activity.getActivityStartDateString() + "\\n");
 			
 						}
 						
 						System.out.println(event.getSource().getUserId());
-						String message = sb.substring(0,sb.length()-1);
+						String message = sb.substring(0,sb.length()-2);
 						System.out.println(sb.toString());
 						sendResponseMessages(event.getReplyToken(),message);
 						
@@ -158,20 +160,26 @@ public class LineController {
 					{
 						 ActivityButtonTemplate(event.getReplyToken());
 					}
-					else if(event.getMessage().getText().equals("查詢已報名活動"))
+					else if(event.getMessage().getText().equals("已報名活動"))
 					{
 						List<String> Registration = registerDAO.getUserRegistration(event.getSource().getUserId());
-						String message = "您所參加的活動有:\\n";
+						if(Registration.isEmpty())
+						{
+							System.out.println(event.getSource().getUserId());
+							sendResponseMessages(event.getReplyToken(),"您沒有已報名的活動或尚未綁定帳號!");
+						}
+						else
+						{
+							String message = "您所參加的活動有:\\n";
 						for(String r : Registration)
 						{
 							message = message + r +  "、";
 						}
 						message = message.substring(0,message.length()-1);
 						sendResponseMessages(event.getReplyToken(),message);
-						if(Registration.isEmpty())
-						{
-							sendResponseMessages(event.getReplyToken(),"您沒有已報名的活動或尚未綁定帳號!");
 						}
+						
+						
 						
 					}
 //					else if(event.getMessage().getText().equals("發送訊息"))
@@ -316,7 +324,7 @@ public class LineController {
 						}
 						
 					}
-					else if(event.getMessage().getText().endsWith("活動") && !event.getMessage().getText().equals("活動"))
+					else if(event.getMessage().getText().endsWith("活動") && !event.getMessage().getText().equals("可報名活動") && !event.getMessage().getText().equals("已報名活動"))
 					{
 						final String type = event.getMessage().getText().substring(0,event.getMessage().getText().length()-2);
 						List<Activity> aList = new ArrayList<Activity>();

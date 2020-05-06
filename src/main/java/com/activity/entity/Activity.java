@@ -73,6 +73,8 @@ public class Activity {
 	
 	private String activityPrecautions;
 	
+	private Integer registeredPeople;
+	
 
 	// private String activityType;
 
@@ -327,4 +329,14 @@ public class Activity {
 		this.activityEndDateStringMinute = activityEndDateStringMinute;
 	}
 
+	public Integer getRegisteredPeople() {
+		return registeredPeople;
+	}
+
+	public void setRegisteredPeople(Integer registeredPeople) {
+		this.registeredPeople = registeredPeople;
+	}
+
+	
+	
 }

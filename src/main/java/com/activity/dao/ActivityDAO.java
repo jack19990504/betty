@@ -1,9 +1,7 @@
 package com.activity.dao;
 import java.util.List;
 
-
 import com.activity.entity.Activity;
-import com.activity.entity.Organizer;
 import com.activity.entity.Search;
 
 
@@ -11,7 +9,7 @@ public interface ActivityDAO {
 		
 	public List<Activity> getList();
 	
-	public String getActivityNames();
+	public List<Activity> getActivityNames();
 	
 	public Activity get(Activity activity);
 	
