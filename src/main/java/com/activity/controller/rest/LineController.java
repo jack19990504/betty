@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +59,16 @@ public class LineController {
 	7	戶外🏔
 	8	講座💼🎤？
 	9	資訊🖥*/
+//	Map<String, String> StringString = new HashMap<String, String>();
+//	StringString.put("學習","📚");
+//	StringString.put("藝文","🎼");
+//	StringString.put("親子","👶🏻");
+//	StringString.put("體驗","💆");
+//	StringString.put("休閒","🏖");
+//	StringString.put("運動","🚴");
+//	StringString.put("戶外","🏔");
+//	StringString.put("講座","💼");
+//	StringString.put("藝文","🎼");
 	Map<String, String> map = Map.of("學習","📚","藝文","🎼","親子","👶🏻","體驗"
 			,"💆","休閒","🏖","運動","🚴","戶外","🏔","講座","💼","資訊","🖥");
 	
