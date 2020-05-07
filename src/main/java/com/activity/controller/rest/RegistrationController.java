@@ -156,7 +156,7 @@ public class RegistrationController {
 		} else {
 			List<Registration> registrationList = registrationDAO.getActivityList(id);
 			if (registrationList.size() == 0) {
-				webResponse.NO_CONTENT();
+				webResponse.NOT_FOUND();
 				webResponse.setData("There is no user registered this activity");
 
 			} else {
