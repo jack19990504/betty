@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.activity.dao.FeedbackDAO;
 import com.activity.entity.Feedback;
 import com.activity.util.WebResponse;
-import com.google.gson.Gson;
 
 @Path("/feedback")
 @CrossOrigin("*") 
@@ -30,6 +29,7 @@ public class FeedbackController {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Feedback feedback) {
 		final WebResponse webResponse = new WebResponse();
 			

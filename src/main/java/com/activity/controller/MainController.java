@@ -35,16 +35,16 @@ public class MainController {
 	public String adminIndex() {
 		return "admin/index";
 	}
-	@CrossOrigin("*")
-	@RequestMapping("/login")
-	public void login(HttpServletResponse response) {
-		
-		
-		response.addHeader("Access-Control-Allow-Origin" ,"*");
-		response.addHeader("Location", "http://localhost:3000/");
-		response.setStatus(302);
-		
-	}
+//	@CrossOrigin("*")
+//	@RequestMapping("/login")
+//	public void login(HttpServletResponse response) {
+//		
+//		
+//		response.addHeader("Access-Control-Allow-Origin" ,"*");
+//		response.addHeader("Location", "http://localhost:3000/");
+//		response.setStatus(302);
+//		
+//	}
 
 	@RequestMapping("/login?error")
 	public void loginError(Model model,HttpServletResponse response) {

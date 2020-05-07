@@ -88,22 +88,26 @@ public class ActivityDAOImpl implements ActivityDAO {
 	}
 
 	@Override
-	public String getActivityNames() {
+	public List<Activity> getActivityNames() {
 		Connection conn = null;
 		ResultSet rs = null;
 		PreparedStatement smt = null;
-		String activityNames = "";
-		final String sql = "SELECT * FROM activity;";
+		List<Activity> ActivityList = new ArrayList<>();
+		final String sql = "SELECT *,(SELECT COUNT(*) FROM registration where registration.activity_Id = activity.activityId and registration.cancelRegistration is null) as registeredPeople " + 
+				" FROM activity WHERE activity.startSignUpDate > NOW() GROUP BY activityId HAVING  attendPeople > registeredPeople";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 			rs = smt.executeQuery();
 			Activity activity;
+			
 			while (rs.next()) {
 				activity = new Activity();
 				activity.setActivityName(rs.getString("activityName"));
-
-				activityNames = activityNames + rs.getString("activityName");
+				activity.setActivityId(rs.getInt("activityId"));
+				
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString().substring(0, 16) : "");
+				ActivityList.add(activity);
 			}
 			rs.close();
 			smt.close();
@@ -120,7 +124,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				}
 			}
 		}
-		return activityNames;
+		return ActivityList;
 	}
 
 	@Override
@@ -327,7 +331,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setInt(1, activity.getActivityId());
 			rs = smt.executeQuery();
 			
-			System.out.println(activity.getActivityId());
+			//System.out.println(activity.getActivityId()+"123");
 			while (rs.next()) {
 				activity.getActivityTypes().add(rs.getString("activityType"));
 			}
@@ -457,7 +461,9 @@ public class ActivityDAOImpl implements ActivityDAO {
 		ResultSet rs = null;
 		PreparedStatement smt = null;
 		List<Activity> activityOrganizerList = new ArrayList<Activity>();
-		final String sql = "SELECT * FROM activity WHERE activityOrganizer = ?";
+		final String sql = "SELECT * ," + 
+				"(SELECT COUNT(*) FROM registration where registration.activity_Id = activity.activityId and registration.cancelRegistration is null) as registeredPeople  " + 
+				" FROM activity WHERE activityOrganizer = ? ";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -492,6 +498,8 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
 				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
 
+				activity.setRegisteredPeople(rs.getInt("registeredPeople"));
+				
 				activityOrganizerList.add(activity);
 			}
 			rs.close();
@@ -629,7 +637,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 		final String sql = "SELECT * FROM activity WHERE activityName = ? and " + 
 		" activityOrganizer = ? and "+ "activityInfo = ? and " + "attendPeople = ? and " + 
 		"activitySpace = ? and "  + "activityMeal = ? and " +
-		"activityCover = ? and " + "activityLinkName = ? ORDER BY activityId DESC LIMIT 1";
+		" activityLinkName = ? ORDER BY activityId DESC LIMIT 1";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -639,8 +647,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setInt(4,activity.getAttendPeople());
 			smt.setString(5,activity.getActivitySpace());
 			smt.setString(6,activity.getActivityMeal() );
-			smt.setString(7,activity.getActivityCover());
-			smt.setString(8,activity.getActivityLinkName());
+			smt.setString(7,activity.getActivityLinkName());
 			rs = smt.executeQuery();
 
 			activity = new Activity();
@@ -663,7 +670,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0, 16) : "");
 				
 				activity.setActivityMeal(rs.getString("activityMeal"));
-				activity.setActivityCover(rs.getString("activityCover"));
+				//activity.setActivityCover(rs.getString("activityCover"));
 				activity.setActivityLinkName(rs.getString("activityLinkName"));
 				activity.setActivityLink(rs.getString("activityLink"));
 				activity.setActivitySummary(rs.getString("activitySummary"));
@@ -686,6 +693,9 @@ public class ActivityDAOImpl implements ActivityDAO {
 		}
 		return activity;
 	}
+
+	
+	
 	
 
 

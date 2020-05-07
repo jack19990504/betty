@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.ws.rs.Consumes;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.activity.dao.ActivityDAO;
 import com.activity.dao.MemberDAO;
 import com.activity.dao.RegistrationDAO;
+import com.activity.engine.util.AttributeCheck;
 import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Registration;
@@ -45,6 +47,22 @@ public class LineController {
 //			"Ubcdf942fb35591a3c29c5f1c763cc0a8",
 //			"Uedb45f1ab77ed45363238641d987b33b",
 //			"Ufdfd00bdb0fcd6694ff944f19ae876a7"};
+	
+	/*
+	1	學習📚
+	2	藝文🎼
+	3	親子👨‍👩‍👧‍👦
+	4	體驗💆🏻
+	5	休閒🏖
+	6	運動🚴🏻
+	7	戶外🏔
+	8	講座💼🎤？
+	9	資訊🖥*/
+	Map<String, String> map = Map.of("學習","📚","藝文","🎼","親子","👶🏻","體驗"
+			,"💆","休閒","🏖","運動","🚴","戶外","🏔","講座","💼","資訊","🖥");
+	
+	private ArrayList<String> bindUserId = new ArrayList<>();
+	private ArrayList<String> resetUserId = new ArrayList<>();
 	
 	
 	private boolean saveLineUserId = false;
@@ -74,7 +92,7 @@ public class LineController {
 	public void sendRemindMessages(@PathParam("activityId") Integer id)
 	{
 		List<Registration> registrationList = registerDAO.getListWithMemberInformation(id);
-		
+		final AttributeCheck attributeCheck = new AttributeCheck();
 		Activity activity = new Activity();
 		activity.setActivityId(id);
 		activity = activityDAO.get(activity);
@@ -88,7 +106,7 @@ public class LineController {
 		for(Registration r : registrationList)
 		{
 			String memLineId = r.getMember().getMemberLineId();
-			if(!memLineId.equals(null) || !memLineId.equals(""))
+			if(attributeCheck.stringsNotNull(memLineId))	
 			{
 				sb.append(memLineId);
 				sb.append(",");
@@ -130,47 +148,244 @@ public class LineController {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response callback( EventWrapper events) {
-		List<Activity> activityList = activityDAO.getList();
+		
 		for (Event event : events.getEvents()) {
 			switch (event.getType()) {
 			case "message": // 當event為message時進入此case執行，其他event(如follow、unfollow、leave等)的case在此省略，您可自己增加
 				System.out.print("This is a message event!\n");
 				switch (event.getMessage().getType()) {
 				case "text": // 當message type為text時，進入此case執行，目前子是將使用者傳來的文字訊息在其前加上echo字串後，回傳給使用者
-					if (event.getMessage().getText().equals("可報名活動")) {
+					
+					if(event.getMessage().getText().equals("綁定帳號"))
+					{
+						if(resetUserId.contains(event.getSource().getUserId()))
+						{
+							sendResponseMessages(event.getReplyToken(),"重置失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
+							resetUserId.remove(event.getSource().getUserId());
+						}
+						else
+						{
+							sendResponseMessages(event.getReplyToken(),"請輸入帳號密碼!\\n如範例⬇️\\n帳號:\\n密碼:");
+							if(!bindUserId.contains(event.getSource().getUserId())){
+								bindUserId.add(event.getSource().getUserId());
+							}
+						}
+					}
+					else if(event.getMessage().getText().equals("重置綁定"))
+					{
+						if(bindUserId.contains(event.getSource().getUserId()))
+						{
+							sendResponseMessages(event.getReplyToken(),"綁定失敗，請按照格式輸入!\\n請再次點選「綁定帳號」並重新輸入!");
+							bindUserId.remove(event.getSource().getUserId());
+						}
+						else
+						{
+							sendResponseMessages(event.getReplyToken(),"請輸入欲重置的帳號密碼!\\n如範例⬇️\\n帳號:\\n密碼:");
+							if(!resetUserId.contains(event.getSource().getUserId())){
+								resetUserId.add(event.getSource().getUserId());
+							}
+						
+						}
+					}
+					
+					else if(resetUserId.contains(event.getSource().getUserId()))
+					{
+						bindUserId.remove(event.getSource().getUserId());
+						resetUserId.remove(event.getSource().getUserId());
+						String init  = event.getMessage().getText();
+						if(!init.startsWith("帳號"))
+						{
+							
+							sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
+						}
+						else
+						{
+							String datas[]  = init.split("\n");
+							if(datas[0].length() < 4 || datas[1].length() < 4)
+							{
+								sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
+							}
+							else
+							{
+								String account = datas[0].substring(3).trim();
+								String password = datas[1].substring(3).trim();
+						
+								Member member = new Member();
+								member.setMemberEmail(account);
+								member = memberDAO.get(member);
+								//無此筆帳號
+								if(member.getMemberPassword() == null || !member.getMemberPassword().equals(password))
+								{
+							
+									sendResponseMessages(event.getReplyToken(), "重置失敗，帳號或密碼輸入錯誤!\\n請再次點選「重置綁定」並重新輸入!");
+								}
+								else 
+								{
+									if(member.getMemberLineId() == null)
+									{
+										sendResponseMessages(event.getReplyToken(), "重置失敗，此帳號尚無綁定過!");
+								
+									}
+							
+									else if(member.getMemberLineId().equals(""))
+									{
+										sendResponseMessages(event.getReplyToken(), "重置失敗，此帳號已重置過!\\n請再次點選「重置綁定」並重新輸入!");
+								
+									}
+							
+									else if(!member.getMemberLineId().equals(event.getSource().getUserId()))
+									{
+										sendResponseMessages(event.getReplyToken(), "重置失敗，您綁定的不是此帳號!\\n請再次點選「重置綁定」並重新輸入!");
+									}
+							
+									else 
+									{
+										memberDAO.resetLineUserId(account);
+										sendResponseMessages(event.getReplyToken(), "重置成功!");
+								
+									}
+								}
+							}
+						
+						}
+						
+						
+						
+					}
+					
+					else if(bindUserId.contains(event.getSource().getUserId()))
+					{
+						resetUserId.remove(event.getSource().getUserId());
+						bindUserId.remove(event.getSource().getUserId());
+						String init  = event.getMessage().getText();
+						if(!init.startsWith("帳號"))
+						{
+							saveLineUserId = false;
+							sendResponseMessages(event.getReplyToken(), "綁定失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
+						}
+						else
+						{
+							String datas[]  = init.split("\n");
+							if(datas[0].length() < 4 || datas[1].length() < 4)
+							{
+								sendResponseMessages(event.getReplyToken(), "綁定失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
+							}
+							else
+							{
+								String account = datas[0].substring(3).trim();
+								String password = datas[1].substring(3).trim();
+								Member member = new Member();
+								member.setMemberEmail(account);
+								member = memberDAO.get(member);
+								
+								//無此筆帳號
+								if(member.getMemberPassword() == null || !member.getMemberPassword().equals(password))
+								{
+									saveLineUserId = false;
+									sendResponseMessages(event.getReplyToken(), "綁定失敗，帳號或密碼輸入錯誤!\\n請再次點選「重置綁定」並重新輸入!");
+								}
+								else
+								{
+									//如未登錄過LineId
+									//
+									if(member.getMemberLineId() == null  || member.getMemberLineId().equals(""))
+									{
+										//測試此LINE用戶是否已綁定過其他帳號
+										Member test = new Member();
+										test.setMemberLineId(event.getSource().getUserId());
+										test = memberDAO.check(test);
+										//如已綁定過
+										if(test.getMemberEmail()!= null)
+										{
+											saveLineUserId =false;
+											sendResponseMessages(event.getReplyToken(), "綁定失敗，此Line帳號已綁定其他用戶帳號!");
+										}
+										//如未綁定
+										else
+										{
+											saveLineUserId =false;
+											memberDAO.UpdateLineUserId(event.getSource().getUserId(), account, password);
+											sendResponseMessages(event.getReplyToken(), "綁定成功!");
+										}
+										
+									}
+									
+									else 
+									{
+										System.out.println(!member.getMemberLineId().equals(""));
+										System.out.println(!member.getMemberLineId().equals(null));
+										saveLineUserId =false;
+										sendResponseMessages(event.getReplyToken(), "此用戶帳號已綁定過!");
+									}
+									
+									
+									
+								}
+							}
+						}
+									
+					}
+					
+					
+					else if (event.getMessage().getText().equals("可報名活動")) {
+						resetUserId.remove(event.getSource().getUserId());
+						bindUserId.remove(event.getSource().getUserId());
+						List<Activity> activityList = activityDAO.getActivityNames();
 						StringBuilder sb = new StringBuilder();
 						
 						
 						sb.append("目前可報名的活動有 :"+"\\n");
 						for (Activity activity : activityList) {
 							
-							sb.append(activity.getActivityName()+"、");
+							activityDAO.getActivityTypes(activity);
+							
+							for(String a : activity.getActivityTypes())
+							{
+								if(a == null)
+									continue;
+								else
+								{
+									sb.append(map.get(a));
+									break;
+								}
+								
+							}
+							
+							sb.append(activity.getActivityName()+"\\n"+"活動開始時間為:\\n"+activity.getActivityStartDateString() + "\\n");
 			
 						}
 						
 						System.out.println(event.getSource().getUserId());
-						String message = sb.substring(0,sb.length()-1);
-						System.out.println(sb.toString());
-						sendResponseMessages(event.getReplyToken(),message);
+						
+						//sendResponseMessages(event.getReplyToken(),message);
+						String output [] = {sb.substring(0,sb.length()-2),"詳細活動資訊請上官方網站查詢"};
+						sendResponseMessages(event.getReplyToken(),output);
 						
 					} 
-					else if (event.getMessage().getText().equals("選單"))
+//					else if (event.getMessage().getText().equals("選單"))
+//					{
+//						 ActivityButtonTemplate(event.getReplyToken());
+//					}
+					else if(event.getMessage().getText().equals("已報名活動"))
 					{
-						 ActivityButtonTemplate(event.getReplyToken());
-					}
-					else if(event.getMessage().getText().equals("查詢已報名活動"))
-					{
-						List<String> Registration = registerDAO.getUserRegistration(event.getSource().getUserId());
-						String message = "您所參加的活動有:\\n";
-						for(String r : Registration)
-						{
-							message = message + r +  "、";
-						}
-						message = message.substring(0,message.length()-1);
-						sendResponseMessages(event.getReplyToken(),message);
+						resetUserId.remove(event.getSource().getUserId());
+						bindUserId.remove(event.getSource().getUserId());
+						List<Registration> Registration = registerDAO.getUserRegistration(event.getSource().getUserId());
 						if(Registration.isEmpty())
 						{
+							System.out.println(event.getSource().getUserId());
 							sendResponseMessages(event.getReplyToken(),"您沒有已報名的活動或尚未綁定帳號!");
+						}
+						else
+						{
+							StringBuilder sb = new StringBuilder();
+							sb.append("您所參加的活動有:\\n");
+						for(Registration r  : Registration)
+						{
+							sb.append("🔍"+ r.getActivity().getActivityName() +  "\\n");
+						}
+						String [] output = {sb.substring(0,sb.length()-2),"已參加活動之詳細資訊請至官方網站查看"};
+						sendResponseMessages(event.getReplyToken(),output);
 						}
 						
 					}
@@ -180,144 +395,20 @@ public class LineController {
 //					}
 					else if(event.getMessage().getText().equals("類型選單")) 
 					{
+						resetUserId.remove(event.getSource().getUserId());
+						bindUserId.remove(event.getSource().getUserId());
 						typeTemplate(event.getReplyToken());
 					}
-					else if (event.getMessage().getText().equals("圖片選單"))
-					{
-						imageTemplate(event.getReplyToken());
-					}
-					else if(event.getMessage().getText().equals("綁定帳號"))
-					{
-						sendResponseMessages(event.getReplyToken(),"請輸入帳號密碼!\\n如範例:\\n帳號:\\n密碼:");
-						saveLineUserId = true ;
-						resetLineUserId = false;
-					}
-					else if(event.getMessage().getText().equals("重置綁定帳號"))
-					{
-						sendResponseMessages(event.getReplyToken(),"請輸入欲重置的帳號密碼!\\n如範例:\\n帳號:\\n密碼:");
-						resetLineUserId = true;
-						saveLineUserId = false;
-					}
-					else if(resetLineUserId)
-					{
-						String init  = event.getMessage().getText();
-						if(!init.startsWith("帳號"))
-						{
-							sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請重新輸入!");
-						}
-						String datas[]  = init.split("\n");
-						String account = datas[0].substring(3).trim();
-						String password = datas[1].substring(3).trim();
-						System.out.println(account);
-						System.out.println(password);
-						Member member = new Member();
-						member.setMemberEmail(account);
-						member = memberDAO.get(member);
-						
-						//無此筆帳號
-						if(member.getMemberPassword() == null || !member.getMemberPassword().equals(password))
-						{
-							sendResponseMessages(event.getReplyToken(), "重置失敗，帳號或密碼輸入錯誤!\\n請重新輸入!");
-						}
-						else 
-						{
-							if(member.getMemberLineId() == null)
-							{
-								sendResponseMessages(event.getReplyToken(), "重置失敗，此帳號尚無綁定過!");
-								resetLineUserId = false;
-							}
-							
-							else if(member.getMemberLineId().equals(""))
-							{
-								sendResponseMessages(event.getReplyToken(), "重置失敗，此帳號已重置過!\\n請重新輸入!");
-								resetLineUserId = false ;
-							}
-							
-							else if(!member.getMemberLineId().equals(event.getSource().getUserId()))
-							{
-								sendResponseMessages(event.getReplyToken(), "重置失敗，您綁定的不是此帳號!\\n請重新輸入!");
-							}
-							
-							else 
-							{
-								memberDAO.resetLineUserId(account);
-								sendResponseMessages(event.getReplyToken(), "重置成功!");
-								resetLineUserId = false;
-							}
-						}
-					}
+//					else if (event.getMessage().getText().equals("圖片選單"))
+//					{
+//						imageTemplate(event.getReplyToken());
+//					}
 					
-					else if(saveLineUserId)
+					
+					else if(event.getMessage().getText().endsWith("活動") && !event.getMessage().getText().equals("可報名活動") && !event.getMessage().getText().equals("已報名活動"))
 					{
-						
-						String init  = event.getMessage().getText();
-						if(!init.startsWith("帳號"))
-						{
-							sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請重新輸入!");
-						}
-						String datas[]  = init.split("\n");
-						String account = datas[0].substring(3).trim();
-						String password = datas[1].substring(3).trim();
-						if(account.length()== 0 || password.length() == 0)
-						{
-							sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請重新輸入!");
-						}
-						System.out.println(account);
-						System.out.println(password);
-						Member member = new Member();
-						member.setMemberEmail(account);
-						member = memberDAO.get(member);
-						
-						System.out.println(member.getMemberEmail());
-						System.out.println(member.getMemberPassword());
-						
-						
-						//無此筆帳號
-						if(member.getMemberPassword() == null || !member.getMemberPassword().equals(password))
-						{
-							sendResponseMessages(event.getReplyToken(), "綁定失敗，帳號或密碼輸入錯誤!\\n請重新輸入!");
-						}
-						else
-						{
-							//如未登錄過LineId
-							//
-							if(member.getMemberLineId() == null  || member.getMemberLineId().equals(""))
-							{
-								//測試此LINE用戶是否已綁定過其他帳號
-								Member test = new Member();
-								test.setMemberLineId(event.getSource().getUserId());
-								test = memberDAO.check(test);
-								//如已綁定過
-								if(test.getMemberEmail()!= null)
-								{
-									saveLineUserId =false;
-									sendResponseMessages(event.getReplyToken(), "綁定失敗，此Line帳號已綁定其他用戶帳號!");
-								}
-								//如未綁定
-								else
-								{
-									saveLineUserId =false;
-									memberDAO.UpdateLineUserId(event.getSource().getUserId(), account, password);
-									sendResponseMessages(event.getReplyToken(), "綁定成功!");
-								}
-								
-							}
-							
-							else 
-							{
-								System.out.println(!member.getMemberLineId().equals(""));
-								System.out.println(!member.getMemberLineId().equals(null));
-								saveLineUserId =false;
-								sendResponseMessages(event.getReplyToken(), "此用戶帳號已綁定過!");
-							}
-							
-							
-							
-						}
-						
-					}
-					else if(event.getMessage().getText().endsWith("活動") && !event.getMessage().getText().equals("活動"))
-					{
+						resetUserId.remove(event.getSource().getUserId());
+						bindUserId.remove(event.getSource().getUserId());
 						final String type = event.getMessage().getText().substring(0,event.getMessage().getText().length()-2);
 						List<Activity> aList = new ArrayList<Activity>();
 						aList = activityDAO.getListByType(type);
