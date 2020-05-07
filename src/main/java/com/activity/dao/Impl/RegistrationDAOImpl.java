@@ -28,23 +28,80 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	}
 
 	@Override
-	public List<String> getUserRegistration(String UserLineId) {
+	public List<Registration> getUserRegistration(String UserLineId) {
 		Connection conn = null;
 		ResultSet rs = null;
 		PreparedStatement smt = null;
-		List<String> registerList = new ArrayList<>();
+		List<Registration> registerList = new ArrayList<>();
 		final String sql = "SELECT * FROM Registration r JOIN member m " + "ON r.member_Email = m.memberEmail"
-				+ " JOIN activity a ON r.activity_Id = a.activityId " + " where m.memberLineId = ? ;";
+				+ " JOIN activity a ON r.activity_Id = a.activityId " + " where m.memberLineId = ?  and a.activityStartDate > NOW();";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
 			smt.setString(1, UserLineId);
 			rs = smt.executeQuery();
-			String activityName = "";
+			
+			Registration registration;
+			Member member;
+			Activity activity;
 			while (rs.next()) {
+				
+				member = new Member();
+				activity = new Activity();
+				registration = new Registration();
+				registration.setAInum(rs.getInt("AInum"));
+				registration.setMember_Email(rs.getString("member_Email"));
+				registration.setActivity_Id(rs.getInt("activity_Id"));
+				registration.setRegistrationRemark(rs.getString("registrationRemark"));
+				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
+				registration.setIsSignIn(rs.getInt("isSignIn"));
+				registration.setIsSignOut(rs.getInt("isSignOut"));
+				
+				
+				//member
+				member.setMemberName(rs.getString("memberName"));
+				member.setMemberAddress(rs.getString("memberAddress"));
+				member.setMemberEmail(rs.getString("memberEmail"));
+				member.setMemberPassword(rs.getString("memberPassword"));
+				member.setMemberBirthday(rs.getTimestamp("memberBirthday"));
 
-				activityName = rs.getString("activityName");
-				registerList.add(activityName);
+				//program control
+				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString().substring(0,10) : "");
+				
+				member.setMemberPhone(rs.getString("memberPhone"));
+				member.setMemberLineId(rs.getString("memberLineId"));
+				member.setMemberGender(rs.getString("memberGender"));
+				member.setMemberID(rs.getString("memberID"));
+				member.setMemberBloodType(rs.getString("memberBloodType"));
+				member.setEmergencyContact(rs.getString("emergencyContact"));
+				member.setEmergencyContactRelation(rs.getString("emergencyContactRelation"));
+				member.setEmergencyContactPhone(rs.getString("emergencyContactPhone"));
+				
+				
+				//activity
+				
+				activity.setActivityId(rs.getInt("activityId"));
+				activity.setActivityName(rs.getString("activityName"));
+				activity.setActivityOrganizer(rs.getString("activityOrganizer"));
+				activity.setActivityInfo(rs.getString("activityInfo"));
+				activity.setAttendPeople(rs.getInt("attendPeople"));
+				activity.setActivitySpace(rs.getString("activitySpace"));
+				
+				activity.setActivityStartDate(rs.getTimestamp("activityStartDate"));
+				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
+				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
+				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
+
+				//program control
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString().substring(0,16) : "");
+				activity.setActivityEndDateString(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString().substring(0,16) : "");
+				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString().substring(0,16) : "");
+				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0,16) : "");
+				
+				registration.setMember(member);
+				registration.setActivity(activity);
+				
+				registerList.add(registration);
 			}
 			rs.close();
 			smt.close();
@@ -688,6 +745,72 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			}
 		}
 		
+	}
+	
+	@Override
+	public List<Activity> getUserIsSignUpSameDay(Activity activity,String memberEmail) {
+		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement smt = null;
+		List<Activity> activityList = new ArrayList<Activity>();
+		final String sql = "SELECT  r.*, a.* " + 
+				"FROM activity a JOIN registration r ON a.activityId = r.activity_Id " + 
+				"where a.activityStartDate = DATE(?) and r.member_Email = ? and r.cancelRegistration is null";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, activity.getActivityStartDateString());
+			smt.setString(2,memberEmail);
+			System.out.println(memberEmail);
+			System.out.println(activity.getActivityStartDateString());
+			rs = smt.executeQuery();
+			while (rs.next()) {
+				activity = new Activity();
+				activity.setActivityId(rs.getInt("activityId"));
+				activity.setActivityName(rs.getString("activityName"));
+				activity.setActivityOrganizer(rs.getString("activityOrganizer"));
+				activity.setActivityInfo(rs.getString("activityInfo"));
+				activity.setAttendPeople(rs.getInt("attendPeople"));
+				activity.setActivitySpace(rs.getString("activitySpace"));
+				
+				activity.setActivityStartDate(rs.getTimestamp("activityStartDate"));
+				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
+				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
+				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
+
+				//program control
+				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString().substring(0,16) : "");
+				activity.setActivityEndDateString(rs.getTimestamp("activityEndDate") != null ? rs.getTimestamp("activityEndDate").toString().substring(0,16) : "");
+				activity.setStartSignUpDateString(rs.getTimestamp("startSignUpDate") != null ? rs.getTimestamp("startSignUpDate").toString().substring(0,16) : "");
+				activity.setEndSignUpDateString(rs.getTimestamp("endSignUpDate") != null ? rs.getTimestamp("endSignUpDate").toString().substring(0,16) : "");
+				
+				
+				activity.setActivityMeal(rs.getString("activityMeal"));
+				activity.setActivityCover(rs.getString("activityCover"));
+				activity.setActivityLinkName(rs.getString("activityLinkName"));
+				activity.setActivityLink(rs.getString("activityLink"));
+				activity.setActivitySummary(rs.getString("activitySummary"));
+				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
+				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
+
+				activityList.add(activity);
+			}
+			rs.close();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return activityList;
 	}
 	
 }

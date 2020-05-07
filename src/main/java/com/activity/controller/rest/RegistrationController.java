@@ -41,6 +41,7 @@ public class RegistrationController {
 
 	@Autowired
 	RegistrationDAO registrationDAO;
+	@Autowired
 	ActivityDAO activityDAO;
 
 	@GET
@@ -368,7 +369,42 @@ public class RegistrationController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
-	
+	@Path("/ifSignUp/{id}")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response ifSignUp(@PathParam("id") Integer id)
+	{
+		final AuthenticationUtil authUtil = new AuthenticationUtil();
+		final WebResponse webResponse = new WebResponse();
+		if(id != null)
+		{
+			Activity activity = new Activity();
+			activity.setActivityId(id);
+			activity = activityDAO.get(activity);
+			String memberEmail = authUtil.getCurrentUsername();
+			
+			List<Activity> aList = registrationDAO.getUserIsSignUpSameDay(activity, memberEmail);
+			if(aList.size() == 0)
+			{
+				webResponse.OK();
+				webResponse.setData("ok");
+			}
+			else
+			{
+				webResponse.OK();
+				webResponse.setData("no");
+			}
+			
+		}
+		else
+		{
+			webResponse.setData("id required");
+			webResponse.UNPROCESSABLE_ENTITY();
+		}
+		
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
 	
 	
 	@GET
