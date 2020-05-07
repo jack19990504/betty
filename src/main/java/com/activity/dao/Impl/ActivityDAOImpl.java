@@ -520,7 +520,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 		ResultSet rs = null;
 		PreparedStatement smt = null;
 		List<Activity> activityList = new ArrayList<Activity>();
-		final String sql = "SELECT * FROM activity where activityName like ? or activityOrganizer like ? "
+		final String sql = "SELECT * FROM activity a join organizer o on a.activityOrganizer = o.memberEmail where a.activityName like ? or o.organizerName like ? "
 				+ "or activitySpace like ? ";
 		try {
 			conn = dataSource.getConnection();
