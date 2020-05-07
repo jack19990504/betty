@@ -8,7 +8,7 @@ import com.activity.entity.Registration;
 
 public interface RegistrationDAO {
 	//利用lineid尋找已報名活動
-	public List<String> getUserRegistration(String UserLineId);
+	public List<Registration> getUserRegistration(String UserLineId);
 	
 	public Registration get(Registration registration);
 	
@@ -40,4 +40,6 @@ public interface RegistrationDAO {
 	public void signInByMemberEmail(Registration registration);
 	
 	public void signOutByMemberEmail(Registration registration);
+	//檢查此使用者是否在同天內已有其他報名的活動
+	public List<Activity> getUserIsSignUpSameDay(Activity activity,String memberEmail);
 }

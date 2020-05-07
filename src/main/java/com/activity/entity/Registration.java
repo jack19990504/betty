@@ -33,6 +33,8 @@ public class Registration {
 	
 
 	public Activity getActivity() {
+		if(this.activity==null)
+			activity = new Activity();
 		return activity;
 	}
 

@@ -93,7 +93,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 		ResultSet rs = null;
 		PreparedStatement smt = null;
 		List<Activity> ActivityList = new ArrayList<>();
-		final String sql = "SELECT *,activityName,(SELECT COUNT(*) FROM registration where registration.activity_Id = activity.activityId and registration.cancelRegistration is null) as registeredPeople " + 
+		final String sql = "SELECT *,(SELECT COUNT(*) FROM registration where registration.activity_Id = activity.activityId and registration.cancelRegistration is null) as registeredPeople " + 
 				" FROM activity WHERE activity.startSignUpDate > NOW() GROUP BY activityId HAVING  attendPeople > registeredPeople";
 		try {
 			conn = dataSource.getConnection();
@@ -104,6 +104,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			while (rs.next()) {
 				activity = new Activity();
 				activity.setActivityName(rs.getString("activityName"));
+				activity.setActivityId(rs.getInt("activityId"));
 				
 				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString().substring(0, 16) : "");
 				ActivityList.add(activity);
@@ -330,7 +331,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			smt.setInt(1, activity.getActivityId());
 			rs = smt.executeQuery();
 			
-			System.out.println(activity.getActivityId()+"123");
+			//System.out.println(activity.getActivityId()+"123");
 			while (rs.next()) {
 				activity.getActivityTypes().add(rs.getString("activityType"));
 			}
@@ -692,4 +693,12 @@ public class ActivityDAOImpl implements ActivityDAO {
 		}
 		return activity;
 	}
+
+	
+	
+	
+
+
+	
+	
 }
