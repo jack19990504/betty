@@ -640,6 +640,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
+				registration.setCancelRegistration(rs.getTimestamp("cancelRegistration"));
 				
 				
 				//member

@@ -51,6 +51,7 @@ public class RegistrationController {
 	public Response getOne(@PathParam("id") Integer id){
 		final AttributeCheck attributeCheck = new AttributeCheck();
 		final WebResponse webResponse = new WebResponse();
+		System.out.println("test");
 		if(id != null)
 		{
 			Registration registration = new Registration();
