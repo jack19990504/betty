@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.OrganizerDAO;
+import com.activity.entity.Member;
 import com.activity.entity.Organizer;
 import com.activity.entity.Search;
 import com.activity.util.WebResponse;
@@ -30,6 +31,7 @@ public class OrganizerController {
 
 	@Autowired
 	OrganizerDAO organizerDAO;
+
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -38,6 +40,13 @@ public class OrganizerController {
 		final WebResponse webResponse = new WebResponse();
 
 			organizerDAO.insert(organizer);
+			
+			Member member = new Member();
+			
+			member.setMemberEmail(organizer.getMemberEmail());
+			
+			organizerDAO.updateAuthority(member);
+			
 			webResponse.OK();
 			webResponse.setData(organizer);
 

@@ -109,11 +109,8 @@ public class Activity {
 	}
 
 	public String getActivityEndDateString() {
-		System.out.println(activityEndDateString);
-		if(activityEndDateString.equals(""))
+		
 			return activityEndDateString;
-		else
-			return activityEndDateString.substring(0,16);
 	}
 
 	public void setActivityEndDateString(String activityEndDateString) {

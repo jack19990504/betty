@@ -57,16 +57,16 @@ public class LineController {
 	6	運動🚴🏻
 	7	戶外🏔
 	8	講座💼🎤？
-	9	資訊🖥*/
+	9	資訊🖥
+	地點 📍
+	*/
 	Map<String, String> map = Map.of("學習","📚","藝文","🎼","親子","👶🏻","體驗"
 			,"💆","休閒","🏖","運動","🚴","戶外","🏔","講座","💼","資訊","🖥");
 	
 	private ArrayList<String> bindUserId = new ArrayList<>();
 	private ArrayList<String> resetUserId = new ArrayList<>();
 	
-	
-	private boolean saveLineUserId = false;
-	private boolean resetLineUserId = false;
+
 	
 	@Autowired
 	ActivityDAO activityDAO;
@@ -79,12 +79,7 @@ public class LineController {
 	
 
 
-	@Path("/test")
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	public void Send() {
-		sendPostMessagesToMutiPerson("測試",UserIDs);
-	}
+	
 	
 	@Path("/postMessage/{activityId}")
 	@POST
@@ -97,9 +92,10 @@ public class LineController {
 		activity.setActivityId(id);
 		activity = activityDAO.get(activity);
 		
-		String startDate = activity.getActivityStartDateString().substring(0,activity.getActivityStartDateString().length()-2); 
+		String startDate = activity.getActivityStartDateString(); 
 		
-		String message = "提醒您，您所報名的活動 : " + activity.getActivityName() + "\\n即將在 " + startDate + " 開始";
+		String message = "提醒您，您所報名的活動 : \\n🔍" + activity.getActivityName() + " 即將在\\n " + startDate + " 開始";
+		String message2 = "活動地點為:\\n📍" + activity.getActivitySpace();
 		
 		StringBuilder sb = new StringBuilder();
 		
@@ -117,32 +113,35 @@ public class LineController {
 		
 		System.out.println(message);
 		System.out.println(idString);		
-		sendPostMessagesToMutiPerson(message,lineIds);
+		sendPostMessagesToMutiPerson(new String[]{message,message2},lineIds);
 	}
 	
 	@POST
 	@Path("/postMessage/announcement/{activityId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void sendAnyMessage(@PathParam("activityId") Integer id,String message) {
+	public void sendAnyMessage(@PathParam("activityId") Integer id,String[] messages) {
 		List<Registration> registrationList = registerDAO.getListWithMemberInformation(id);
-
-		System.out.println(message);
-		
-		message = message.replaceAll("\"", "");
+		final AttributeCheck attributeCheck = new AttributeCheck();
+		//System.out.println(message);
+		String message1 = messages[0];
+		String message2 = messages[1];
+		message1 = message1.replaceAll("\"", "");
+		message2 = message2.replaceAll("\"", "");
 		StringBuilder sb = new StringBuilder();
 		
 		for(Registration r : registrationList)
 		{
-			String memLineId = r.getMember().getMemberLineId();
-			if(!memLineId.equals(null) || !memLineId.equals(""))
+			//String memLineId = r.getMember().getMemberLineId();
+			if(attributeCheck.stringsNotNull(r.getMember().getMemberLineId()))
 			{
+				String memLineId = r.getMember().getMemberLineId();
 				sb.append(memLineId);
 				sb.append(",");
 			}
 		}
 		String idString = sb.substring(0,sb.length()-1);
 		String[] lineIds = idString.split(",");
-		sendPostMessagesToMutiPerson(message,lineIds);
+		sendPostMessagesToMutiPerson(new String[] {message1,message2,"詳細資訊請上官方網站查詢"},lineIds);
 	}
 	
 	@POST
@@ -260,7 +259,6 @@ public class LineController {
 						String init  = event.getMessage().getText();
 						if(!init.startsWith("帳號"))
 						{
-							saveLineUserId = false;
 							sendResponseMessages(event.getReplyToken(), "綁定失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
 						}
 						else
@@ -281,7 +279,6 @@ public class LineController {
 								//無此筆帳號
 								if(member.getMemberPassword() == null || !member.getMemberPassword().equals(password))
 								{
-									saveLineUserId = false;
 									sendResponseMessages(event.getReplyToken(), "綁定失敗，帳號或密碼輸入錯誤!\\n請再次點選「重置綁定」並重新輸入!");
 								}
 								else
@@ -297,13 +294,11 @@ public class LineController {
 										//如已綁定過
 										if(test.getMemberEmail()!= null)
 										{
-											saveLineUserId =false;
 											sendResponseMessages(event.getReplyToken(), "綁定失敗，此Line帳號已綁定其他用戶帳號!");
 										}
 										//如未綁定
 										else
 										{
-											saveLineUserId =false;
 											memberDAO.UpdateLineUserId(event.getSource().getUserId(), account, password);
 											sendResponseMessages(event.getReplyToken(), "綁定成功!");
 										}
@@ -314,7 +309,7 @@ public class LineController {
 									{
 										System.out.println(!member.getMemberLineId().equals(""));
 										System.out.println(!member.getMemberLineId().equals(null));
-										saveLineUserId =false;
+										
 										sendResponseMessages(event.getReplyToken(), "此用戶帳號已綁定過!");
 									}
 									
@@ -816,14 +811,20 @@ public class LineController {
 		}
 	}
 	
-	private void sendPostMessagesToMutiPerson( String messages,String[] UserId) {
+	private void sendPostMessagesToMutiPerson( String[] messages,String[] UserId) {
 		try {
 			String message_head = "{\"to\":[";
 			for (String userId : UserId) {
 				message_head = message_head + "\"" + userId + "\",";
 			}
+			
 			message_head = message_head.substring(0, message_head.length()-1)+"]";
-			message_head = message_head+",\"messages\":[{\"type\":\"text\",\"text\":\""+ messages + "\"},";
+			message_head = message_head+",\"messages\":[";
+			for(String a :messages)
+			{
+				message_head = message_head+"{\"type\":\"text\",\"text\":\""+ a + "\"},";
+			}
+			
 			
 			String message = message_head.substring(0, message_head.length()-1)+"]}";
 			System.out.println(message);

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.activity.dao.OrganizerDAO;
+import com.activity.entity.Member;
 import com.activity.entity.Organizer;
 import com.activity.entity.Search;
 @Repository
@@ -240,5 +241,32 @@ public class OrganizerDAOImpl implements OrganizerDAO{
 			}
 		}
 		return organizerList;
+	}
+
+	@Override
+	public void updateAuthority(Member member) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "UPDATE member SET memberType = 1 where memberEmail = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, member.getMemberEmail());
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
 	}
 }
