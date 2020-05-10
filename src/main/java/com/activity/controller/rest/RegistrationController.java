@@ -1,9 +1,13 @@
 package com.activity.controller.rest;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,8 +16,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -21,8 +27,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.activity.dao.ActivityDAO;
 import com.activity.dao.RegistrationDAO;
@@ -32,6 +36,7 @@ import com.activity.entity.Member;
 import com.activity.entity.Registration;
 import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
+import com.sun.jersey.core.header.ContentDisposition;
 
 @Path("/registration")
 @CrossOrigin("*") 
@@ -429,11 +434,40 @@ public class RegistrationController {
 			
 			if(registrationList.size() != 0)
 			{
-				ServletRequestAttributes requestAttribute = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-				HttpServletResponse response = requestAttribute.getResponse();
-				write(registrationList, "123",response);
-				webResponse.OK();
-				webResponse.setData("file has been write successfully !!");
+				
+				String pathh = write(registrationList, registrationList.get(0).getActivity().getActivityName());
+				
+				StreamingOutput fileStream =  new StreamingOutput() {
+
+					@Override
+					public void write(OutputStream output) throws IOException, WebApplicationException {
+						 try
+			                {
+							 System.out.println(id);
+			                    java.nio.file.Path path = Paths.get(pathh);
+			                    byte[] data = Files.readAllBytes(path);
+			                    output.write(data);
+			                    output.flush();
+			                } 
+			                catch (Exception e) 
+			                {
+			                    throw new WebApplicationException("File Not Found !!");
+			                }
+			            }
+			        };
+			        
+			        System.out.println(registrationList.get(0).getActivity().getActivityName());
+			        String fileName = pathh.substring(pathh.lastIndexOf("/upload/")+8);
+			        System.out.println(fileName);
+			        String header = "attachment; filename =\""+fileName+"\"";
+			        ContentDisposition contentDisposition = ContentDisposition.type("attachment")
+			        	    .fileName(fileName).build();
+			        return Response
+			                .ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+			                .header("Content-Disposition","attachment; filename = ".concat(String.valueOf(URLEncoder.encode(fileName, "UTF-8"))))
+			                .build();
+				
+				
 			}
 			
 			else
@@ -452,13 +486,15 @@ public class RegistrationController {
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
+	
+	
+	        
 
-	public void write(List<Registration> registrationList, String filename,HttpServletResponse response) throws Exception {
+	public String write(List<Registration> registrationList, String filename) throws Exception {
 
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet1;
-		// String filePath = "C:/Users/jack1/Desktop/somthing/upload/" + filename +
-		// ".xls";
+		String filePath = "C:/Users/jack1/Desktop/somthing/upload/" + filename +".xls";
 		//String filePath = "C:\\Users\\Morris\\Desktop\\upload\\" + filename + ".xls";
 		sheet1 = workbook.createSheet("TEST");
 		// 設定開始欄位為第一欄
@@ -488,7 +524,7 @@ public class RegistrationController {
 
 		// 次要表頭
 
-		final String[] head = { "名字", "Email", "性別", "電話", "緊急聯絡人姓名", "緊急連絡人電話", "緊急聯絡人關係", "備註", "餐點" };
+		final String[] head = { "會員名字", "會員Email", "會員性別", "會員電話", "緊急聯絡人姓名", "緊急連絡人電話", "緊急聯絡人關係", "備註", "餐點選項" };
 
 		titlerow = sheet1.createRow(rowIndex);
 		for (int i = 0; i < head.length; i++) {
@@ -530,35 +566,18 @@ public class RegistrationController {
 			}
 
 		}
-		String home = System.getProperty("user.home");
+		
         //下載路徑到 "下載項目"
-        String filePath = home + "/Downloads/" + filename + ".xls";
-        String fileName = filename + ".xls";
+        
+        
 
 
-        //下載.xls檔案到下載項目中（不透過網頁瀏覽器，所以此方法不可行）
-        //FileOutputStream fos = new FileOutputStream(filePath);
-        //workbook.write(fos);
-        //fos.close();
-        //workbook.close();
+        FileOutputStream fos = new FileOutputStream(filePath);
+        workbook.write(fos);
+        fos.close();
+        workbook.close();
 
-
-        response.setContentType("application/ms-excel;charset=UTF-8");
-        response.setHeader("Content-Disposition", "attachment;filename=".concat(new String(fileName.getBytes("ISO8859-1"), "UTF-8")));
-        OutputStream out = response.getOutputStream();
-        try {
-            workbook.write(out);// output .xls file
-            //inputStream = new ByteArrayInputStream(out.toByteArray());
-            String str = "download" + fileName + "sccessful";
-            System.out.println(str);
-         } catch (Exception e) {
-            e.printStackTrace();
-            String str1 = "download" + fileName + "failed！";
-            System.out.println(str1);
-         } finally {
-            out.flush();
-            out.close();
-         }
+        return filePath;
 	}
 
 }
