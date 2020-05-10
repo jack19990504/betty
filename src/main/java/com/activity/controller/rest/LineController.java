@@ -599,131 +599,7 @@ public class LineController {
 }
 		
 	}
-	
-	
-	private void imageTemplate(String replyToken)
-	{
-		try {
-				String message = "{\"replyToken\":\"" + replyToken + "\","+"\"messages\" : [" +
-						"{\"type\":\"imagemap\","+
-						"\"baseUrl\":\"https://i.imgur.com/vuzigAT.jpg/1040\","+
-						"\"altText\":\"請至Line查看圖片選單\","+
-						"\"baseSize\":{"+
-						"\"height\":1040,"+
-						"\"width\":1040"+
-						"},"+
-						"\"actions\":["
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"綁定帳號\","+
-						"\"area\":{"+
-						"\"x\":0,"+
-						"\"y\":0,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}},"
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"重置綁定帳號\","+
-						"\"area\":{"+
-						"\"x\":342,"+
-						"\"y\":0,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}},"
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"圖片選單\","+
-						"\"area\":{"+
-						"\"x\":683,"+
-						"\"y\":0,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}},"
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"選單\","+
-						"\"area\":{"+
-						"\"x\":0,"+
-						"\"y\":512,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}},"
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"可報名活動\","+
-						"\"area\":{"+
-						"\"x\":342,"+
-						"\"y\":512,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}},"
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"查詢已報名活動\","+
-						"\"area\":{"+
-						"\"x\":683,"+
-						"\"y\":512,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}}]}]}";
-
-				URL myurl = new URL("https://api.line.me/v2/bot/message/reply"); // 回傳的網址
-				HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
-				con.setRequestMethod("POST");// 設定post方法
-				con.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // 設定Content-Type為json
-				con.setRequestProperty("Authorization", "Bearer " + accessToken); // 設定Authorization
-				con.setDoOutput(true);
-				con.setDoInput(true);
-				System.out.println(message);
-				DataOutputStream output = new DataOutputStream(con.getOutputStream()); // 開啟HttpsURLConnection的連線
-				output.write(message.getBytes(Charset.forName("utf-8"))); // 回傳訊息編碼為utf-8
-				output.close();
-				System.out.println("Resp Code:" + con.getResponseCode() + "; Resp Message:" + con.getResponseMessage()); // 顯示回傳的結果，若code為200代表回傳成功
-			} catch (MalformedURLException e) {
-				System.out.println("1Message: " + e.getMessage());
-				e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Message: " + e.getMessage());
-			e.printStackTrace();
-	}
-}			
 		
-	
-	
-	private void ActivityButtonTemplate(String replyToken) {
-		try {
-			String message = "{\"replyToken\":\"" + replyToken + "\","+"\"messages\" : [" + 
-					"{\"type\": \"template\",\"altText\": \"請至Line查看選單\"," + 
-					"\"template\":{\"type\": \"buttons\",\"title\": \"選單\",\"text\": \"請選擇欲查詢之項目\",\"actions\": ["; // 回傳的json格式訊息
-			
-			String action1 = "{\"type\": \"message\",\"label\": \"可報名活動\",\"text\": \"可報名活動\"},";
-			String action2 = "{\"type\": \"message\",\"label\": \"查詢已報名活動\",\"text\": \"查詢已報名活動\"},";
-			
-			message = message + action1 + action2;
-			message = message.substring(0, message.length()-1)+"]}}]}";
-			
-			URL myurl = new URL("https://api.line.me/v2/bot/message/reply"); // 回傳的網址
-			HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
-			con.setRequestMethod("POST");// 設定post方法
-			con.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // 設定Content-Type為json
-			con.setRequestProperty("Authorization", "Bearer " + accessToken); // 設定Authorization
-			con.setDoOutput(true);
-			con.setDoInput(true);
-			System.out.println(message);
-			DataOutputStream output = new DataOutputStream(con.getOutputStream()); // 開啟HttpsURLConnection的連線
-			output.write(message.getBytes(Charset.forName("utf-8"))); // 回傳訊息編碼為utf-8
-			output.close();
-			System.out.println("Resp Code:" + con.getResponseCode() + "; Resp Message:" + con.getResponseMessage()); // 顯示回傳的結果，若code為200代表回傳成功
-		} catch (MalformedURLException e) {
-			System.out.println("1Message: " + e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Message: " + e.getMessage());
-			e.printStackTrace();
-		}
-	}
-	
 	private void sendResponseMessages(String replyToken, String[] messages) {
 		try {
 			String message_head = "{\"replyToken\":\"" + replyToken + "\",\"messages\":[";
@@ -753,6 +629,7 @@ public class LineController {
 			e.printStackTrace();
 		}
 	}
+	//to one user
 	private void sendPostMessages( String[] messages,String UserId) {
 		try {
 			String message_head = "{\"to\":\"" + UserId + "\",\"messages\":[";
