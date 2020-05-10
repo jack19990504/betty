@@ -139,9 +139,17 @@ public class LineController {
 				sb.append(",");
 			}
 		}
-		String idString = sb.substring(0,sb.length()-1);
-		String[] lineIds = idString.split(",");
-		sendPostMessagesToMutiPerson(new String[] {message1,message2,"詳細資訊請上官方網站查詢"},lineIds);
+		if(sb.length() == 0)
+		{
+			System.out.println("no particate!");
+		}
+		else
+		{
+			String idString = sb.substring(0,sb.length()-1);
+			String[] lineIds = idString.split(",");
+			sendPostMessagesToMutiPerson(new String[] {message1,message2,"詳細資訊請上官方網站查詢"},lineIds);
+		}
+		
 	}
 	
 	@POST
