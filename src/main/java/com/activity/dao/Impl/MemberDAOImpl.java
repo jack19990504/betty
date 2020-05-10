@@ -216,7 +216,7 @@ public class MemberDAOImpl implements MemberDAO {
 		PreparedStatement smt = null;
 		final String sql = "UPDATE member SET memberPassword = ? ,memberName = ? , memberGender = ?, "
 				+ "memberPhone = ? ,memberAddress = ? ,memberBloodType = ? ,emergencyContact = ? ,"
-				+ "emergencyContactRelation = ? ,emergencyContactPhone = ? , memberBirthday = ? "
+				+ "emergencyContactRelation = ? ,emergencyContactPhone = ? , memberBirthday = ?  "
 				+ " where memberEmail = ?";
 		try {
 			conn = dataSource.getConnection();

@@ -91,11 +91,11 @@ public class RegistrationController {
 		final AuthenticationUtil authUtil = new AuthenticationUtil();
 
 		Registration tRegistration = new Registration();
-
+		System.out.println(registration.getActivity_Id());
 		tRegistration.setMember_Email(registration.getMember_Email());
 		tRegistration.setActivity_Id(registration.getActivity_Id());
 		tRegistration = registrationDAO.getOneRegistration(tRegistration);
-		Integer attendPeople = registrationDAO.checkAttendPeople(tRegistration);
+		Integer attendPeople = registrationDAO.checkAttendPeople(registration);
 		// 檢查此使用者是否報名過此活動，如是則顯示錯誤訊息
 		if (attributeCheck.stringsNotNull(tRegistration.getMember_Email())) {
 
@@ -120,9 +120,16 @@ public class RegistrationController {
 			} else if (attendPeople > 0) {
 				Activity activity = new Activity();
 				activity.setActivityId(registration.getActivity_Id());
+				activity = activityDAO.get(activity);
 				if (attendPeople == activity.getAttendPeople()) {
 					webResponse.UNPROCESSABLE_ENTITY();
 					webResponse.setData("Applicants are full !");
+				}
+				else
+				{
+					registrationDAO.insert(registration);
+					webResponse.OK();
+					webResponse.setData(registration);
 				}
 			} else {
 				registrationDAO.insert(registration);

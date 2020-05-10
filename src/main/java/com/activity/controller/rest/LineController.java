@@ -57,16 +57,16 @@ public class LineController {
 	6	運動🚴🏻
 	7	戶外🏔
 	8	講座💼🎤？
-	9	資訊🖥*/
+	9	資訊🖥
+	地點 📍
+	*/
 	Map<String, String> map = Map.of("學習","📚","藝文","🎼","親子","👶🏻","體驗"
 			,"💆","休閒","🏖","運動","🚴","戶外","🏔","講座","💼","資訊","🖥");
 	
 	private ArrayList<String> bindUserId = new ArrayList<>();
 	private ArrayList<String> resetUserId = new ArrayList<>();
 	
-	
-	private boolean saveLineUserId = false;
-	private boolean resetLineUserId = false;
+
 	
 	@Autowired
 	ActivityDAO activityDAO;
@@ -79,12 +79,7 @@ public class LineController {
 	
 
 
-	@Path("/test")
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	public void Send() {
-		sendPostMessagesToMutiPerson("測試",UserIDs);
-	}
+	
 	
 	@Path("/postMessage/{activityId}")
 	@POST
@@ -97,9 +92,10 @@ public class LineController {
 		activity.setActivityId(id);
 		activity = activityDAO.get(activity);
 		
-		String startDate = activity.getActivityStartDateString().substring(0,activity.getActivityStartDateString().length()-2); 
+		String startDate = activity.getActivityStartDateString(); 
 		
-		String message = "提醒您，您所報名的活動 : " + activity.getActivityName() + "\\n即將在 " + startDate + " 開始";
+		String message = "提醒您，您所報名的活動 : \\n🔍" + activity.getActivityName() + " 即將在\\n " + startDate + " 開始";
+		String message2 = "活動地點為:\\n📍" + activity.getActivitySpace();
 		
 		StringBuilder sb = new StringBuilder();
 		
@@ -117,32 +113,35 @@ public class LineController {
 		
 		System.out.println(message);
 		System.out.println(idString);		
-		sendPostMessagesToMutiPerson(message,lineIds);
+		sendPostMessagesToMutiPerson(new String[]{message,message2},lineIds);
 	}
 	
 	@POST
 	@Path("/postMessage/announcement/{activityId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void sendAnyMessage(@PathParam("activityId") Integer id,String message) {
+	public void sendAnyMessage(@PathParam("activityId") Integer id,String[] messages) {
 		List<Registration> registrationList = registerDAO.getListWithMemberInformation(id);
-
-		System.out.println(message);
-		
-		message = message.replaceAll("\"", "");
+		final AttributeCheck attributeCheck = new AttributeCheck();
+		//System.out.println(message);
+		String message1 = messages[0];
+		String message2 = messages[1];
+		message1 = message1.replaceAll("\"", "");
+		message2 = message2.replaceAll("\"", "");
 		StringBuilder sb = new StringBuilder();
 		
 		for(Registration r : registrationList)
 		{
-			String memLineId = r.getMember().getMemberLineId();
-			if(!memLineId.equals(null) || !memLineId.equals(""))
+			//String memLineId = r.getMember().getMemberLineId();
+			if(attributeCheck.stringsNotNull(r.getMember().getMemberLineId()))
 			{
+				String memLineId = r.getMember().getMemberLineId();
 				sb.append(memLineId);
 				sb.append(",");
 			}
 		}
 		String idString = sb.substring(0,sb.length()-1);
 		String[] lineIds = idString.split(",");
-		sendPostMessagesToMutiPerson(message,lineIds);
+		sendPostMessagesToMutiPerson(new String[] {message1,message2,"詳細資訊請上官方網站查詢"},lineIds);
 	}
 	
 	@POST
@@ -260,7 +259,6 @@ public class LineController {
 						String init  = event.getMessage().getText();
 						if(!init.startsWith("帳號"))
 						{
-							saveLineUserId = false;
 							sendResponseMessages(event.getReplyToken(), "綁定失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
 						}
 						else
@@ -281,7 +279,6 @@ public class LineController {
 								//無此筆帳號
 								if(member.getMemberPassword() == null || !member.getMemberPassword().equals(password))
 								{
-									saveLineUserId = false;
 									sendResponseMessages(event.getReplyToken(), "綁定失敗，帳號或密碼輸入錯誤!\\n請再次點選「重置綁定」並重新輸入!");
 								}
 								else
@@ -297,13 +294,11 @@ public class LineController {
 										//如已綁定過
 										if(test.getMemberEmail()!= null)
 										{
-											saveLineUserId =false;
 											sendResponseMessages(event.getReplyToken(), "綁定失敗，此Line帳號已綁定其他用戶帳號!");
 										}
 										//如未綁定
 										else
 										{
-											saveLineUserId =false;
 											memberDAO.UpdateLineUserId(event.getSource().getUserId(), account, password);
 											sendResponseMessages(event.getReplyToken(), "綁定成功!");
 										}
@@ -314,7 +309,7 @@ public class LineController {
 									{
 										System.out.println(!member.getMemberLineId().equals(""));
 										System.out.println(!member.getMemberLineId().equals(null));
-										saveLineUserId =false;
+										
 										sendResponseMessages(event.getReplyToken(), "此用戶帳號已綁定過!");
 									}
 									
@@ -604,131 +599,7 @@ public class LineController {
 }
 		
 	}
-	
-	
-	private void imageTemplate(String replyToken)
-	{
-		try {
-				String message = "{\"replyToken\":\"" + replyToken + "\","+"\"messages\" : [" +
-						"{\"type\":\"imagemap\","+
-						"\"baseUrl\":\"https://i.imgur.com/vuzigAT.jpg/1040\","+
-						"\"altText\":\"請至Line查看圖片選單\","+
-						"\"baseSize\":{"+
-						"\"height\":1040,"+
-						"\"width\":1040"+
-						"},"+
-						"\"actions\":["
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"綁定帳號\","+
-						"\"area\":{"+
-						"\"x\":0,"+
-						"\"y\":0,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}},"
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"重置綁定帳號\","+
-						"\"area\":{"+
-						"\"x\":342,"+
-						"\"y\":0,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}},"
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"圖片選單\","+
-						"\"area\":{"+
-						"\"x\":683,"+
-						"\"y\":0,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}},"
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"選單\","+
-						"\"area\":{"+
-						"\"x\":0,"+
-						"\"y\":512,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}},"
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"可報名活動\","+
-						"\"area\":{"+
-						"\"x\":342,"+
-						"\"y\":512,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}},"
-						+"{"+
-						"\"type\":\"message\","+
-						"\"text\":\"查詢已報名活動\","+
-						"\"area\":{"+
-						"\"x\":683,"+
-						"\"y\":512,"+
-						"\"width\":341,"+
-						"\"height\":512"+
-						"}}]}]}";
-
-				URL myurl = new URL("https://api.line.me/v2/bot/message/reply"); // 回傳的網址
-				HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
-				con.setRequestMethod("POST");// 設定post方法
-				con.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // 設定Content-Type為json
-				con.setRequestProperty("Authorization", "Bearer " + accessToken); // 設定Authorization
-				con.setDoOutput(true);
-				con.setDoInput(true);
-				System.out.println(message);
-				DataOutputStream output = new DataOutputStream(con.getOutputStream()); // 開啟HttpsURLConnection的連線
-				output.write(message.getBytes(Charset.forName("utf-8"))); // 回傳訊息編碼為utf-8
-				output.close();
-				System.out.println("Resp Code:" + con.getResponseCode() + "; Resp Message:" + con.getResponseMessage()); // 顯示回傳的結果，若code為200代表回傳成功
-			} catch (MalformedURLException e) {
-				System.out.println("1Message: " + e.getMessage());
-				e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Message: " + e.getMessage());
-			e.printStackTrace();
-	}
-}			
 		
-	
-	
-	private void ActivityButtonTemplate(String replyToken) {
-		try {
-			String message = "{\"replyToken\":\"" + replyToken + "\","+"\"messages\" : [" + 
-					"{\"type\": \"template\",\"altText\": \"請至Line查看選單\"," + 
-					"\"template\":{\"type\": \"buttons\",\"title\": \"選單\",\"text\": \"請選擇欲查詢之項目\",\"actions\": ["; // 回傳的json格式訊息
-			
-			String action1 = "{\"type\": \"message\",\"label\": \"可報名活動\",\"text\": \"可報名活動\"},";
-			String action2 = "{\"type\": \"message\",\"label\": \"查詢已報名活動\",\"text\": \"查詢已報名活動\"},";
-			
-			message = message + action1 + action2;
-			message = message.substring(0, message.length()-1)+"]}}]}";
-			
-			URL myurl = new URL("https://api.line.me/v2/bot/message/reply"); // 回傳的網址
-			HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
-			con.setRequestMethod("POST");// 設定post方法
-			con.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // 設定Content-Type為json
-			con.setRequestProperty("Authorization", "Bearer " + accessToken); // 設定Authorization
-			con.setDoOutput(true);
-			con.setDoInput(true);
-			System.out.println(message);
-			DataOutputStream output = new DataOutputStream(con.getOutputStream()); // 開啟HttpsURLConnection的連線
-			output.write(message.getBytes(Charset.forName("utf-8"))); // 回傳訊息編碼為utf-8
-			output.close();
-			System.out.println("Resp Code:" + con.getResponseCode() + "; Resp Message:" + con.getResponseMessage()); // 顯示回傳的結果，若code為200代表回傳成功
-		} catch (MalformedURLException e) {
-			System.out.println("1Message: " + e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Message: " + e.getMessage());
-			e.printStackTrace();
-		}
-	}
-	
 	private void sendResponseMessages(String replyToken, String[] messages) {
 		try {
 			String message_head = "{\"replyToken\":\"" + replyToken + "\",\"messages\":[";
@@ -758,6 +629,7 @@ public class LineController {
 			e.printStackTrace();
 		}
 	}
+	//to one user
 	private void sendPostMessages( String[] messages,String UserId) {
 		try {
 			String message_head = "{\"to\":\"" + UserId + "\",\"messages\":[";
@@ -816,14 +688,20 @@ public class LineController {
 		}
 	}
 	
-	private void sendPostMessagesToMutiPerson( String messages,String[] UserId) {
+	private void sendPostMessagesToMutiPerson( String[] messages,String[] UserId) {
 		try {
 			String message_head = "{\"to\":[";
 			for (String userId : UserId) {
 				message_head = message_head + "\"" + userId + "\",";
 			}
+			
 			message_head = message_head.substring(0, message_head.length()-1)+"]";
-			message_head = message_head+",\"messages\":[{\"type\":\"text\",\"text\":\""+ messages + "\"},";
+			message_head = message_head+",\"messages\":[";
+			for(String a :messages)
+			{
+				message_head = message_head+"{\"type\":\"text\",\"text\":\""+ a + "\"},";
+			}
+			
 			
 			String message = message_head.substring(0, message_head.length()-1)+"]}";
 			System.out.println(message);

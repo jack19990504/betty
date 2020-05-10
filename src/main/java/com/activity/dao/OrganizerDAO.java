@@ -2,6 +2,7 @@ package com.activity.dao;
 
 import java.util.List;
 
+import com.activity.entity.Member;
 import com.activity.entity.Organizer;
 import com.activity.entity.Search;
 
@@ -18,5 +19,7 @@ public interface OrganizerDAO {
 	public Organizer get(Organizer organizer);
 	
 	public List<Organizer> getOrganizerSearch(Search search);
+	
+	public void updateAuthority(Member member);
 	
 }

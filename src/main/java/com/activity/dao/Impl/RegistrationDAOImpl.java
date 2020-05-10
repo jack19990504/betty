@@ -235,7 +235,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			smt.setString(1, registration.getMember_Email());
 			smt.setInt(2, registration.getActivity_Id());
 			smt.setString(3, registration.getRegistrationRemark());
-			smt.setInt(4, registration.getRegistrationMeal());
+			smt.setInt(4, registration.getRegistrationMeal()!=null ?registration.getRegistrationMeal() : 0);
 			smt.executeUpdate();
 			smt.close();
 
@@ -321,7 +321,8 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		PreparedStatement smt = null;
 		List<Registration> registrationList = new ArrayList<Registration>();
 		final String sql = "SELECT * FROM registration r JOIN activity a on "
-				+ "r.activity_Id = a.activityId join member m on r.member_Email = m.memberEmail where a.activityId = ?;";
+				+ " r.activity_Id = a.activityId join member m on m.memberEmail "
+				+ " = r.member_Email where a.activityId = ?;";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -332,6 +333,15 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			while (rs.next()) {
 				member = new Member();
 				registration = new Registration();
+				member = new Member();
+				
+				
+				member.setMemberName(rs.getString("memberName"));
+				member.setMemberAddress(rs.getString("memberAddress"));
+				member.setMemberEmail(rs.getString("memberEmail"));
+				member.setMemberPassword(rs.getString("memberPassword"));
+				member.setMemberBirthday(rs.getTimestamp("memberBirthday"));
+				
 				registration.setMember_Email(rs.getString("member_email"));
 				registration.setActivity_Id(rs.getInt("activity_Id"));
 				registration.setRegistrationRemark(rs.getString("registrationRemark"));
@@ -339,29 +349,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
 
-
-				//member
-				member.setMemberName(rs.getString("memberName"));
-				member.setMemberAddress(rs.getString("memberAddress"));
-				member.setMemberEmail(rs.getString("memberEmail"));
-				member.setMemberPassword(rs.getString("memberPassword"));
-				member.setMemberBirthday(rs.getTimestamp("memberBirthday"));
-
-				//program control
-				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString().substring(0,10) : "");
-				
-				member.setMemberPhone(rs.getString("memberPhone"));
-				member.setMemberLineId(rs.getString("memberLineId"));
-				member.setMemberGender(rs.getString("memberGender"));
-				member.setMemberID(rs.getString("memberID"));
-				member.setMemberBloodType(rs.getString("memberBloodType"));
-				member.setEmergencyContact(rs.getString("emergencyContact"));
-				member.setEmergencyContactRelation(rs.getString("emergencyContactRelation"));
-				member.setEmergencyContactPhone(rs.getString("emergencyContactPhone"));
-
 				registration.setMember(member);
-
-
 				registrationList.add(registration);
 			}
 			rs.close();
@@ -586,8 +574,8 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		Connection conn = null;
 		PreparedStatement smt = null;
 		ResultSet rs = null;
-		final String sql = "SELECT COUNT(member_Email) as 'registrationPeople' " + "FROM registration"
-				+ "WHERE activity_Id = ?;";
+		final String sql = "SELECT COUNT(member_Email) as 'registrationPeople' " + " FROM registration "
+				+ " WHERE activity_Id = ?;";
 		Integer attendPeople = 0;
 		try {
 			conn = dataSource.getConnection();
@@ -780,7 +768,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		List<Activity> activityList = new ArrayList<Activity>();
 		final String sql = "SELECT  r.*, a.* " + 
 				"FROM activity a JOIN registration r ON a.activityId = r.activity_Id " + 
-				"where a.activityStartDate = DATE(?) and r.member_Email = ? and r.cancelRegistration is null";
+				"where DATE(a.activityStartDate) = DATE(?) and r.member_Email = ? and r.cancelRegistration is null";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
