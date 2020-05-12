@@ -296,7 +296,7 @@ public class MemberController {
 		mailMessage.setSubject("ActFun : 您的新密碼", "UTF-8");
 
 		MimeMessageHelper helper = new MimeMessageHelper(mailMessage, true, "UTF-8");
-		helper.setFrom("jack19990504@gmail.com");
+		helper.setFrom("actfun.official@gmail.com");
 		helper.setTo(member.getMemberEmail());
 		helper.setText(mail.getMail(), true);
 

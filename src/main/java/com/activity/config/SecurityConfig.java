@@ -29,9 +29,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//任何人皆可抓取所有活動清單or任一活動
 		.antMatchers("/api/member/check").permitAll()
 		.antMatchers("/api/files/**").permitAll()
-		.antMatchers(HttpMethod.POST ,"/api/member/**").permitAll()
+		.antMatchers(HttpMethod.POST ,"/api/member/**","/api/registration/**","/api/organizer/").hasAnyAuthority("0","1")
 		
-		.antMatchers(HttpMethod.GET ,"/api/registration/","/api/login/name/").hasAnyAuthority("0","1")
+		.antMatchers(HttpMethod.GET ,"/api/registration/ifSignUp/**","/api/login/name/**").hasAnyAuthority("0","1")
 		.antMatchers(HttpMethod.POST ,"/api/files/uploadFace/**").permitAll()
 		//會員或管理員可使用這隻POST API上傳人臉
 		.antMatchers("/api/member/**").hasAnyAuthority("1")

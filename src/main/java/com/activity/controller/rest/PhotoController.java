@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.PhotoDAO;
+import com.activity.engine.control.EngineFunc;
 import com.activity.engine.control.GetResult;
 import com.activity.engine.entity.Face;
+import com.activity.engine.entity.RecognizeFace;
 import com.activity.engine.util.AttributeCheck;
 import com.activity.entity.Activity;
 import com.activity.entity.Member;
@@ -47,6 +49,9 @@ public class PhotoController {
 	static String resultJsonPath = "C:\\Users\\jack1\\Desktop\\face\\Engine\\output";
 	static String jsonName = ".cache.egroup";
 
+	
+	
+	
 	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\ActivityPhoto\\";
 	
 	//將辨識紀錄寫入資料庫
@@ -228,6 +233,96 @@ public class PhotoController {
 			webResponse.UNPROCESSABLE_ENTITY();
 			webResponse.setData("memberEmail required!");
 		}
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
+	@POST
+	@Path("/all/{activityId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response all(@PathParam("activityId") Integer id) throws IOException
+	{
+		AttributeCheck attributeCheck = new AttributeCheck();
+		WebResponse webResponse = new WebResponse();
+		
+		if(attributeCheck.stringsNotNull(String.valueOf(id)))
+		{
+			String dictLocation = reactFolderPath +id + "/";
+			String list = readfile(dictLocation);
+			if(attributeCheck.stringsNotNull(list))
+			{
+				if(list.equals("檔案"))
+				{
+					webResponse.BAD_REQUEST();
+					webResponse.setData("this activity does not exist or you have not upload pics!");
+				}
+				else
+				{
+					writePhotoList(enginePath + "/" + id +".egroupList",list);
+					EngineFunc engineFunc = new EngineFunc();
+					RecognizeFace reco = new RecognizeFace();
+					File file = new File(enginePath + "/" + id + ".egroupList");
+					if (file.exists())// 檢測檔案是否存在
+					{
+						reco.setPhotoListPath(id + ".egroupList");
+						reco.setEnginePath(enginePath);
+						reco.setOutputFacePath(outputFacePath);
+						reco.setThreshold(0.65);
+						reco.setThreads(3);
+						reco.setResolution("1440p");
+						reco.setOutputFramePath(outputFramePath);
+						reco.setTrainedBinaryPath(trainedBinaryPath);
+						reco.setTrainedFaceInfoPath(trainedFaceInfoPath);
+						reco.setMinimumFaceSize(25);
+						reco.setJsonPath(jsonPath + id);
+
+						boolean isdone = engineFunc.recoFaceWithPhotoList(reco);
+
+						if (isdone) {
+							System.out.println(id +jsonName);
+							List<Face> faceList = GetResult.photoResult(resultJsonPath, id+jsonName, true);
+							System.out.println(faceList.size());
+							List<String> recoWho = new ArrayList<>();
+							if (faceList.size() == 0) {
+								webResponse.setData("no faces in the result!");
+								webResponse.UNPROCESSABLE_ENTITY();
+							} else {
+								for(int i = 0 ;  i < faceList.size() -1 ; i ++ )
+								{
+									if(faceList.get(i).getHasFound().equals("1"))
+									{
+										photoDAO.writePhoto(faceList.get(i));
+										recoWho.add(faceList.get(i).getPersonId());
+									}
+								}
+								
+								webResponse.OK();
+								webResponse.setData(recoWho);
+							}
+						} else {
+							webResponse.BAD_REQUEST();
+							webResponse.setData("reco failed");
+						}
+					} else {
+						webResponse.UNPROCESSABLE_ENTITY();
+						webResponse.setData("the list is not exist!");
+					}
+				}
+			}
+			
+			else
+			{
+				webResponse.NOT_FOUND();
+				webResponse.setData("you haven't upload any pic");
+			}
+			
+		}
+		else
+		{
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("activityId required!");
+		}
+		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	

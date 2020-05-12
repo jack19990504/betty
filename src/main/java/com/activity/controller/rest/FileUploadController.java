@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.activity.dao.ActivityDAO;
+import com.activity.dao.PhotoDAO;
 import com.activity.engine.control.EngineFunc;
 import com.activity.engine.entity.TrainFace;
 import com.activity.engine.util.AttributeCheck;
@@ -37,6 +38,8 @@ public class FileUploadController {
 
 	@Autowired
 	ActivityDAO activityDAO;
+	@Autowired
+	PhotoDAO photoDAO;
 
 //	private final String dictLocation = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\resources";
 //	static String enginePath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine";
@@ -138,12 +141,14 @@ public class FileUploadController {
 		System.out.println(fileName);
 		String output = "";
 		// System.out.println(test);
+		String toDB = "assets/images/ActivityPhoto/"+fileDictName+"/";
 		if (test.equalsIgnoreCase(".jpg") || test.equalsIgnoreCase(".png") || test.equalsIgnoreCase(".jpeg")) {
 			// System.out.println("test3");
 			long endTime = System.currentTimeMillis();
 			time += endTime - startTime;
 			System.out.println("第" + picN + "照片" + "目前共花了" + time + "秒");
 			writeToFile(uploadedInputStream, uploadedFileLocation + fileName);	
+			photoDAO.writePhoto(Integer.parseInt(fileDictName),toDB+fileName);
 
 			output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
 
