@@ -339,6 +339,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				member.setMemberName(rs.getString("memberName"));
 				member.setMemberAddress(rs.getString("memberAddress"));
 				member.setMemberEmail(rs.getString("memberEmail"));
+				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberPassword(rs.getString("memberPassword"));
 				member.setMemberBirthday(rs.getTimestamp("memberBirthday"));
 				

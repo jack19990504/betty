@@ -494,7 +494,7 @@ public class RegistrationController {
 
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet1;
-		String filePath = "C:/Users/jack1/Desktop/somthing/upload/" + filename +".xls";
+		String filePath = "C:/Users/jack1/react_app/react_app/public/upload/" + filename +".xls";
 		//String filePath = "C:\\Users\\Morris\\Desktop\\upload\\" + filename + ".xls";
 		sheet1 = workbook.createSheet("TEST");
 		// 設定開始欄位為第一欄
