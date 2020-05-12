@@ -10,7 +10,7 @@ import com.activity.controller.rest.ActivityTypesController;
 import com.activity.controller.rest.EngineController;
 import com.activity.controller.rest.FeedbackController;
 import com.activity.controller.rest.FileUploadController;
-import com.activity.controller.rest.LineController;
+//import com.activity.controller.rest.LineController;
 import com.activity.controller.rest.MemberController;
 import com.activity.controller.rest.OrganizerController;
 import com.activity.controller.rest.TrainFaceController;
@@ -31,7 +31,7 @@ public class JerseyResourceConfig extends ResourceConfig {
     public JerseyResourceConfig() {
         register(MemberController.class);
         register(RequestContextFilter.class);
-        register(LineController.class);
+       // register(LineController.class);
         register(RegistrationController.class);
         register(EngineController.class);
         register(FileUploadController.class);

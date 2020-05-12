@@ -119,6 +119,7 @@ public class RegistrationController {
 			} else if (attendPeople > 0) {
 				Activity activity = new Activity();
 				activity.setActivityId(registration.getActivity_Id());
+				activity = activityDAO.get(activity);
 				if (attendPeople == activity.getAttendPeople()) {
 					webResponse.UNPROCESSABLE_ENTITY();
 					webResponse.setData("Applicants are full !");
