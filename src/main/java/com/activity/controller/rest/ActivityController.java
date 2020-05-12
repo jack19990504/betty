@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -85,12 +86,13 @@ public class ActivityController {
 
 	@GET
 	@Path("/search")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getActivitySearch(Search search) {
+	public Response getActivitySearch(@QueryParam("search") String search) {
 		final WebResponse webResponse = new WebResponse();
-		if (search.getSearch() != null) {
-			List<Activity> activityList = activityDAO.getActivitySearch(search);
+		Search search1 = new Search();
+		search1.setSearch(search);
+		if (search1.getSearch() != null) {
+			List<Activity> activityList = activityDAO.getActivitySearch(search1);
 			webResponse.OK();
 			webResponse.setData(activityList);
 		} else {
