@@ -75,6 +75,8 @@ public class Activity {
 	
 	private Integer registeredPeople;
 	
+	private String organizerName;
+	
 
 	// private String activityType;
 
@@ -332,6 +334,14 @@ public class Activity {
 
 	public void setRegisteredPeople(Integer registeredPeople) {
 		this.registeredPeople = registeredPeople;
+	}
+
+	public String getOrganizerName() {
+		return organizerName;
+	}
+
+	public void setOrganizerName(String organizerName) {
+		this.organizerName = organizerName;
 	}
 
 	

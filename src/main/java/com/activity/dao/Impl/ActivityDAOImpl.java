@@ -528,7 +528,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 		ResultSet rs = null;
 		PreparedStatement smt = null;
 		List<Activity> activityList = new ArrayList<Activity>();
-		final String sql = "SELECT * FROM activity a join organizer o on a.activityOrganizer = o.memberEmail where a.activityName like ? or o.organizerName like ? "
+		final String sql = "SELECT *,o.organizerName FROM activity a join organizer o on a.activityOrganizer = o.memberEmail where a.activityName like ? or o.organizerName like ? "
 				+ "or activitySpace like ? ";
 		try {
 			conn = dataSource.getConnection();
@@ -566,7 +566,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivitySummary(rs.getString("activitySummary"));
 				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
 				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
-
+				activity.setOrganizerName(rs.getString("organizerName"));
 				activityList.add(activity);
 			}
 			rs.close();
