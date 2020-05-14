@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/api/**").hasAuthority("1") 
 		.and().cors().and()
 		.csrf().disable()
-		.formLogin().loginProcessingUrl("/login").defaultSuccessUrl("http://localhost:3000/homepageAfterLogin",true).failureUrl("http://localhost:3000/signin?loginError=true")
+		.formLogin().loginProcessingUrl("/login").defaultSuccessUrl("http://localhost:3000",true).failureUrl("http://localhost:3000/signin?loginError=true")
 		.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
         .logoutSuccessUrl("http://localhost:3000/signin");
 
