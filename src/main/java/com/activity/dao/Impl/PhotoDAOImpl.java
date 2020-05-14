@@ -228,4 +228,31 @@ public class PhotoDAOImpl implements PhotoDAO {
 		}
 
 	}
+
+	@Override
+	public void deleteAllMemberPhoto(Integer activityId) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "DELETE memberphoto from memberphoto JOIN photo ON "
+				+ " memberphoto.photoId = photo.photoId WHERE activityId = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setInt(1, activityId);
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+	}
 }

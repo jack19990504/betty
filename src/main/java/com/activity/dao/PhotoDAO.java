@@ -20,4 +20,6 @@ public interface PhotoDAO {
 	public void deletePhoto(Photo photo);
 	
 	public void deleteMemberPhoto(Photo photo);
+	
+	public void deleteAllMemberPhoto(Integer activityId);
 }

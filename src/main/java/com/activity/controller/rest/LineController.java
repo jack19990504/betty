@@ -109,11 +109,19 @@ public class LineController {
 			}
 		}
 		String idString = sb.substring(0,sb.length()-1);
-		String[] lineIds = idString.split(",");
+		if(sb.length() == 0)
+		{
+			System.out.println("no paticipate!");
+		}
+		else
+		{
+			String[] lineIds = idString.split(",");
+			
+			System.out.println(message);
+			System.out.println(idString);		
+			sendPostMessagesToMutiPerson(new String[]{message,message2},lineIds);
+		}
 		
-		System.out.println(message);
-		System.out.println(idString);		
-		sendPostMessagesToMutiPerson(new String[]{message,message2},lineIds);
 	}
 	
 	@POST
@@ -147,7 +155,7 @@ public class LineController {
 		{
 			String idString = sb.substring(0,sb.length()-1);
 			String[] lineIds = idString.split(",");
-			sendPostMessagesToMutiPerson(new String[] {message1,message2,"詳細資訊請上官方網站查詢"},lineIds);
+			sendPostMessagesToMutiPerson(new String[] {message1+"\\n"+message2,"詳細資訊請上官方網站查詢"},lineIds);
 		}
 		
 	}

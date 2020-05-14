@@ -82,7 +82,7 @@ public class FileUploadController {
 			activity.setActivityId(id);
 			activity = activityDAO.get(activity);
 			if (attributeCheck.stringsNotNull(activity.getActivityName())) {
-				String uploadedFileLocation = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\ActivityCover\\"
+				String uploadedFileLocation = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\activityCover\\"
 						+ id;
 				System.out.println(uploadedFileLocation);
 				File file = new File(uploadedFileLocation);
@@ -95,7 +95,7 @@ public class FileUploadController {
 				if (suffix.equals(".jpg") || suffix.equals(".jpeg") || suffix.equals(".png")) {
 					// save it
 					writeToFile(uploadedInputStream, uploadedFileLocation + "\\" + fileName);
-					String output = "assets\\images\\ActivityCover\\" + id +"\\"+ fileName;
+					String output = "assets\\images\\activityCover\\" + id +"\\"+ fileName;
 					
 					activity.setActivityCover(output);
 					activityDAO.updateCover(activity);

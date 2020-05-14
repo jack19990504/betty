@@ -32,7 +32,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 		ResultSet rs = null;
 		PreparedStatement smt = null;
 		List<Activity> activityList = new ArrayList<Activity>();
-		final String sql = "SELECT * FROM activity;";
+		final String sql = "SELECT * FROM activity where endSignUpDate > NOW();";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
