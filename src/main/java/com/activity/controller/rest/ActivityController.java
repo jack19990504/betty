@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.ActivityDAO;
 import com.activity.entity.Activity;
+import com.activity.entity.Registration;
 import com.activity.entity.Search;
 import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
@@ -201,6 +202,41 @@ public class ActivityController {
 		final List<Activity> activityList = activityDAO.getList();
 		webResponse.OK();
 		webResponse.setData(activityList);
+
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
+	@PATCH
+	@Path("/cancel/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateActivityCancelTime(@PathParam("id") Integer id) {
+		
+		final WebResponse webResponse = new WebResponse();
+		
+		if (id != null) {
+			
+			Activity activity = new Activity();
+			activity.setActivityId(id);
+			activity = activityDAO.get(activity);
+			
+			if (!activity.getActivityName().equals(null)) {
+				
+				activityDAO.updateActivityCancelTime(activity);
+				webResponse.OK();
+				webResponse.setData(activity);
+				
+			} else {
+				
+				webResponse.NOT_FOUND();
+				webResponse.setData("data not found");
+				
+			}
+		} else {
+			
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("id required");
+			
+		}
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}

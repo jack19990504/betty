@@ -694,6 +694,35 @@ public class ActivityDAOImpl implements ActivityDAO {
 		return activity;
 	}
 
+	@Override
+	public void updateActivityCancelTime(Activity activity) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "UPDATE activity SET activityCancelTime = NOW() where activityId = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+
+			smt.setInt(1, activity.getActivityId());
+
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+	}
+
 	
 	
 	

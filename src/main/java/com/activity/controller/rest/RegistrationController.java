@@ -275,6 +275,7 @@ public class RegistrationController {
 
 	@PATCH
 	@Path("/cancel/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateCancel(@PathParam("id") Integer id) {
 		
 		final WebResponse webResponse = new WebResponse();
