@@ -31,6 +31,8 @@ public interface ActivityDAO {
 
 	public List<Activity> getActivitySearch(Search search);
 	
+	public void updateActivityCancelTime(Activity activity);
+	
 //	public List<Organizer> getOrganizerSearch(Activity activity);
 	
 	

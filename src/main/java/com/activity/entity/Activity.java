@@ -77,6 +77,10 @@ public class Activity {
 	
 	private String organizerName;
 	
+	private Timestamp activityCancelTime;
+	
+	private String activityCancelTimeString;
+	
 
 	// private String activityType;
 
@@ -342,6 +346,22 @@ public class Activity {
 
 	public void setOrganizerName(String organizerName) {
 		this.organizerName = organizerName;
+	}
+
+	public Timestamp getActivityCancelTime() {
+		return activityCancelTime;
+	}
+
+	public void setActivityCancelTime(Timestamp activityCancelTime) {
+		this.activityCancelTime = activityCancelTime;
+	}
+
+	public String getActivityCancelTimeString() {
+		return activityCancelTimeString;
+	}
+
+	public void setActivityCancelTimeString(String activityCancelTimeString) {
+		this.activityCancelTimeString = activityCancelTimeString;
 	}
 
 	
