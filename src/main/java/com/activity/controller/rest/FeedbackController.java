@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.FeedbackDAO;
+import com.activity.engine.util.AttributeCheck;
 import com.activity.entity.Feedback;
 import com.activity.util.WebResponse;
 
@@ -32,10 +33,21 @@ public class FeedbackController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response insert(Feedback feedback) {
 		final WebResponse webResponse = new WebResponse();
+		final AttributeCheck attributeCheck = new AttributeCheck();	
 			
-			feedbackDAO.insert(feedback);
-			webResponse.OK();
-			webResponse.setData(feedback);
+			Feedback oldFeedback = feedback;
+			oldFeedback = feedbackDAO.getOne(oldFeedback);
+			if(attributeCheck.stringsNotNull(oldFeedback.getSuggestFeedback()))
+			{
+				feedbackDAO.insert(feedback);
+				webResponse.OK();
+				webResponse.setData(feedback);
+			}
+			else
+			{
+				webResponse.UNPROCESSABLE_ENTITY();
+				webResponse.setData("您已經填寫過此活動的回饋單!");
+			}
 			
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}

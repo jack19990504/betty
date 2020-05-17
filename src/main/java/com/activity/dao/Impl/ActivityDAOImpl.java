@@ -32,7 +32,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 		ResultSet rs = null;
 		PreparedStatement smt = null;
 		List<Activity> activityList = new ArrayList<Activity>();
-		final String sql = "SELECT * FROM activity;";
+		final String sql = "SELECT * FROM activity where endSignUpDate > NOW();";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -66,6 +66,9 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivitySummary(rs.getString("activitySummary"));
 				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
 				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
+				
+				activity.setActivityCancelTime(rs.getTimestamp("activityCancelTime"));
+				activity.setActivityCancelTimeString(rs.getTimestamp("activityCancelTime") != null ? rs.getTimestamp("activityCancelTime").toString().substring(0,16) : "");
 
 				activityList.add(activity);
 			}
@@ -177,6 +180,9 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivitySummary(rs.getString("activitySummary"));
 				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
 				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
+				
+				activity.setActivityCancelTime(rs.getTimestamp("activityCancelTime"));
+				activity.setActivityCancelTimeString(rs.getTimestamp("activityCancelTime") != null ? rs.getTimestamp("activityCancelTime").toString().substring(0,16) : "");
 			}
 			smt.close();
 			rs.close();

@@ -12,4 +12,6 @@ public interface FeedbackDAO {
 	
 	public void insert(Feedback feedback);
 	
+	public Feedback getOne(Feedback feedback);
+	
 }

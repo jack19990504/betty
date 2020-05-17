@@ -111,6 +111,48 @@ public class FeedbackDAOImpl implements FeedbackDAO{
 		}
 		return feedback;
 	}
+	
+	@Override
+	public Feedback getOne(Feedback feedback) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		ResultSet rs = null;
+		final String sql = "SELECT * FROM feedback where member_Email = ? and activity_Id = ? ";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, feedback.getMember_Email());
+			smt.setInt(2, feedback.getActivity_Id());
+			rs = smt.executeQuery();
+			feedback = new Feedback();
+			while (rs.next()) {
+				feedback.setAInum(rs.getInt("AInum"));
+				feedback.setMember_Email(rs.getString("member_Email"));
+				feedback.setActivity_Id(rs.getInt("activity_Id"));
+				feedback.setPlaceFeedback(rs.getInt("placeFeedback"));
+				feedback.setScheduleFeedback(rs.getInt("scheduleFeedback"));
+				feedback.setProcessFeedback(rs.getInt("processFeedback"));
+				feedback.setContentFeedback(rs.getInt("contentFeedback"));
+				feedback.setStaffFeedback(rs.getInt("staffFeedback"));
+				feedback.setOverallFeedback(rs.getInt("overallFeedback"));
+				feedback.setSuggestFeedback(rs.getString("suggestFeedback"));
+			}
+			smt.close();
+			rs.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return feedback;
+	}
 
 	@Override
 	public void insert(Feedback feedback) {

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.ActivityDAO;
 import com.activity.entity.Activity;
-import com.activity.entity.Registration;
 import com.activity.entity.Search;
 import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
@@ -154,10 +153,6 @@ public class ActivityController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("id") Integer id, Activity activity) {
 		final WebResponse webResponse = new WebResponse();
-
-		System.out.println("patch");
-		System.out.println(activity.getActivityMoreContent() + "\t" + activity.getActivityId() + "\t"
-				+ activity.getActivityPrecautions());
 		if (id != null) {
 			activity.setActivityId(id);
 			final Activity oldactivity = activityDAO.get(activity);
@@ -200,6 +195,11 @@ public class ActivityController {
 		final WebResponse webResponse = new WebResponse();
 
 		final List<Activity> activityList = activityDAO.getList();
+		for(Activity activity : activityList)
+		{
+			activityDAO.getActivityTypes(activity);
+		}
+		
 		webResponse.OK();
 		webResponse.setData(activityList);
 

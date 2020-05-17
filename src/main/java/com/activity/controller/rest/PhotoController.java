@@ -277,22 +277,27 @@ public class PhotoController {
 						reco.setJsonPath(jsonPath + id);
 
 						boolean isdone = engineFunc.recoFaceWithPhotoList(reco);
-
+						//如果成功辨識
 						if (isdone) {
 							System.out.println(id +jsonName);
 							List<Face> faceList = GetResult.photoResult(resultJsonPath, id+jsonName, true);
 							System.out.println(faceList.size());
 							List<String> recoWho = new ArrayList<>();
 							if (faceList.size() == 0) {
+								//如辨識無結果
 								webResponse.setData("no faces in the result!");
 								webResponse.UNPROCESSABLE_ENTITY();
 							} else {
+								photoDAO.deleteAllMemberPhoto(id);
 								for(int i = 0 ;  i < faceList.size() -1 ; i ++ )
 								{
 									if(faceList.get(i).getHasFound().equals("1"))
 									{
 										photoDAO.writePhoto(faceList.get(i));
-										recoWho.add(faceList.get(i).getPersonId());
+										if(!recoWho.contains(faceList.get(i).getPersonId()))
+											{
+												recoWho.add(faceList.get(i).getPersonId());
+											}
 									}
 								}
 								

@@ -22,20 +22,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 		.httpBasic()//設定為httpBasic Authentication
 		.and().authorizeRequests()
-		.antMatchers("/api/line/**").permitAll()
-		//允許line bot不登入也可存取API
-		.antMatchers(HttpMethod.GET ,"/api/activity/**").permitAll()
-		.antMatchers("/api/activity/**").permitAll()
-		//任何人皆可抓取所有活動清單or任一活動
-		.antMatchers("/api/member/check").permitAll()
-		.antMatchers("/api/files/**").permitAll()
-		.antMatchers(HttpMethod.POST ,"/api/member/**","/api/registration/**","/api/organizer/").hasAnyAuthority("0","1")
 		
-		.antMatchers(HttpMethod.GET ,"/api/registration/ifSignUp/**","/api/login/name/**").hasAnyAuthority("0","1")
-		.antMatchers(HttpMethod.POST ,"/api/files/uploadFace/**").permitAll()
-		//會員或管理員可使用這隻POST API上傳人臉
-		.antMatchers("/api/member/**").hasAnyAuthority("1")
-		//會員與管理者皆可存取member API
+		//全部使用者都可使用
+		.antMatchers("/api/line/**","/api/member/check/**","/api/files/uploadFace/**").permitAll()
+		//允許line bot不登入也可存取API
+		//任何人皆可抓取所有活動清單or任一活動
+		//未註冊會員可以使用
+		.antMatchers(HttpMethod.GET ,"/api/activity/**").permitAll()
+		.antMatchers(HttpMethod.POST ,"/api/member/**").permitAll()
+		
+		
+		//會員以上才可使用
+		.antMatchers("/api/registration/**").hasAnyAuthority("0","1")
+		.antMatchers(HttpMethod.GET ,"/api/login/name/**","/api/photo/**").hasAnyAuthority("0","1")
+		.antMatchers(HttpMethod.POST ,"/api/registration/**","/api/organizer/","/api/feedback/**").hasAnyAuthority("0","1")
+		.antMatchers("/api/member/**").hasAnyAuthority("0","1")
+		
+		//管理者可使用所有剩下的API
+		
 		.antMatchers("/api/**").hasAuthority("1") 
 		.and().cors().and()
 		.csrf().disable()
