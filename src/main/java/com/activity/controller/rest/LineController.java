@@ -743,5 +743,3 @@ public class LineController {
 	}
 
 }
-
-

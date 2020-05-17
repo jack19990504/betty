@@ -66,6 +66,9 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivitySummary(rs.getString("activitySummary"));
 				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
 				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
+				
+				activity.setActivityCancelTime(rs.getTimestamp("activityCancelTime"));
+				activity.setActivityCancelTimeString(rs.getTimestamp("activityCancelTime") != null ? rs.getTimestamp("activityCancelTime").toString().substring(0,16) : "");
 
 				activityList.add(activity);
 			}
@@ -177,6 +180,9 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivitySummary(rs.getString("activitySummary"));
 				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
 				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
+				
+				activity.setActivityCancelTime(rs.getTimestamp("activityCancelTime"));
+				activity.setActivityCancelTimeString(rs.getTimestamp("activityCancelTime") != null ? rs.getTimestamp("activityCancelTime").toString().substring(0,16) : "");
 			}
 			smt.close();
 			rs.close();
@@ -528,7 +534,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 		ResultSet rs = null;
 		PreparedStatement smt = null;
 		List<Activity> activityList = new ArrayList<Activity>();
-		final String sql = "SELECT * FROM activity where activityName like ? or activityOrganizer like ? "
+		final String sql = "SELECT *,o.organizerName FROM activity a join organizer o on a.activityOrganizer = o.memberEmail where a.activityName like ? or o.organizerName like ? "
 				+ "or activitySpace like ? ";
 		try {
 			conn = dataSource.getConnection();
@@ -566,7 +572,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivitySummary(rs.getString("activitySummary"));
 				activity.setActivityMoreContent(rs.getString("activityMoreContent"));
 				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
-
+				activity.setOrganizerName(rs.getString("organizerName"));
 				activityList.add(activity);
 			}
 			rs.close();
@@ -692,6 +698,35 @@ public class ActivityDAOImpl implements ActivityDAO {
 			}
 		}
 		return activity;
+	}
+
+	@Override
+	public void updateActivityCancelTime(Activity activity) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "UPDATE activity SET activityCancelTime = NOW() where activityId = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+
+			smt.setInt(1, activity.getActivityId());
+
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
 	}
 
 	

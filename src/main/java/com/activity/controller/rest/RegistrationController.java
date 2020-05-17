@@ -102,6 +102,7 @@ public class RegistrationController {
 		Integer attendPeople = registrationDAO.checkAttendPeople(registration);
 		// 檢查此使用者是否報名過此活動，如是則顯示錯誤訊息
 		if (attributeCheck.stringsNotNull(tRegistration.getMember_Email())) {
+			System.out.println("TEST1");
 
 			webResponse.UNPROCESSABLE_ENTITY();
 			webResponse.setData("You have already registered this activity!");
@@ -115,17 +116,20 @@ public class RegistrationController {
 			System.out.println(member.getMemberEmail() + "\t" + cancelTimes);
 			// 如超過三次則無法報名
 			if (cancelTimes >= 3) {
+				System.out.println("TEST2");
 				webResponse.UNPROCESSABLE_ENTITY();
 				webResponse.setData("You cancel 3 registrations within a month! \n please wait until next month!");
 			} else if (notAttendTimes >= 2) {
+				System.out.println("TEST3");
 				webResponse.UNPROCESSABLE_ENTITY();
 				webResponse.setData(
-						"You did not cancel and attend 3 registrations within a month! \n please wait until next month!");
+						"You cancel and attend 3 registrations within a month! \n please wait until next month!");
 			} else if (attendPeople > 0) {
 				Activity activity = new Activity();
 				activity.setActivityId(registration.getActivity_Id());
 				activity = activityDAO.get(activity);
 				if (attendPeople == activity.getAttendPeople()) {
+					System.out.println("TEST4");
 					webResponse.UNPROCESSABLE_ENTITY();
 					webResponse.setData("Applicants are full !");
 				}
@@ -274,6 +278,7 @@ public class RegistrationController {
 
 	@PATCH
 	@Path("/cancel/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateCancel(@PathParam("id") Integer id) {
 		
 		final WebResponse webResponse = new WebResponse();
