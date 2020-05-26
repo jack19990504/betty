@@ -34,7 +34,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		PreparedStatement smt = null;
 		List<Registration> registerList = new ArrayList<>();
 		final String sql = "SELECT * FROM Registration r JOIN member m " + "ON r.member_Email = m.memberEmail"
-				+ " JOIN activity a ON r.activity_Id = a.activityId " + " where m.memberLineId = ?  and a.activityStartDate > NOW();";
+				+ " JOIN activity a ON r.activity_Id = a.activityId " + " where m.memberLineId = ?  and a.activityEndDate > NOW();";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);
@@ -547,6 +547,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				registration.getMember().setMemberID(rs.getString("memberID"));
 				registration.getMember().setMemberBloodType(rs.getString("memberBloodType"));
 				registration.getMember().setMemberLineId(rs.getString("memberLineId"));
+				registration.getMember().setMemberPhone(rs.getString("memberPhone"));
 				
 				registration.getActivity().setActivityName(rs.getString("activityName"));
 

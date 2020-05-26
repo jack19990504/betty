@@ -267,7 +267,7 @@ public class PhotoController {
 						reco.setPhotoListPath(id + ".egroupList");
 						reco.setEnginePath(enginePath);
 						reco.setOutputFacePath(outputFacePath);
-						reco.setThreshold(0.65);
+						reco.setThreshold(0.7);
 						reco.setThreads(3);
 						reco.setResolution("1440p");
 						reco.setOutputFramePath(outputFramePath);

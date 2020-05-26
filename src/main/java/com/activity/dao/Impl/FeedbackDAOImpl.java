@@ -125,7 +125,7 @@ public class FeedbackDAOImpl implements FeedbackDAO{
 			smt.setInt(2, feedback.getActivity_Id());
 			rs = smt.executeQuery();
 			feedback = new Feedback();
-			while (rs.next()) {
+			if (rs.next()) {
 				feedback.setAInum(rs.getInt("AInum"));
 				feedback.setMember_Email(rs.getString("member_Email"));
 				feedback.setActivity_Id(rs.getInt("activity_Id"));
