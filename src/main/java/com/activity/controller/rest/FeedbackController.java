@@ -35,9 +35,9 @@ public class FeedbackController {
 		final WebResponse webResponse = new WebResponse();
 		final AttributeCheck attributeCheck = new AttributeCheck();	
 			
-			Feedback oldFeedback = feedback;
-			oldFeedback = feedbackDAO.getOne(oldFeedback);
-			if(attributeCheck.stringsNotNull(oldFeedback.getSuggestFeedback()))
+			Feedback oldFeedback =  feedbackDAO.getOne(feedback);
+			//System.out.println(oldFeedback.getMember_Email());
+			if(!attributeCheck.stringsNotNull(oldFeedback.getMember_Email()))
 			{
 				feedbackDAO.insert(feedback);
 				webResponse.OK();
@@ -45,6 +45,7 @@ public class FeedbackController {
 			}
 			else
 			{
+				//System.out.println("123");
 				webResponse.UNPROCESSABLE_ENTITY();
 				webResponse.setData("您已經填寫過此活動的回饋單!");
 			}

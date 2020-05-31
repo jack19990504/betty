@@ -60,12 +60,12 @@ public class LineController {
 	9	資訊🖥
 	地點 📍
 	*/
-	Map<String, String> map = Map.of("學習","📚","藝文","🎼","親子","👶🏻","體驗"
+	Map<String, String> map = Map.of("學術","📚","藝文","🎼","親子","👶🏻","體驗"
 			,"💆","休閒","🏖","運動","🚴","戶外","🏔","講座","💼","資訊","🖥");
 	
 	private ArrayList<String> bindUserId = new ArrayList<>();
 	private ArrayList<String> resetUserId = new ArrayList<>();
-	
+	final AttributeCheck attributeCheck = new AttributeCheck();	
 
 	
 	@Autowired
@@ -352,7 +352,8 @@ public class LineController {
 							
 							for(String a : activity.getActivityTypes())
 							{
-								if(a == null)
+								System.out.println(a);
+								if(!attributeCheck.stringsNotNull(a))
 									continue;
 								else
 								{

@@ -97,7 +97,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 		PreparedStatement smt = null;
 		List<Activity> ActivityList = new ArrayList<>();
 		final String sql = "SELECT *,(SELECT COUNT(*) FROM registration where registration.activity_Id = activity.activityId and registration.cancelRegistration is null) as registeredPeople " + 
-				" FROM activity WHERE activity.startSignUpDate > NOW() GROUP BY activityId HAVING  attendPeople > registeredPeople";
+				" FROM activity WHERE activity.endSignUpDate > NOW() GROUP BY activityId HAVING  attendPeople > registeredPeople";
 		try {
 			conn = dataSource.getConnection();
 			smt = conn.prepareStatement(sql);

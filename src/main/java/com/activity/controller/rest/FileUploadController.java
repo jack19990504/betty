@@ -95,7 +95,7 @@ public class FileUploadController {
 				if (suffix.equals(".jpg") || suffix.equals(".jpeg") || suffix.equals(".png")) {
 					// save it
 					writeToFile(uploadedInputStream, uploadedFileLocation + "\\" + fileName);
-					String output = "assets\\images\\activityCover\\" + id +"\\"+ fileName;
+					String output = "assets/images/activityCover/" + id +"/"+ fileName;
 					
 					activity.setActivityCover(output);
 					activityDAO.updateCover(activity);
