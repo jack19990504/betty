@@ -28,4 +28,5 @@ public class JerseyServletBeanConfig {
         return registrationBean;
     }
    
+   
 }

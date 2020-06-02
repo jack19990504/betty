@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.activity.dao.PhotoDAO;
+import com.activity.dao.VideoDAO;
 import com.activity.engine.control.EngineFunc;
 import com.activity.engine.control.GetResult;
 import com.activity.engine.entity.Face;
@@ -30,6 +31,7 @@ import com.activity.engine.util.AttributeCheck;
 import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Photo;
+import com.activity.entity.Video;
 import com.activity.util.WebResponse;
 @CrossOrigin("*") 
 @RestController
@@ -38,6 +40,8 @@ public class PhotoController {
 
 	@Autowired
 	PhotoDAO photoDAO;
+	@Autowired
+	VideoDAO videoDAO;
 
 	static String enginePath = "C:\\Users\\jack1\\Desktop\\face\\Engine";
 	static String outputFacePath = "face";
@@ -53,7 +57,7 @@ public class PhotoController {
 	
 	
 	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\ActivityPhoto\\";
-	
+	static String filePath = "C:/Users/jack1/Desktop/test/react_pages/public/";
 	//將辨識紀錄寫入資料庫
 	@POST
 	@Path("/writeMemberPhoto/{activityId}")
@@ -339,9 +343,20 @@ public class PhotoController {
 	{
 		
 		WebResponse webResponse = new WebResponse();
-		photoDAO.deletePhoto(photo);
-		webResponse.OK();
-		webResponse.setData("pic deleted!");
+		File file = new File(filePath + photo.getPhotoId());
+		try {
+			System.out.println(file.delete());
+			photoDAO.deletePhoto(photo);
+			webResponse.OK();
+			webResponse.setData("pic deleted!");
+			
+		}
+		catch(Exception e)
+		{
+			webResponse.BAD_REQUEST();
+			webResponse.setData("something went wrong!");
+		}
+		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
@@ -356,6 +371,18 @@ public class PhotoController {
 		photoDAO.deleteMemberPhoto(photo);
 		webResponse.OK();
 		webResponse.setData("pic deleted!");
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/video/{id}")
+	public Response getVideoList(@PathParam("id") Integer id)
+	{
+		List<Video> videoList = videoDAO.getList(id);
+		WebResponse webResponse = new WebResponse();
+		webResponse.OK();
+		webResponse.setData(videoList);
+		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
