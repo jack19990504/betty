@@ -832,5 +832,63 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		}
 		return activityList;
 	}
+
+	@Override
+	public void signInByAINum(Registration registration) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "UPDATE registration SET " + " isSignIn = 1 where AInum = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			
+			
+			smt.setInt(1, registration.getAInum());
+			
+			smt.executeUpdate();
+			smt.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+	}
+
+	@Override
+	public void signOutByAINum(Registration registration) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "UPDATE registration SET " + " isSignOut = 1 where AInum = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			
+			
+			smt.setInt(1, registration.getAInum());
+			
+			smt.executeUpdate();
+			smt.close();
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+	}
 	
 }

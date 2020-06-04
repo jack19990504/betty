@@ -27,11 +27,13 @@ import com.activity.engine.control.EngineFunc;
 import com.activity.engine.control.GetResult;
 import com.activity.engine.entity.Face;
 import com.activity.engine.entity.RecognizeFace;
+import com.activity.engine.entity.TrainFace;
 import com.activity.engine.util.AttributeCheck;
 import com.activity.entity.Activity;
 import com.activity.entity.Member;
 import com.activity.entity.Photo;
 import com.activity.entity.Video;
+import com.activity.util.AuthenticationUtil;
 import com.activity.util.WebResponse;
 @CrossOrigin("*") 
 @RestController
@@ -365,10 +367,24 @@ public class PhotoController {
 	@Path("/memberphoto/{id}")
 	public Response deleteMemberPhoto(@PathParam("id") Integer id)
 	{
+		final AuthenticationUtil authUtil = new AuthenticationUtil();
 		Photo photo = new Photo();
 		photo.setAINum(id);
 		WebResponse webResponse = new WebResponse();
 		photoDAO.deleteMemberPhoto(photo);
+		String txtPath = enginePath+"/resources/list_"+authUtil.getCurrentUsername()+".txt";
+		File file = new File(txtPath);
+		if(file.exists())
+		{
+			TrainFace trainFace = new TrainFace();
+			trainFace.setEnginePath(enginePath);
+			trainFace.setTrainListPath(txtPath);
+			trainFace.setModelPath("eGroup\\jack_kobe.Model");
+			trainFace.setModelExist(true);
+
+			EngineFunc engineFunc = new EngineFunc();
+			engineFunc.trainFace(trainFace);
+		}
 		webResponse.OK();
 		webResponse.setData("pic deleted!");
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
