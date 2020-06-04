@@ -1,15 +1,9 @@
 package com.activity.controller.rest;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -31,6 +25,7 @@ import com.activity.entity.Member;
 import com.activity.entity.Registration;
 import com.activity.util.line.Event;
 import com.activity.util.line.EventWrapper;
+import com.activity.util.line.MessageUtil;
 
 @CrossOrigin("*") 
 @Path("/line")
@@ -66,7 +61,7 @@ public class LineController {
 	private ArrayList<String> bindUserId = new ArrayList<>();
 	private ArrayList<String> resetUserId = new ArrayList<>();
 	final AttributeCheck attributeCheck = new AttributeCheck();	
-
+	final MessageUtil messageUtil = new MessageUtil();
 	
 	@Autowired
 	ActivityDAO activityDAO;
@@ -80,7 +75,7 @@ public class LineController {
 
 
 	
-	
+	//提醒所有參加者
 	@Path("/postMessage/{activityId}")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
@@ -119,8 +114,32 @@ public class LineController {
 			
 			System.out.println(message);
 			System.out.println(idString);		
-			sendPostMessagesToMutiPerson(new String[]{message,message2},lineIds);
+			messageUtil.sendPostMessagesToMutiPerson(new String[]{message,message2},lineIds);
 		}
+		
+	}
+	//提醒單一參加者
+	
+	@Path("/postMessage/one")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public void sendRemindMessagesToOnePerson(Registration registration)
+	{
+		
+		final AttributeCheck attributeCheck = new AttributeCheck();
+		Activity activity = new Activity();
+		activity.setActivityId(registration.getActivity_Id());
+		activity = activityDAO.get(activity);
+		
+		String startDate = activity.getActivityStartDateString(); 
+		
+		String message = "提醒您，您所報名的活動 : \\n🔍" + activity.getActivityName() + " 即將在\\n " + startDate + " 開始";
+		String message2 = "活動地點為:\\n📍" + activity.getActivitySpace();
+		
+		
+				
+		messageUtil.sendPostMessages(new String[]{message,message2},registration.getMember().getMemberLineId());
+		
 		
 	}
 	
@@ -155,7 +174,7 @@ public class LineController {
 		{
 			String idString = sb.substring(0,sb.length()-1);
 			String[] lineIds = idString.split(",");
-			sendPostMessagesToMutiPerson(new String[] {message1+"\\n"+message2,"詳細資訊請上官方網站查詢"},lineIds);
+			messageUtil.sendPostMessagesToMutiPerson(new String[] {message1+"\\n"+message2,"詳細資訊請上官方網站查詢"},lineIds);
 		}
 		
 	}
@@ -175,12 +194,12 @@ public class LineController {
 					{
 						if(resetUserId.contains(event.getSource().getUserId()))
 						{
-							sendResponseMessages(event.getReplyToken(),"重置失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
+							messageUtil.sendResponseMessages(event.getReplyToken(),"重置失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
 							resetUserId.remove(event.getSource().getUserId());
 						}
 						else
 						{
-							sendResponseMessages(event.getReplyToken(),"請輸入帳號密碼!\\n如範例⬇️\\n帳號:\\n密碼:");
+							messageUtil.sendResponseMessages(event.getReplyToken(),"請輸入帳號密碼!\\n如範例⬇️\\n帳號:\\n密碼:");
 							if(!bindUserId.contains(event.getSource().getUserId())){
 								bindUserId.add(event.getSource().getUserId());
 							}
@@ -190,12 +209,12 @@ public class LineController {
 					{
 						if(bindUserId.contains(event.getSource().getUserId()))
 						{
-							sendResponseMessages(event.getReplyToken(),"綁定失敗，請按照格式輸入!\\n請再次點選「綁定帳號」並重新輸入!");
+							messageUtil.sendResponseMessages(event.getReplyToken(),"綁定失敗，請按照格式輸入!\\n請再次點選「綁定帳號」並重新輸入!");
 							bindUserId.remove(event.getSource().getUserId());
 						}
 						else
 						{
-							sendResponseMessages(event.getReplyToken(),"請輸入欲重置的帳號密碼!\\n如範例⬇️\\n帳號:\\n密碼:");
+							messageUtil.sendResponseMessages(event.getReplyToken(),"請輸入欲重置的帳號密碼!\\n如範例⬇️\\n帳號:\\n密碼:");
 							if(!resetUserId.contains(event.getSource().getUserId())){
 								resetUserId.add(event.getSource().getUserId());
 							}
@@ -211,14 +230,14 @@ public class LineController {
 						if(!init.startsWith("帳號"))
 						{
 							
-							sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
+							messageUtil.sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
 						}
 						else
 						{
 							String datas[]  = init.split("\n");
 							if(datas[0].length() < 4 || datas[1].length() < 4)
 							{
-								sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
+								messageUtil.sendResponseMessages(event.getReplyToken(), "重置失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
 							}
 							else
 							{
@@ -232,31 +251,31 @@ public class LineController {
 								if(member.getMemberPassword() == null || !member.getMemberPassword().equals(password))
 								{
 							
-									sendResponseMessages(event.getReplyToken(), "重置失敗，帳號或密碼輸入錯誤!\\n請再次點選「重置綁定」並重新輸入!");
+									messageUtil.sendResponseMessages(event.getReplyToken(), "重置失敗，帳號或密碼輸入錯誤!\\n請再次點選「重置綁定」並重新輸入!");
 								}
 								else 
 								{
 									if(member.getMemberLineId() == null)
 									{
-										sendResponseMessages(event.getReplyToken(), "重置失敗，此帳號尚無綁定過!");
+										messageUtil.sendResponseMessages(event.getReplyToken(), "重置失敗，此帳號尚無綁定過!");
 								
 									}
 							
 									else if(member.getMemberLineId().equals(""))
 									{
-										sendResponseMessages(event.getReplyToken(), "重置失敗，此帳號已重置過!\\n請再次點選「重置綁定」並重新輸入!");
+										messageUtil.sendResponseMessages(event.getReplyToken(), "重置失敗，此帳號已重置過!\\n請再次點選「重置綁定」並重新輸入!");
 								
 									}
 							
 									else if(!member.getMemberLineId().equals(event.getSource().getUserId()))
 									{
-										sendResponseMessages(event.getReplyToken(), "重置失敗，您綁定的不是此帳號!\\n請再次點選「重置綁定」並重新輸入!");
+										messageUtil.sendResponseMessages(event.getReplyToken(), "重置失敗，您綁定的不是此帳號!\\n請再次點選「重置綁定」並重新輸入!");
 									}
 							
 									else 
 									{
 										memberDAO.resetLineUserId(account);
-										sendResponseMessages(event.getReplyToken(), "重置成功!");
+										messageUtil.sendResponseMessages(event.getReplyToken(), "重置成功!");
 								
 									}
 								}
@@ -275,14 +294,14 @@ public class LineController {
 						String init  = event.getMessage().getText();
 						if(!init.startsWith("帳號"))
 						{
-							sendResponseMessages(event.getReplyToken(), "綁定失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
+							messageUtil.sendResponseMessages(event.getReplyToken(), "綁定失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
 						}
 						else
 						{
 							String datas[]  = init.split("\n");
 							if(datas[0].length() < 4 || datas[1].length() < 4)
 							{
-								sendResponseMessages(event.getReplyToken(), "綁定失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
+								messageUtil.sendResponseMessages(event.getReplyToken(), "綁定失敗，請按照格式輸入!\\n請再次點選「重置綁定」並重新輸入!");
 							}
 							else
 							{
@@ -295,7 +314,7 @@ public class LineController {
 								//無此筆帳號
 								if(member.getMemberPassword() == null || !member.getMemberPassword().equals(password))
 								{
-									sendResponseMessages(event.getReplyToken(), "綁定失敗，帳號或密碼輸入錯誤!\\n請再次點選「重置綁定」並重新輸入!");
+									messageUtil.sendResponseMessages(event.getReplyToken(), "綁定失敗，帳號或密碼輸入錯誤!\\n請再次點選「重置綁定」並重新輸入!");
 								}
 								else
 								{
@@ -310,13 +329,13 @@ public class LineController {
 										//如已綁定過
 										if(test.getMemberEmail()!= null)
 										{
-											sendResponseMessages(event.getReplyToken(), "綁定失敗，此Line帳號已綁定其他用戶帳號!");
+											messageUtil.sendResponseMessages(event.getReplyToken(), "綁定失敗，此Line帳號已綁定其他用戶帳號!");
 										}
 										//如未綁定
 										else
 										{
 											memberDAO.UpdateLineUserId(event.getSource().getUserId(), account, password);
-											sendResponseMessages(event.getReplyToken(), "綁定成功!");
+											messageUtil.sendResponseMessages(event.getReplyToken(), "綁定成功!");
 										}
 										
 									}
@@ -326,7 +345,7 @@ public class LineController {
 										System.out.println(!member.getMemberLineId().equals(""));
 										System.out.println(!member.getMemberLineId().equals(null));
 										
-										sendResponseMessages(event.getReplyToken(), "此用戶帳號已綁定過!");
+										messageUtil.sendResponseMessages(event.getReplyToken(), "此用戶帳號已綁定過!");
 									}
 									
 									
@@ -371,7 +390,7 @@ public class LineController {
 						
 						//sendResponseMessages(event.getReplyToken(),message);
 						String output [] = {sb.substring(0,sb.length()-2),"詳細活動資訊請上官方網站查詢"};
-						sendResponseMessages(event.getReplyToken(),output);
+						messageUtil.sendResponseMessages(event.getReplyToken(),output);
 						
 					} 
 //					else if (event.getMessage().getText().equals("選單"))
@@ -386,7 +405,7 @@ public class LineController {
 						if(Registration.isEmpty())
 						{
 							System.out.println(event.getSource().getUserId());
-							sendResponseMessages(event.getReplyToken(),"您沒有已報名的活動或尚未綁定帳號!");
+							messageUtil.sendResponseMessages(event.getReplyToken(),"您沒有已報名的活動或尚未綁定帳號!");
 						}
 						else
 						{
@@ -397,7 +416,7 @@ public class LineController {
 							sb.append("🔍"+ r.getActivity().getActivityName() +  "\\n");
 						}
 						String [] output = {sb.substring(0,sb.length()-2),"已參加活動之詳細資訊請至官方網站查看"};
-						sendResponseMessages(event.getReplyToken(),output);
+						messageUtil.sendResponseMessages(event.getReplyToken(),output);
 						}
 						
 					}
@@ -409,7 +428,7 @@ public class LineController {
 					{
 						resetUserId.remove(event.getSource().getUserId());
 						bindUserId.remove(event.getSource().getUserId());
-						typeTemplate(event.getReplyToken());
+						messageUtil.typeTemplate(event.getReplyToken());
 					}
 //					else if (event.getMessage().getText().equals("圖片選單"))
 //					{
@@ -432,16 +451,16 @@ public class LineController {
 								message = message + a.getActivityName() + ", ";
 							}
 							message = message.substring(0, message.length()-2);
-							sendResponseMessages(event.getReplyToken(), message);
+							messageUtil.sendResponseMessages(event.getReplyToken(), message);
 						}
 						else
 						{
 							String error = "查詢不到任何有關" + type + "的活動";
-							sendResponseMessages(event.getReplyToken(), error);
+							messageUtil.sendResponseMessages(event.getReplyToken(), error);
 						}
 					}
 					else
-						sendResponseMessages(event.getReplyToken(), event.getMessage().getText());
+						messageUtil.sendResponseMessages(event.getReplyToken(), event.getMessage().getText());
 					System.out.println("This is a text message. It's replytoken is " + event.getMessage().getText().toString());
 					break;
 				case "image":// 當message type為image時，進入此case執行，
@@ -470,277 +489,6 @@ public class LineController {
 		return Response.status(200).build();
 	}
 
-	private void sendResponseMessages(String replyToken, String message) {
-		try {
-			message = "{\"replyToken\":\"" + replyToken + "\",\"messages\":[{\"type\":\"text\",\"text\":\""
-					+ message + "\"}]}"; // 回傳的json格式訊息
-			URL myurl = new URL("https://api.line.me/v2/bot/message/reply"); // 回傳的網址
-			HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
-			con.setRequestMethod("POST");// 設定post方法
-			con.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // 設定Content-Type為json
-			con.setRequestProperty("Authorization", "Bearer " + accessToken); // 設定Authorization
-			con.setDoOutput(true);
-			con.setDoInput(true);
-			System.out.println(message);
-			DataOutputStream output = new DataOutputStream(con.getOutputStream()); // 開啟HttpsURLConnection的連線
-			output.write(message.getBytes(Charset.forName("utf-8"))); // 回傳訊息編碼為utf-8
-			output.close();
-			System.out.println("Resp Code:" + con.getResponseCode() + "; Resp Message:" + con.getResponseMessage()); // 顯示回傳的結果，若code為200代表回傳成功
-		} catch (MalformedURLException e) {
-			System.out.println("1Message: " + e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Message: " + e.getMessage());
-			e.printStackTrace();
-		}
-	}
-	
-	
-	private void typeTemplate(String replyToken)
-	{
-		try {
-			String message = "{\"replyToken\":\"" + replyToken + "\","+"\"messages\" : [" +
-					"{\"type\":\"imagemap\","+
-					"\"baseUrl\":\"https://i.imgur.com/U3Vg6OJ.png/1040\","+
-					"\"altText\":\"請至Line查看圖片選單\","+
-					"\"baseSize\":{"+
-					"\"height\":1040,"+
-					"\"width\":1040"+
-					"},"+
-					"\"actions\":["
-					+"{"+
-					"\"type\":\"message\","+
-					"\"text\":\"學習活動\","+
-					"\"area\":{"+
-					"\"x\":0,"+
-					"\"y\":0,"+
-					"\"width\":346,"+
-					"\"height\":346"+
-					"}},"
-					+"{"+
-					"\"type\":\"message\","+
-					"\"text\":\"藝文活動\","+
-					"\"area\":{"+
-					"\"x\":346,"+
-					"\"y\":0,"+
-					"\"width\":346,"+
-					"\"height\":346"+
-					"}},"
-					+"{"+
-					"\"type\":\"message\","+
-					"\"text\":\"親子活動\","+
-					"\"area\":{"+
-					"\"x\":693,"+
-					"\"y\":0,"+
-					"\"width\":346,"+
-					"\"height\":346"+
-					"}},"
-					+"{"+
-					"\"type\":\"message\","+
-					"\"text\":\"體驗活動\","+
-					"\"area\":{"+
-					"\"x\":0,"+
-					"\"y\":346,"+
-					"\"width\":346,"+
-					"\"height\":346"+
-					"}},"
-					+"{"+
-					"\"type\":\"message\","+
-					"\"text\":\"休閒活動\","+
-					"\"area\":{"+
-					"\"x\":346,"+
-					"\"y\":346,"+
-					"\"width\":346,"+
-					"\"height\":346"+
-					"}},"
-					+"{"+
-					"\"type\":\"message\","+
-					"\"text\":\"運動活動\","+
-					"\"area\":{"+
-					"\"x\":693,"+
-					"\"y\":346,"+
-					"\"width\":346,"+
-					"\"height\":346"+
-					"}},"
-					
-					+"{"+
-					"\"type\":\"message\","+
-					"\"text\":\"戶外活動\","+
-					"\"area\":{"+
-					"\"x\":0,"+
-					"\"y\":693,"+
-					"\"width\":346,"+
-					"\"height\":346"+
-					"}},"
-					
-					+"{"+
-					"\"type\":\"message\","+
-					"\"text\":\"講座活動\","+
-					"\"area\":{"+
-					"\"x\":346,"+
-					"\"y\":693,"+
-					"\"width\":346,"+
-					"\"height\":346"+
-					"}},"
-					
-					+"{"+
-					"\"type\":\"message\","+
-					"\"text\":\"資訊活動\","+
-					"\"area\":{"+
-					"\"x\":693,"+
-					"\"y\":693,"+
-					"\"width\":346,"+
-					"\"height\":346"+
-					"}}"
-					
-					+"]}]}";
 
-			URL myurl = new URL("https://api.line.me/v2/bot/message/reply"); // 回傳的網址
-			HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
-			con.setRequestMethod("POST");// 設定post方法
-			con.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // 設定Content-Type為json
-			con.setRequestProperty("Authorization", "Bearer " + accessToken); // 設定Authorization
-			con.setDoOutput(true);
-			con.setDoInput(true);
-			System.out.println(message);
-			DataOutputStream output = new DataOutputStream(con.getOutputStream()); // 開啟HttpsURLConnection的連線
-			output.write(message.getBytes(Charset.forName("utf-8"))); // 回傳訊息編碼為utf-8
-			output.close();
-			System.out.println("Resp Code:" + con.getResponseCode() + "; Resp Message:" + con.getResponseMessage()); // 顯示回傳的結果，若code為200代表回傳成功
-		} catch (MalformedURLException e) {
-			System.out.println("1Message: " + e.getMessage());
-			e.printStackTrace();
-	} catch (IOException e) {
-		System.out.println("Message: " + e.getMessage());
-		e.printStackTrace();
-}
-		
-	}
-		
-	private void sendResponseMessages(String replyToken, String[] messages) {
-		try {
-			String message_head = "{\"replyToken\":\"" + replyToken + "\",\"messages\":[";
-			for(String a :messages)
-			{
-				message_head = message_head+"{\"type\":\"text\",\"text\":\""+ a + "\"},";
-			}
-			String message = message_head.substring(0, message_head.length()-1)+"]}";
-			System.out.println(message);
-			 // 回傳的json格式訊息
-			URL myurl = new URL("https://api.line.me/v2/bot/message/reply"); // 回傳的網址
-			HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
-			con.setRequestMethod("POST");// 設定post方法
-			con.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // 設定Content-Type為json
-			con.setRequestProperty("Authorization", "Bearer " + accessToken); // 設定Authorization
-			con.setDoOutput(true);
-			con.setDoInput(true);
-			DataOutputStream output = new DataOutputStream(con.getOutputStream()); // 開啟HttpsURLConnection的連線
-			output.write(message.getBytes(Charset.forName("utf-8"))); // 回傳訊息編碼為utf-8
-			output.close();
-			System.out.println("Resp Code:" + con.getResponseCode() + "; Resp Message:" + con.getResponseMessage()); // 顯示回傳的結果，若code為200代表回傳成功
-		} catch (MalformedURLException e) {
-			System.out.println("1Message: " + e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Message: " + e.getMessage());
-			e.printStackTrace();
-		}
-	}
-	//to one user
-	private void sendPostMessages( String[] messages,String UserId) {
-		try {
-			String message_head = "{\"to\":\"" + UserId + "\",\"messages\":[";
-			for(String a :messages)
-			{
-				message_head = message_head+"{\"type\":\"text\",\"text\":\""+ a + "\"},";
-			}
-			String message = message_head.substring(0, message_head.length()-1)+"]}";
-			System.out.println(message);
-			 // 回傳的json格式訊息
-			URL myurl = new URL("https://api.line.me/v2/bot/message/push"); // 回傳的網址
-			HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
-			con.setRequestMethod("POST");// 設定post方法
-			con.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // 設定Content-Type為json
-			con.setRequestProperty("Authorization", "Bearer " + accessToken); // 設定Authorization
-			con.setDoOutput(true);
-			con.setDoInput(true);
-			DataOutputStream output = new DataOutputStream(con.getOutputStream()); // 開啟HttpsURLConnection的連線
-			output.write(message.getBytes(Charset.forName("utf-8"))); // 回傳訊息編碼為utf-8
-			output.close();
-			System.out.println("Resp Code:" + con.getResponseCode() + "; Resp Message:" + con.getResponseMessage()); // 顯示回傳的結果，若code為200代表回傳成功
-		} catch (MalformedURLException e) {
-			System.out.println("1Message: " + e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Message: " + e.getMessage());
-			e.printStackTrace();
-		}
-	}
-	
-	private void sendPostMessages( String messages,String UserId) {
-		try {
-			String message_head = "{\"to\":\"" + UserId + "\",\"messages\":[";
-			message_head = message_head+"{\"type\":\"text\",\"text\":\""+ messages + "\"},";
-			
-			String message = message_head.substring(0, message_head.length()-1)+"]}";
-			System.out.println(message);
-			 // 回傳的json格式訊息
-			URL myurl = new URL("https://api.line.me/v2/bot/message/push"); // 回傳的網址
-			HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
-			con.setRequestMethod("POST");// 設定post方法
-			con.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // 設定Content-Type為json
-			con.setRequestProperty("Authorization", "Bearer " + accessToken); // 設定Authorization
-			con.setDoOutput(true);
-			con.setDoInput(true);
-			DataOutputStream output = new DataOutputStream(con.getOutputStream()); // 開啟HttpsURLConnection的連線
-			output.write(message.getBytes(Charset.forName("utf-8"))); // 回傳訊息編碼為utf-8
-			output.close();
-			System.out.println("Resp Code:" + con.getResponseCode() + "; Resp Message:" + con.getResponseMessage()); // 顯示回傳的結果，若code為200代表回傳成功
-		} catch (MalformedURLException e) {
-			System.out.println("1Message: " + e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Message: " + e.getMessage());
-			e.printStackTrace();
-		}
-	}
-	
-	private void sendPostMessagesToMutiPerson( String[] messages,String[] UserId) {
-		try {
-			String message_head = "{\"to\":[";
-			for (String userId : UserId) {
-				message_head = message_head + "\"" + userId + "\",";
-			}
-			
-			message_head = message_head.substring(0, message_head.length()-1)+"]";
-			message_head = message_head+",\"messages\":[";
-			for(String a :messages)
-			{
-				message_head = message_head+"{\"type\":\"text\",\"text\":\""+ a + "\"},";
-			}
-			
-			
-			String message = message_head.substring(0, message_head.length()-1)+"]}";
-			System.out.println(message);
-			 // 回傳的json格式訊息
-			URL myurl = new URL("https://api.line.me/v2/bot/message/multicast"); // 回傳的網址
-			HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
-			con.setRequestMethod("POST");// 設定post方法
-			con.setRequestProperty("Content-Type", "application/json; charset=utf-8"); // 設定Content-Type為json
-			con.setRequestProperty("Authorization", "Bearer " + accessToken); // 設定Authorization
-			con.setDoOutput(true);
-			con.setDoInput(true);
-			DataOutputStream output = new DataOutputStream(con.getOutputStream()); // 開啟HttpsURLConnection的連線
-			output.write(message.getBytes(Charset.forName("utf-8"))); // 回傳訊息編碼為utf-8
-			output.close();
-			System.out.println("Resp Code:" + con.getResponseCode() + "; Resp Message:" + con.getResponseMessage()); // 顯示回傳的結果，若code為200代表回傳成功
-		} catch (MalformedURLException e) {
-			System.out.println("1Message: " + e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Message: " + e.getMessage());
-			e.printStackTrace();
-		}
-	}
 
 }

@@ -25,10 +25,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.activity.dao.ActivityDAO;
 import com.activity.dao.PhotoDAO;
+import com.activity.dao.VideoDAO;
 import com.activity.engine.control.EngineFunc;
 import com.activity.engine.entity.TrainFace;
 import com.activity.engine.util.AttributeCheck;
 import com.activity.entity.Activity;
+import com.activity.entity.Video;
 import com.activity.util.WebResponse;
 
 @CrossOrigin("*")
@@ -40,6 +42,8 @@ public class FileUploadController {
 	ActivityDAO activityDAO;
 	@Autowired
 	PhotoDAO photoDAO;
+	@Autowired
+	VideoDAO videoDAO;
 
 //	private final String dictLocation = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine\\resources";
 //	static String enginePath = "C:\\Users\\Morris\\Desktop\\人臉辨識引擎\\face\\engine";
@@ -130,9 +134,15 @@ public class FileUploadController {
 		// System.out.println("test");
 		picN += 1;
 		String uploadedFileLocation = reactFolderPath + "/ActivityPhoto/" + fileDictName + "/";
+		String uploadedVideoFileLocation = "C:/Users/jack1/Desktop/test/react_pages/public/assets/images/ActivityVideo/" + fileDictName + "/";
 		File file = new File(uploadedFileLocation);
 		if (!file.exists()) {
 			file.mkdirs();
+		}
+		File video = new File(uploadedVideoFileLocation);
+		if(!video.exists())
+		{
+			video.mkdirs();
 		}
 		// String uploadedFileLocation = "C://upload/" + fileDetail.getFileName();
 		String fileName = new String(fileDetail.getFileName().getBytes("ISO8859-1"), "UTF-8");
@@ -152,7 +162,19 @@ public class FileUploadController {
 
 			output = "File uploaded to : " + uploadedFileLocation + "side = " + test;
 
-		} else {
+		} 
+		else if (test.equalsIgnoreCase(".mp4"))
+		{
+			Video videoo = new Video();
+			videoo.setVideoId(uploadedVideoFileLocation + fileName);
+			videoo.setActivity_Id(Integer.parseInt(fileDictName));
+			long endTime = System.currentTimeMillis();
+			time += endTime - startTime;
+			System.out.println("第" + picN + "照片" + "目前共花了" + time + "秒");
+			videoDAO.insert(videoo);
+			writeToFile(uploadedInputStream, uploadedVideoFileLocation + fileName);	
+		}
+		else {
 			System.out.println("test2");
 			output = "no";
 		}

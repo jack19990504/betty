@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.csrf().disable()
 		.formLogin().loginProcessingUrl("/login").defaultSuccessUrl("http://localhost:3000/",true).failureUrl("http://localhost:3000/signin?loginError=true")
 		.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-        .logoutSuccessUrl("http://localhost:3000/signin");
+        .logoutSuccessUrl("http://localhost:3000/");
 
 
 		

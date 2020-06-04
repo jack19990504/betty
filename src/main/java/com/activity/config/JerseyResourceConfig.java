@@ -16,6 +16,7 @@ import com.activity.controller.rest.LineController;
 import com.activity.controller.rest.MemberController;
 import com.activity.controller.rest.OrganizerController;
 import com.activity.controller.rest.PhotoController;
+import com.activity.controller.rest.QRcodeController;
 import com.activity.controller.rest.RegistrationController;
 
 
@@ -30,6 +31,7 @@ public class JerseyResourceConfig extends ResourceConfig {
 
 
     public JerseyResourceConfig() {
+    	register(QRcodeController.class);
         register(MemberController.class);
         register(RequestContextFilter.class);
         register(LineController.class);
