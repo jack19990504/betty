@@ -351,6 +351,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				registration.setRegistrationMeal(rs.getInt("registrationMeal"));
 				registration.setIsSignIn(rs.getInt("isSignIn"));
 				registration.setIsSignOut(rs.getInt("isSignOut"));
+				registration.setAInum(rs.getInt("AInum"));
 
 				registration.setMember(member);
 				registrationList.add(registration);

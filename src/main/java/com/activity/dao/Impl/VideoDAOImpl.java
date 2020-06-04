@@ -93,6 +93,33 @@ public class VideoDAOImpl implements VideoDAO {
 		return	videoList;
 	
 	}
+	@Override
+	public void delete(Video video) {
+		Connection conn = null;
+		PreparedStatement smt = null;
+		final String sql = "DELETE FROM video WHERE videoId = ? and activity_Id = ?";
+		try {
+			conn = dataSource.getConnection();
+			smt = conn.prepareStatement(sql);
+			smt.setString(1, video.getVideoId());
+			smt.setInt(2, video.getActivity_Id());
+			smt.executeUpdate();
+			smt.close();
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException(e);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+	}
 	}
 
 	

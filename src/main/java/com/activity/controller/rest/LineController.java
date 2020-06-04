@@ -120,25 +120,21 @@ public class LineController {
 	}
 	//提醒單一參加者
 	
-	@Path("/postMessage/one")
+	@Path("/postMessage/one/{id}")
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	public void sendRemindMessagesToOnePerson(Registration registration)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void sendRemindMessagesToOnePerson(@PathParam("id") String id,String[] messages)
 	{
 		
 		final AttributeCheck attributeCheck = new AttributeCheck();
-		Activity activity = new Activity();
-		activity.setActivityId(registration.getActivity_Id());
-		activity = activityDAO.get(activity);
-		
-		String startDate = activity.getActivityStartDateString(); 
-		
-		String message = "提醒您，您所報名的活動 : \\n🔍" + activity.getActivityName() + " 即將在\\n " + startDate + " 開始";
-		String message2 = "活動地點為:\\n📍" + activity.getActivitySpace();
+		String message1 = messages[0];
+		String message2 = messages[1];
+		message1 = message1.replaceAll("\"", "");
+		message2 = message2.replaceAll("\"", "");
 		
 		
 				
-		messageUtil.sendPostMessages(new String[]{message,message2},registration.getMember().getMemberLineId());
+		messageUtil.sendPostMessages(new String[]{message1,message2},id);
 		
 		
 	}

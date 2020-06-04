@@ -9,5 +9,7 @@ public interface VideoDAO {
 	public void insert(Video video);
 	
 	public List<Video> getList(Integer activityId);
+	
+	public void delete(Video video);
 
 }
