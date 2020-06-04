@@ -36,10 +36,15 @@ public interface RegistrationDAO {
 	public List<Registration> getListWithMemberInformation(int id);
 	
 	public Integer checkAttendPeople(Registration registration);
-	
+	//手動簽到、簽退
 	public void signInByMemberEmail(Registration registration);
 	
 	public void signOutByMemberEmail(Registration registration);
 	//檢查此使用者是否在同天內已有其他報名的活動
 	public List<Activity> getUserIsSignUpSameDay(Activity activity,String memberEmail);
+	//QRCODE簽到、簽退
+	public void signInByAINum(Registration registration);
+	
+	public void signOutByAINum(Registration registration);
+	//
 }

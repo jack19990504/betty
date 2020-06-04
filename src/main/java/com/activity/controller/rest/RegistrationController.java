@@ -386,6 +386,77 @@ public class RegistrationController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
+	@Path("/QRcodeSignIn")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response signInByQRcode(Registration registration)
+	{
+		final AttributeCheck attributeCheck = new AttributeCheck();
+		final WebResponse webResponse = new WebResponse();
+		
+		if(!registration.getAInum().equals(null))
+		{
+			
+			registration = registrationDAO.get(registration);
+			
+			if(attributeCheck.stringsNotNull(registration.getMember_Email()))
+			{
+				registrationDAO.signInByAINum(registration);
+				webResponse.OK();
+				webResponse.setData(registration.getMember());
+			}
+			else
+			{
+				webResponse.NOT_FOUND();
+				webResponse.setData("this regis is not found!");
+			}
+		}
+		else
+		{
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("AInum required!");
+		}
+		
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
+	
+	@Path("/QRcodeSignOut")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response signOutByQRcode(Registration registration)
+	{
+		final AttributeCheck attributeCheck = new AttributeCheck();
+		final WebResponse webResponse = new WebResponse();
+		
+		if(!registration.getAInum().equals(null))
+		{
+			
+			registration = registrationDAO.get(registration);
+			
+			if(attributeCheck.stringsNotNull(registration.getMember_Email()))
+			{
+				registrationDAO.signOutByAINum(registration);
+				webResponse.OK();
+				webResponse.setData(registration.getMember());
+			}
+			else
+			{
+				webResponse.NOT_FOUND();
+				webResponse.setData("this regis is not found!");
+			}
+		}
+		else
+		{
+			webResponse.UNPROCESSABLE_ENTITY();
+			webResponse.setData("AInum required!");
+		}
+		
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
+	
 	@Path("/ifSignUp/{id}")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
