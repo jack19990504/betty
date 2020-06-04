@@ -401,6 +401,18 @@ public class PhotoController {
 		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/video")
+	public Response deleteVideo(Video video)
+	{
+		WebResponse webResponse = new WebResponse();
+		videoDAO.delete(video);
+		webResponse.OK();
+		webResponse.setData("video deleted!");
+		
+		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+	}
 	
 	
 	public static String readfileToDataBase(String filepath,Integer id) throws FileNotFoundException, IOException {
