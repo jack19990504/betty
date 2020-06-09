@@ -442,36 +442,38 @@ public class RegistrationController {
 		final AttributeCheck attributeCheck = new AttributeCheck();
 		final WebResponse webResponse = new WebResponse();
 		
-		if(!registration.getActivity_Id().equals(id))
-		{
-			webResponse.BAD_REQUEST();
-			webResponse.setData("Wrong QRcode!");
-		}
-		else
-		{
 			if(!registration.getAInum().equals(null))
 			{
 				
 				registration = registrationDAO.get(registration);
 				
-				if(attributeCheck.stringsNotNull(registration.getMember_Email()))
+				if(!registration.getActivity_Id().equals(id))
 				{
-					registrationDAO.signOutByAINum(registration);
-					webResponse.OK();
-					webResponse.setData(registration.getMember());
+					webResponse.BAD_REQUEST();
+					webResponse.setData("Wrong QRcode!");
 				}
 				else
 				{
-					webResponse.NOT_FOUND();
-					webResponse.setData("this regis is not found!");
+					if(attributeCheck.stringsNotNull(registration.getMember_Email()))
+					{
+						registrationDAO.signOutByAINum(registration);
+						webResponse.OK();
+						webResponse.setData(registration.getMember());
+					}
+					else
+					{
+						webResponse.NOT_FOUND();
+						webResponse.setData("this regis is not found!");
+					}
 				}
+
 			}
 			else
 			{
 				webResponse.UNPROCESSABLE_ENTITY();
 				webResponse.setData("AInum required!");
 			}
-		}
+		
 
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
