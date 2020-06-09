@@ -25,9 +25,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		//全部使用者都可使用
 		.antMatchers("/api/line/**","/api/member/check/**","/api/files/uploadFace/**").permitAll()
-		//允許line bot不登入也可存取API
+		//允許line bot可存取API
 		//任何人皆可抓取所有活動清單or任一活動
-		//未註冊會員可以使用
+		//未註冊會員可以使用以下方法的api
 		.antMatchers(HttpMethod.GET ,"/api/activity/**").permitAll()
 		.antMatchers(HttpMethod.POST ,"/api/member/**").permitAll()
 		

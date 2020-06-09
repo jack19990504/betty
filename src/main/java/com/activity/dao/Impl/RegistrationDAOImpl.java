@@ -151,7 +151,6 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 				//program control
 				member.setMemberBirthdayString(rs.getTimestamp("memberBirthday") != null ? rs.getTimestamp("memberBirthday").toString().substring(0,10) : "");
-				
 				member.setMemberPhone(rs.getString("memberPhone"));
 				member.setMemberLineId(rs.getString("memberLineId"));
 				member.setMemberGender(rs.getString("memberGender"));

@@ -506,6 +506,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivityPrecautions(rs.getString("activityPrecautions"));
 
 				activity.setRegisteredPeople(rs.getInt("registeredPeople"));
+				activity.setActivityCancelTime(rs.getTimestamp("activityCancelTime"));
 				
 				activityOrganizerList.add(activity);
 			}

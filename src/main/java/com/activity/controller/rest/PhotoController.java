@@ -60,6 +60,7 @@ public class PhotoController {
 	
 	static String reactFolderPath = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\ActivityPhoto\\";
 	static String filePath = "C:/Users/jack1/Desktop/test/react_pages/public/";
+	
 	//將辨識紀錄寫入資料庫
 	@POST
 	@Path("/writeMemberPhoto/{activityId}")
@@ -248,12 +249,14 @@ public class PhotoController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response all(@PathParam("activityId") Integer id) throws IOException
 	{
-		AttributeCheck attributeCheck = new AttributeCheck();
-		WebResponse webResponse = new WebResponse();
+		final AttributeCheck attributeCheck = new AttributeCheck();
+		final WebResponse webResponse = new WebResponse();
 		
 		if(attributeCheck.stringsNotNull(String.valueOf(id)))
 		{
+			//獲取要辨識的活動照片的資料夾位置
 			String dictLocation = reactFolderPath +id + "/";
+			//讀取裡面所有照片 如果是資料夾，回傳一個String 內容為各照片的路徑
 			String list = readfile(dictLocation);
 			if(attributeCheck.stringsNotNull(list))
 			{
@@ -264,11 +267,13 @@ public class PhotoController {
 				}
 				else
 				{
+					//寫egroupList
 					writePhotoList(enginePath + "/" + id +".egroupList",list);
 					EngineFunc engineFunc = new EngineFunc();
 					RecognizeFace reco = new RecognizeFace();
+					
 					File file = new File(enginePath + "/" + id + ".egroupList");
-					if (file.exists())// 檢測檔案是否存在
+					if (file.exists())// 檢測要辨識的檔案是否存在
 					{
 						reco.setPhotoListPath(id + ".egroupList");
 						reco.setEnginePath(enginePath);
@@ -286,6 +291,7 @@ public class PhotoController {
 						//如果成功辨識
 						if (isdone) {
 							System.out.println(id +jsonName);
+							//獲取辨識結果
 							List<Face> faceList = GetResult.photoResult(resultJsonPath, id+jsonName, true);
 							System.out.println(faceList.size());
 							List<String> recoWho = new ArrayList<>();
@@ -294,12 +300,15 @@ public class PhotoController {
 								webResponse.setData("no faces in the result!");
 								webResponse.UNPROCESSABLE_ENTITY();
 							} else {
+								//先刪除舊有的辨識資料
 								photoDAO.deleteAllMemberPhoto(id);
 								for(int i = 0 ;  i < faceList.size() -1 ; i ++ )
 								{
 									if(faceList.get(i).getHasFound().equals("1"))
 									{
+										//如辨識到人臉，則新增至資料庫
 										photoDAO.writePhoto(faceList.get(i));
+										//將辨識到的personId寫入list
 										if(!recoWho.contains(faceList.get(i).getPersonId()))
 											{
 												recoWho.add(faceList.get(i).getPersonId());
@@ -367,6 +376,7 @@ public class PhotoController {
 	@Path("/memberphoto/{id}")
 	public Response deleteMemberPhoto(@PathParam("id") Integer id)
 	{
+		System.out.println("test");
 		final AuthenticationUtil authUtil = new AuthenticationUtil();
 		Photo photo = new Photo();
 		photo.setAINum(id);

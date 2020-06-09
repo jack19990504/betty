@@ -193,7 +193,7 @@ public class MemberController {
 
 			if (member.getMemberName().equals(null)) {
 
-				webResponse.NO_CONTENT();
+				webResponse.NOT_FOUND();
 
 				webResponse.setData("this mail has not be regisetered!");
 

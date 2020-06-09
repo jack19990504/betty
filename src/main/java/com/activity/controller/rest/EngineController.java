@@ -29,7 +29,6 @@ import com.activity.engine.control.EngineFunc;
 import com.activity.engine.control.GetResult;
 import com.activity.engine.entity.Face;
 import com.activity.engine.entity.RecognizeFace;
-import com.activity.engine.util.AttributeCheck;
 import com.activity.engine.util.CmdUtil;
 import com.activity.entity.Member;
 import com.activity.util.WebResponse;
@@ -152,57 +151,57 @@ public class EngineController {
 		}
 
 	}
-
-	@GET
-	@Path("/signIn/{activityId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response signInRegistrationWithFace(@PathParam("activityId") Integer id) {
-		Member member;
-		while (true) {
-			List<Face> faceList = GetResult.photoResult(resultJsonPath, jsonName, true);
-
-			for (int i = faceList.size()-2;i > 0;i--) {
-				Face face = faceList.get(i);
-				if (!face.equals(null) && face.getHasFound().equals("1")) {
-					
-					System.out.println("test");
-					member = new Member();
-					member.setMemberEmail(face.getPersonId());
-					member = memberDAO.get(member);
-					System.out.println(member.getMemberEmail());
-					
-					if(member.getMemberPassword()!= null )
-					{
-						return Response.status(200).entity(member).build();
-					}
-						
-				}
-			}
-
-		}
-
-	}
-
-	@GET
-	@Path("/writePhoto")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getPhotoRecord() {
-		AttributeCheck attributeCheck = new AttributeCheck();
-		WebResponse webResponse = new WebResponse();
-		List<Face> faceList = GetResult.photoResult(resultJsonPath, jsonName, true);
-		if (faceList.size() == 0) {
-			webResponse.setData("no faces in the result!");
-			webResponse.UNPROCESSABLE_ENTITY();
-		} else {
-			for (Face face : faceList) {
-				if (face.getHasFound().equals("1")) {
-					photoDAO.writePhoto(face);
-				}
-			}
-			webResponse.OK();
-			webResponse.setData(faceList);
-		}
-		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
-	}
+//
+//	@GET
+//	@Path("/signIn/{activityId}")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Response signInRegistrationWithFace(@PathParam("activityId") Integer id) {
+//		Member member;
+//		while (true) {
+//			List<Face> faceList = GetResult.photoResult(resultJsonPath, jsonName, true);
+//
+//			for (int i = faceList.size()-2;i > 0;i--) {
+//				Face face = faceList.get(i);
+//				if (!face.equals(null) && face.getHasFound().equals("1")) {
+//					
+//					System.out.println("test");
+//					member = new Member();
+//					member.setMemberEmail(face.getPersonId());
+//					member = memberDAO.get(member);
+//					System.out.println(member.getMemberEmail());
+//					
+//					if(member.getMemberPassword()!= null )
+//					{
+//						return Response.status(200).entity(member).build();
+//					}
+//						
+//				}
+//			}
+//
+//		}
+//
+//	}
+//
+//	@GET
+//	@Path("/writePhoto")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Response getPhotoRecord() {
+//		AttributeCheck attributeCheck = new AttributeCheck();
+//		WebResponse webResponse = new WebResponse();
+//		List<Face> faceList = GetResult.photoResult(resultJsonPath, jsonName, true);
+//		if (faceList.size() == 0) {
+//			webResponse.setData("no faces in the result!");
+//			webResponse.UNPROCESSABLE_ENTITY();
+//		} else {
+//			for (Face face : faceList) {
+//				if (face.getHasFound().equals("1")) {
+//					photoDAO.writePhoto(face);
+//				}
+//			}
+//			webResponse.OK();
+//			webResponse.setData(faceList);
+//		}
+//		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
+//	}
 
 }

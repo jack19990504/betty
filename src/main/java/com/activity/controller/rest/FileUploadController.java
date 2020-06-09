@@ -95,7 +95,7 @@ public class FileUploadController {
 				}
 
 				String fileName = fileDetail.getFileName();
-				String suffix = fileName.substring(fileName.lastIndexOf("."));
+				String suffix = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
 				if (suffix.equals(".jpg") || suffix.equals(".jpeg") || suffix.equals(".png")) {
 					// save it
 					writeToFile(uploadedInputStream, uploadedFileLocation + "\\" + fileName);
@@ -238,10 +238,13 @@ public class FileUploadController {
 
 		// 人臉list檔名
 		String faceListName = dictLocation + "\\list_" + memberEmail + ".txt";
-		// 獲取副檔名
+		// 獲取檔名
 		String fileName = fileDetail.getFileName();
-		String fileExtension = fileName.substring(fileName.length() - 4, fileName.length());// 上傳圖片位置
+		// 副檔名
+		String fileExtension = fileName.substring(fileName.lastIndexOf("."));
+		// 上傳圖片位置
 		String uploadDict = dictLocation + "\\" + memberEmail;
+		// 圖片名稱
 		String photoName = uploadDict + "\\" + memberEmail + "1" + fileExtension;
 		File file = new File(uploadDict);
 		if (!file.exists()) {
@@ -253,6 +256,7 @@ public class FileUploadController {
 		// 人臉list內容
 		String data = "resources\\" + memberEmail + "\\" + memberEmail + "1" + fileExtension + "\t" + memberEmail
 				+ "[No]1";
+		//寫成list供引擎辨識
 		writeFaceList(faceListName, data);
 
 		TrainFace trainFace = new TrainFace();
