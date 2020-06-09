@@ -126,7 +126,7 @@ public class LineController {
 	public void sendRemindMessagesToOnePerson(@PathParam("id") String id,String[] messages)
 	{
 		
-		final AttributeCheck attributeCheck = new AttributeCheck();
+		
 		String message1 = messages[0];
 		String message2 = messages[1];
 		message1 = message1.replaceAll("\"", "");
@@ -177,7 +177,7 @@ public class LineController {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response callback( EventWrapper events) {
+	public Response callback(EventWrapper events) {
 		
 		for (Event event : events.getEvents()) {
 			switch (event.getType()) {
@@ -343,16 +343,11 @@ public class LineController {
 										
 										messageUtil.sendResponseMessages(event.getReplyToken(), "此用戶帳號已綁定過!");
 									}
-									
-									
-									
-								}
+		}
 							}
-						}
-									
+						}							
 					}
-					
-					
+				
 					else if (event.getMessage().getText().equals("可報名活動")) {
 						resetUserId.remove(event.getSource().getUserId());
 						bindUserId.remove(event.getSource().getUserId());
@@ -484,7 +479,5 @@ public class LineController {
 		}
 		return Response.status(200).build();
 	}
-
-
 
 }

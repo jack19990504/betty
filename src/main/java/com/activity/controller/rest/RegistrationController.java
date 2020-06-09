@@ -386,11 +386,11 @@ public class RegistrationController {
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
-	@Path("/QRcodeSignIn")
+	@Path("/QRcodeSignIn/{activityId}")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response signInByQRcode(Registration registration)
+	public Response signInByQRcode(Registration registration,@PathParam("activityId") Integer id)
 	{
 		final AttributeCheck attributeCheck = new AttributeCheck();
 		final WebResponse webResponse = new WebResponse();
@@ -400,17 +400,27 @@ public class RegistrationController {
 			
 			registration = registrationDAO.get(registration);
 			
-			if(attributeCheck.stringsNotNull(registration.getMember_Email()))
+			if(!registration.getActivity_Id().equals(id))
 			{
-				registrationDAO.signInByAINum(registration);
-				webResponse.OK();
-				webResponse.setData(registration.getMember());
+				webResponse.BAD_REQUEST();
+				webResponse.setData("Wrong QRcode!");
 			}
 			else
 			{
-				webResponse.NOT_FOUND();
-				webResponse.setData("this regis is not found!");
+				if(attributeCheck.stringsNotNull(registration.getMember_Email()))
+				{
+					registrationDAO.signInByAINum(registration);
+					webResponse.OK();
+					webResponse.setData(registration.getMember());
+				}
+				else
+				{
+					webResponse.NOT_FOUND();
+					webResponse.setData("this regis is not found!");
+				}
 			}
+			
+			
 		}
 		else
 		{
@@ -422,38 +432,46 @@ public class RegistrationController {
 	}
 	
 	
-	@Path("/QRcodeSignOut")
+	@Path("/QRcodeSignOut/{activityId}")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response signOutByQRcode(Registration registration)
+	public Response signOutByQRcode(Registration registration,@PathParam("activityId") Integer id)
 	{
 		final AttributeCheck attributeCheck = new AttributeCheck();
 		final WebResponse webResponse = new WebResponse();
 		
-		if(!registration.getAInum().equals(null))
+		if(!registration.getActivity_Id().equals(id))
 		{
-			
-			registration = registrationDAO.get(registration);
-			
-			if(attributeCheck.stringsNotNull(registration.getMember_Email()))
-			{
-				registrationDAO.signOutByAINum(registration);
-				webResponse.OK();
-				webResponse.setData(registration.getMember());
-			}
-			else
-			{
-				webResponse.NOT_FOUND();
-				webResponse.setData("this regis is not found!");
-			}
+			webResponse.BAD_REQUEST();
+			webResponse.setData("Wrong QRcode!");
 		}
 		else
 		{
-			webResponse.UNPROCESSABLE_ENTITY();
-			webResponse.setData("AInum required!");
+			if(!registration.getAInum().equals(null))
+			{
+				
+				registration = registrationDAO.get(registration);
+				
+				if(attributeCheck.stringsNotNull(registration.getMember_Email()))
+				{
+					registrationDAO.signOutByAINum(registration);
+					webResponse.OK();
+					webResponse.setData(registration.getMember());
+				}
+				else
+				{
+					webResponse.NOT_FOUND();
+					webResponse.setData("this regis is not found!");
+				}
+			}
+			else
+			{
+				webResponse.UNPROCESSABLE_ENTITY();
+				webResponse.setData("AInum required!");
+			}
 		}
-		
+
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
 	
