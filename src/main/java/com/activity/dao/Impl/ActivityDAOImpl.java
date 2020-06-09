@@ -488,6 +488,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 				activity.setActivityEndDate(rs.getTimestamp("activityEndDate"));
 				activity.setStartSignUpDate(rs.getTimestamp("startSignUpDate"));
 				activity.setEndSignUpDate(rs.getTimestamp("endSignUpDate"));
+				activity.setActivityCancelTime(rs.getTimestamp("activityCancelTime"));
 				
 				//program control
 				activity.setActivityStartDateString(rs.getTimestamp("activityStartDate") != null ? rs.getTimestamp("activityStartDate").toString().substring(0, 16) : "");
