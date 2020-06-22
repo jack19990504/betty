@@ -284,7 +284,7 @@ public class PhotoController {
 						reco.setOutputFramePath(outputFramePath);
 						reco.setTrainedBinaryPath(trainedBinaryPath);
 						reco.setTrainedFaceInfoPath(trainedFaceInfoPath);
-						reco.setMinimumFaceSize(25);
+						reco.setMinimumFaceSize(100);
 						reco.setJsonPath(jsonPath + id);
 
 						boolean isdone = engineFunc.recoFaceWithPhotoList(reco);
@@ -411,15 +411,21 @@ public class PhotoController {
 		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}
+	
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/video")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/video/")
 	public Response deleteVideo(Video video)
 	{
 		WebResponse webResponse = new WebResponse();
+		System.out.println("test");
+		System.out.println(video.equals(null));
+		System.out.println(video.getVideoId());
+		//System.out.println(video.getVideoId());
 		videoDAO.delete(video);
 		webResponse.OK();
-		webResponse.setData("video deleted!");
+		webResponse.setData(video);
 		
 		return Response.status(webResponse.getStatusCode()).entity(webResponse.getData()).build();
 	}

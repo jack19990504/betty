@@ -86,7 +86,7 @@ public class FileUploadController {
 			activity.setActivityId(id);
 			activity = activityDAO.get(activity);
 			if (attributeCheck.stringsNotNull(activity.getActivityName())) {
-				String uploadedFileLocation = "C:\\Users\\jack1\\Desktop\\test\\react_pages\\public\\assets\\images\\activityCover\\"
+				String uploadedFileLocation = reactFolderPath+"\\activityCover\\"
 						+ id;
 				System.out.println(uploadedFileLocation);
 				File file = new File(uploadedFileLocation);
@@ -134,7 +134,7 @@ public class FileUploadController {
 		// System.out.println("test");
 		picN += 1;
 		String uploadedFileLocation = reactFolderPath + "/ActivityPhoto/" + fileDictName + "/";
-		String uploadedVideoFileLocation = "C:/Users/jack1/Desktop/test/react_pages/public/assets/images/ActivityVideo/" + fileDictName + "/";
+		String uploadedVideoFileLocation = reactFolderPath + "/ActivityVideo/" + fileDictName + "/";
 		File file = new File(uploadedFileLocation);
 		if (!file.exists()) {
 			file.mkdirs();
